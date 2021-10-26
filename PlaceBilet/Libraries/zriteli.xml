@@ -1,0 +1,262 @@
+<?xml version="1.0"?><definitions name="ApiZriteliRu" targetNamespace="urn:ApiZriteliRu" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="urn:ApiZriteliRu" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+	<types xmlns="http://schemas.xmlsoap.org/wsdl/">
+	</types>
+	<message name="GetPlaceListRequest">
+		<part name="inputXml" type="xsd:string" />
+	</message>
+	<message name="GetPlaceListResponse">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="GetStageListByPlaceIdRequest">
+		<part name="inputXml" type="xsd:string" />
+	</message>
+	<message name="GetStageListByPlaceIdResponse">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="GetSectorListByStageIdRequest">
+		<part name="inputXml" type="xsd:string" />
+	</message>
+	<message name="GetSectorListByStageIdResponse">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="GetRepertoireListByStageIdRequest">
+		<part name="inputXml" type="xsd:string" />
+	</message>
+	<message name="GetRepertoireListByStageIdResponse">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="GetAgentListRequest">
+		<part name="inputXml" type="xsd:string" />
+	</message>
+	<message name="GetAgentListResponse">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="GetOfferListByRepertoireIdRequest">
+		<part name="inputXml" type="xsd:string" />
+	</message>
+	<message name="GetOfferListByRepertoireIdResponse">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="GetOfferByIdRequest">
+		<part name="inputXml" type="xsd:string" />
+	</message>
+	<message name="GetOfferByIdResponse">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="GetOfferListByEventInfoRequest">
+		<part name="inputXml" type="xsd:string" />
+	</message>
+	<message name="GetOfferListByEventInfoResponse">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="GetOfferIdBySeatInfoRequest">
+		<part name="inputXml" type="xsd:string" />
+	</message>
+	<message name="GetOfferIdBySeatInfoResponse">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="GetCategoryListRequest">
+		<part name="inputXml" type="xsd:string" />
+	</message>
+	<message name="GetCategoryListResponse">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="MakeOrderRequest">
+		<part name="inputXml" type="xsd:string" />
+	</message>
+	<message name="MakeOrderResponse">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="CancelOrderRequest">
+		<part name="inputXml" type="xsd:string" />
+	</message>
+	<message name="CancelOrderResponse">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="GetRepertoireInfoByRepertoireIdRequest">
+		<part name="inputXml" type="xsd:string" />
+	</message>
+	<message name="GetRepertoireInfoByRepertoireIdResponse">
+		<part name="return" type="xsd:string" />
+	</message>
+	<portType name="ApiZriteliRuPort">
+		<operation name="GetPlaceList">
+			<input message="tns:GetPlaceListRequest" />
+			<output message="tns:GetPlaceListResponse" />
+		</operation>
+		<operation name="GetStageListByPlaceId">
+			<input message="tns:GetStageListByPlaceIdRequest" />
+			<output message="tns:GetStageListByPlaceIdResponse" />
+		</operation>
+		<operation name="GetSectorListByStageId">
+			<input message="tns:GetSectorListByStageIdRequest" />
+			<output message="tns:GetSectorListByStageIdResponse" />
+		</operation>
+		<operation name="GetRepertoireListByStageId">
+			<input message="tns:GetRepertoireListByStageIdRequest" />
+			<output message="tns:GetRepertoireListByStageIdResponse" />
+		</operation>
+		<operation name="GetAgentList">
+			<input message="tns:GetAgentListRequest" />
+			<output message="tns:GetAgentListResponse" />
+		</operation>
+		<operation name="GetOfferListByRepertoireId">
+			<input message="tns:GetOfferListByRepertoireIdRequest" />
+			<output message="tns:GetOfferListByRepertoireIdResponse" />
+		</operation>
+		<operation name="GetOfferById">
+			<input message="tns:GetOfferByIdRequest" />
+			<output message="tns:GetOfferByIdResponse" />
+		</operation>
+		<operation name="GetOfferListByEventInfo">
+			<input message="tns:GetOfferListByEventInfoRequest" />
+			<output message="tns:GetOfferListByEventInfoResponse" />
+		</operation>
+		<operation name="GetOfferIdBySeatInfo">
+			<input message="tns:GetOfferIdBySeatInfoRequest" />
+			<output message="tns:GetOfferIdBySeatInfoResponse" />
+		</operation>
+		<operation name="GetCategoryList">
+			<input message="tns:GetCategoryListRequest" />
+			<output message="tns:GetCategoryListResponse" />
+		</operation>
+		<operation name="MakeOrder">
+			<input message="tns:MakeOrderRequest" />
+			<output message="tns:MakeOrderResponse" />
+		</operation>
+		<operation name="CancelOrder">
+			<input message="tns:CancelOrderRequest" />
+			<output message="tns:CancelOrderResponse" />
+		</operation>
+		<operation name="GetRepertoireInfoByRepertoireId">
+			<input message="tns:GetRepertoireInfoByRepertoireIdRequest" />
+			<output message="tns:GetRepertoireInfoByRepertoireIdResponse" />
+		</operation>
+	</portType>
+	<binding name="ApiZriteliRuBinding" type="tns:ApiZriteliRuPort">
+		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="GetPlaceList">
+			<soap:operation soapAction="urn:ApiZriteliRu#Server#GetPlaceList" />
+			<input>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="GetStageListByPlaceId">
+			<soap:operation soapAction="urn:ApiZriteliRu#Server#GetStageListByPlaceId" />
+			<input>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="GetSectorListByStageId">
+			<soap:operation soapAction="urn:ApiZriteliRu#Server#GetSectorListByStageId" />
+			<input>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="GetRepertoireListByStageId">
+			<soap:operation soapAction="urn:ApiZriteliRu#Server#GetRepertoireListByStageId" />
+			<input>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="GetAgentList">
+			<soap:operation soapAction="urn:ApiZriteliRu#Server#GetAgentList" />
+			<input>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="GetOfferListByRepertoireId">
+			<soap:operation soapAction="urn:ApiZriteliRu#Server#GetOfferListByRepertoireId" />
+			<input>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="GetOfferById">
+			<soap:operation soapAction="urn:ApiZriteliRu#Server#GetOfferById" />
+			<input>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="GetOfferListByEventInfo">
+			<soap:operation soapAction="urn:ApiZriteliRu#Server#GetOfferListByEventInfo" />
+			<input>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="GetOfferIdBySeatInfo">
+			<soap:operation soapAction="urn:ApiZriteliRu#Server#GetOfferIdBySeatInfo" />
+			<input>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="GetCategoryList">
+			<soap:operation soapAction="urn:ApiZriteliRu#Server#GetCategoryList" />
+			<input>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="MakeOrder">
+			<soap:operation soapAction="urn:ApiZriteliRu#Server#MakeOrder" />
+			<input>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="CancelOrder">
+			<soap:operation soapAction="urn:ApiZriteliRu#Server#CancelOrder" />
+			<input>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="GetRepertoireInfoByRepertoireId">
+			<soap:operation soapAction="urn:ApiZriteliRu#Server#GetRepertoireInfoByRepertoireId" />
+			<input>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="urn:ApiZriteliRu" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+	</binding>
+	<service name="ApiZriteliRuService">
+		<documentation />
+		<port name="ApiZriteliRuPort" binding="tns:ApiZriteliRuBinding">
+			<soap:address location="http://api.zriteli.ru/index.php" />
+		</port>
+	</service>
+</definitions>
