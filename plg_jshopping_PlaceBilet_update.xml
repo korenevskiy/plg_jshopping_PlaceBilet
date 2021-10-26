@@ -1,1 +1,21 @@
-<xml></xml>
+<?xml version="1.0" encoding="utf-8"?>
+<updates> 
+    <update>
+        <name> "Bilet Movie-Theater" tickets DEMO FREE</name>
+        <description>Plugin for JoomShopping-Joomla ticket sales for cinemas, theaters, circuses, museums. parties, courses, lessons, trainings, couching.</description>
+        <element>PlaceBilet</element>
+        <type>plugin</type>
+        <version>1.26</version>
+      	<modificationDate>2021-10-26</modificationDate>
+        <folder>jshopping</folder>
+        <client>0</client>
+        <infourl title="PlaceBilet Movie-Theater tickets for JS">//explorer-office.ru/download</infourl>
+        <downloads>
+            <downloadurl type="full" format="zip">//explorer-office.ru/files/plg_PlaceBilet_tickets.zip</downloadurl>
+        </downloads>
+        <php_minimum>5.4</php_minimum>
+        <maintainer>Korenevskiy Sergei Borisovich</maintainer>
+        <maintainerurl>//fb.com/groups/placebilet/</maintainerurl>
+        <targetplatform name="joomla" version=".*" />
+    </update>
+</updates>
