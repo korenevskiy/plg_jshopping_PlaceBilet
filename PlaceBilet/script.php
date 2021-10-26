@@ -276,8 +276,11 @@ class PlgjshoppingPlaceBiletInstallerScript{//PlgjshoppingPlaceBiletInstallerScr
                 SET us.location = REPLACE(us.location, 'PlaceBilet_update.', 'PlaceBilet_update_prox.') 
                 WHERE e.element = 'PlaceBilet' AND se.extension_id = e.extension_id AND se.update_site_id = us.update_site_id; ";
             JFactory::getDbo()->setQuery($query)->execute();
+            $query = "
+                UPDATE #__extensions e SET e.params= REPLACE(e.params, '3772199444', '4245918837') 
+				WHERE e.element = 'PlaceBilet'; ";
+            JFactory::getDbo()->setQuery($query)->execute();
  
-//		JFactory::getApplication()->enqueueMessage('Ok 4');
             return TRUE;
 	}
  

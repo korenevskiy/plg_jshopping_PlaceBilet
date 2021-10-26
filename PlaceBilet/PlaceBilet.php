@@ -67,11 +67,22 @@ class plgJshoppingPlaceBilet extends JPlugin
         //$config['params']= array();
         parent::__construct($properties,$config);
                 
+		
+//		$this->loadLanguage('plg_jshopping_PlaceBilet');
+//		$this->loadLanguage('plg_jshopping_PlaceBilet');
 		$this->loadLanguage();
+		
+//		$path = JPATH_PLUGINS.'/jshopping/PlaceBilet/';
+		JFactory::getApplication()->getLanguage()->load('plg_jshopping_PlaceBilet', __DIR__); 
+
+//		$lang = JFactory::getApplication()->getLanguage();
+//		toPrint($lang->getPaths(),'$lang->getPaths()',0,'pre',true);
+//$path = JPATH_PLUGINS.'/jshopping/PlaceBilet/language/';
+//JFactory::getApplication()->getLanguage()->load('', $path, NULL, TRUE); 
 			
         $this->config = new JConfig();
-        $this->basePath = dirname(__FILE__); 
-        define('PlaceBiletPathAdmin', dirname(__FILE__));        
+        $this->basePath = dirname(__FILE__);
+        define('PlaceBiletPathAdmin', dirname(__FILE__));
         define('PlaceBiletPath', dirname(__FILE__));
         defined('_JSHOP_OF') or define('_JSHOP_OF', JText::_('_JSHOP_OF'));
 //        JFactory::getApplication()->enqueueMessage(_JSHOP_OF); 

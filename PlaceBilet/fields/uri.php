@@ -11,6 +11,8 @@
  * Technical Support:  Forum - //vk.com/placebilet
  * -------------------------------------------------------------------------
  **/ 
+use Joomla\CMS\Factory as JFactory;
+
 defined('_JEXEC') or die;
 jimport('joomla.form.formfield');
 //https://docs.joomla.org/Category:Standard_form_field_types
@@ -22,7 +24,7 @@ jimport('joomla.form.formfield');
 //if(file_exists(JPATH_PLUGINS.'/jshopping/PlaceBilet/Addons/Zriteli.php'))   require_once (JPATH_PLUGINS.'/jshopping/PlaceBilet/Addons/Zriteli.php');
 
 $path = JPATH_PLUGINS.'/jshopping/PlaceBilet';
-//JFactory::getApplication()->getLanguage()->load('plg_jshopping_placebilet', $path); 
+JFactory::getApplication()->getLanguage()->load('plg_jshopping_PlaceBilet', $path); 
 //JFactory::getLanguage()->load('PlaceBilet', $path, NULL, TRUE);         
 //JFactory::getLanguage()->load('plg_jshopping_PlaceBilet', $path, NULL, TRUE); 
 //	JFactory::getLanguage()->load('PlaceBilet', $path, 'ru-RU', TRUE);

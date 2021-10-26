@@ -19,8 +19,8 @@ jimport('joomla.form.formfield');
 //https://docs.joomla.org/Standard_form_field_types
 
 
-$path = JPATH_PLUGINS.'/jshopping/PlaceBilet';
-//JFactory::getApplication()->getLanguage()->load('plg_jshopping_placebilet', $path); 
+//$path = JPATH_PLUGINS.'/jshopping/PlaceBilet';
+//JFactory::getApplication()->getLanguage()->load('plg_jshopping_PlaceBilet', $path); 
 //JFactory::getLanguage()->load('plg_jshopping_PlaceBilet', $path, NULL, TRUE);
 //JFactory::getLanguage()->load('PlaceBilet', $path, NULL, TRUE);
 //toPrint(JFactory::getLanguage(),'',0,true,true);

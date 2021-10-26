@@ -25,13 +25,15 @@ jimport('joomla.form.formfield');
 //https://docs.joomla.org/Standard_form_field_types
 
 
-
+//toPrint('WOW','',0,'pre',true);
 //                 JFactory::getLanguage()->load($extension)
 //				$lang      = JFactory::getLanguage()->getPaths();//'Plg_' . $this->_type . '_' . $this->_name
 
 
-$path = JPATH_PLUGINS.'/jshopping/PlaceBilet';
-//JFactory::getApplication()->getLanguage()->load('plg_jshopping_placebilet', $path); 
+//$path = JPATH_PLUGINS.'/jshopping/PlaceBilet/';
+//JFactory::getApplication()->getLanguage()->load('plg_jshopping_PlaceBilet', $path, NULL, TRUE); 
+//$path = JPATH_PLUGINS.'/jshopping/PlaceBilet/language/';
+//JFactory::getApplication()->getLanguage()->load('', $path, NULL, TRUE); 
 //echo "<pre>".print_r($path,true)."</pre>";
 //echo "<pre>".print_r(JFactory::getApplication()->getLanguage(),true)."</pre>";
 //JFactory::getApplication()->getLanguage()->load('ru-RU.PlaceBilet', $path);
