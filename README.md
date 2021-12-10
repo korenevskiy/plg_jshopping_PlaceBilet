@@ -1,4 +1,4 @@
-# plg_jshopping_PlaceBilet
+# plg_jshopping_PlaceBilet Free
 Plugin sale stickets and bilets for cinemas and theaters for JoomShopping 
 
 Link for online installation Plugin:
