@@ -11,7 +11,7 @@ Link for online installation Component:
 
 Link for payment plugin SberBank.
 
-[https://securepayments.sberbank.ru/wiki/doku.php/integration:cms:joomla:start](Payment plugin SberBank)
+[Payment plugin SberBank](https://securepayments.sberbank.ru/wiki/doku.php/integration:cms:joomla:start)
  
  
 ![Exhibition of paintings - En - j3placebilet](https://user-images.githubusercontent.com/6898474/145529212-06d132d5-c701-434c-880e-be2486bfd927.png)
