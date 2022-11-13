@@ -24,7 +24,7 @@ Link for payment plugin SberBank.
 
 
 
-# Demo Archive Site! 
+# Demo Archive Site - Download here ZIP! 
 
 https://cloud.mail.ru/public/toRx/3NEVmUPyS
 
