@@ -24,7 +24,7 @@ Link for payment plugin SberBank.
 
 
 
-# Demo Archive Site - Download here ZIP! 
+# Demo Archive Site - Download here ZIP with Jomla 3.x archive! 
 
 https://cloud.mail.ru/public/toRx/3NEVmUPyS
 
