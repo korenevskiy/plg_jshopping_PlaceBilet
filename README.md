@@ -3,8 +3,8 @@
 
 Link for online installation Plugin and Module:
 
-[https://korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_4.0.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_4.0.zip)
-[https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_4.0.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_4.0.zip)
+Plugin: [https://korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_4.0.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_4.0.zip)
+Module: [https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_4.0.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_4.0.zip)
 
 Link for online installation Component:
 
