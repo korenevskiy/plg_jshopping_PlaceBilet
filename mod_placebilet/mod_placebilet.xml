@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" client="administrator" method="upgrade">
+	<name>mod_placebilet</name>
+	<author>Joomla! Project</author>
+	<creationDate>2023-07-18</creationDate>
+	<modificationDate>2023-07-18</modificationDate>
+	<copyright>(C) 2005 Open Source Matters, Inc.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>admin@joomla.org</authorEmail>
+	<authorUrl>www.joomla.org</authorUrl>
+	<version>4.0.0</version>
+	<description>MOD_PLACEBILET_XML_DESCRIPTION</description>
+
+	<!--<customContent />-->
+
+	<files>
+		<filename module="mod_placebilet">mod_placebilet.php</filename>
+		<filename>helper.php</filename>
+		<filename>mod_placebilet.xml</filename>
+		<folder>Lib</folder>
+		<folder>language</folder>
+		<folder>media</folder>
+		<folder>templates</folder>
+		<folder>tmpl</folder>
+	</files>
+	<languages>
+		<language tag="en-GB">language/en-GB/mod_placebilet.ini</language>
+		<language tag="en-GB">language/en-GB/mod_placebilet.sys.ini</language>
+		<language tag="ru-RU">language/ru-RU/mod_placebilet.ini</language>
+		<language tag="ru-RU">language/ru-RU/mod_placebilet.sys.ini</language>
+	</languages>
+	<!--<help key="Admin_Modules:_Custom" />-->
+	<config>
+		<fields name="params">
+			
+			
+			<fieldset   name="basic"  label="JSHOP_PUSHKA">   
+                
+				
+				<field name="pushka_mode" type="radio" class=" btn-group btn-group-yesno" label="JSHOP_PUSHKA"  default="0">
+					<option value="0">JDISABLED</option>
+					<option value="uat">[[%1:]],JSHOP_PUSHKA_TEST</option>
+					<option value="prod">[[%1:]],JSHOP_PUSHKA_PROD</option>
+				</field>
+				
+				<field name="pushka_url_uat" label="JSHOP_PUSHKA_APIURL" 
+					   default="https://pushka-uat.test.gosuslugi.ru/api/v1"
+					   class="readonly disabled" readonly="true" disabled="false"
+					   showon="pushka_mode:uat"  /> 
+				<field name="pushka_key_uat" label="JSHOP_PUSHKA_APIKEY"
+					   showon="pushka_mode:uat"  /> 
+				
+				
+				<field name="pushka_url_prod" label="JSHOP_PUSHKA_APIURL" 
+					   default="https://pushka.gosuslugi.ru/api/v1/"
+					   class="readonly disabled" readonly="true" disabled="false"
+					   showon="pushka_mode:prod"   />
+				<field name="pushka_key_prod" label="JSHOP_PUSHKA_APIKEY" 
+					   showon="pushka_mode:prod"
+					   default="" /> 
+				
+				<field name="organization_id" type="text" label="JSHOP_PUSHKA_ORGANIZATIONID" showon="pushka_mode:uat[AND]pushka_mode:prod"  /> 
+				
+				
+				<field
+					type="note"
+					label="JSHOP_PUSHKA_INFO"
+					description="JSHOP_PUSHKA_DESC" 
+					hr="true" class="text"
+				/>
+				<field
+					type="spacer"
+					default=""
+					label="&lt;hr>"
+					description=""
+				/>
+				<field  
+					name="ticketsPeriodVisit" 
+					type="list" 
+					label="JSHOP_TICHET_EVENTVISIT"
+					default="7200" 
+					multiple="false" 
+				>
+					<option  value="all">JALLWAYS</option>
+					<option  value="21600">JSHOP_PERIOD_6HOURS</option>
+					<option  value="14400">JSHOP_PERIOD_4HOURS</option>
+					<option  value="10800">JSHOP_PERIOD_3HOURS</option>
+					<option  value="7200">JSHOP_PERIOD_2HOURS</option>
+					<option  value="3600">JSHOP_PERIOD_1HOURS</option>
+					<option  value="1800">JSHOP_PERIOD_30MINUTES</option>
+					<option  value="600">JSHOP_PERIOD_10MINUTES</option>
+					<option  value="300">JSHOP_PERIOD_5MINUTES</option>
+					<option  value="120">JSHOP_PERIOD_2MINUTES</option>
+					<option  value="0">JSHOP_PERIOD_NOW</option>
+				</field>
+				<field
+					type="spacer"
+					label="&lt;hr>"
+					description=""
+					hr="false" 
+				/>
+				
+				
+				
+				<field name="pushka_visit" type="radio" class=" btn-group btn-group-yesno" label="JSHOP_PUSHKA_VISIT"  default="0">
+					<option value="1">OPTION_ALLOW</option>
+					<option value="0">OPTION_DISALLOW</option>
+				</field>
+				<field name="button_name_visit" type="text" 
+					label="JSHOP_PUSHKA_BTN_NAME_VISIT"  default="JSHOP_PUSHKA_BTN_DEFAULT_VISIT" translate_default="true" 
+					showon="pushka_visit:1" /> 
+				<field
+					name="pushka_visit_status"
+					type="sql"
+					multiple="false"
+					label="[[%1:]],JSHOP_PUSHKA_STATUSVISIT" 
+					description="JSHOP_PUSHKA_STATUS_DESCRIPTION"
+					query="SELECT status_id id, CONCAT( `name_en-GB`,' /',`name_ru-RU`) title  FROM `#__jshopping_order_status` ORDER BY status_id; "
+					key_field="id"
+					value_field="title"
+					showon="pushka_visit:1" 
+					default="[]"
+				>
+				</field>        
+				<field
+					name="btn_visit_statuses"
+					type="sql"
+					multiple="true"
+					label="[[%1:]],JSHOP_PUSHKA_VISIBLEVISIT" 
+					query="SELECT status_code code, CONCAT( `name_en-GB`,' /',`name_ru-RU`) title  FROM `#__jshopping_order_status` ORDER BY status_id; "
+					key_field="code"
+					value_field="title"
+					layout="joomla.form.field.list-fancy-select"
+                    default="[&quot;O&quot;]"
+					showon="pushka_visit:1" 
+				>
+				</field>
+				
+				
+                                
+                                
+                                
+				<field name="pushka_refund" type="radio" class=" btn-group btn-group-yesno" label="JSHOP_PUSHKA_REFUND"  default="0">
+					<option value="1">OPTION_ALLOW</option>
+					<option value="0">OPTION_DISALLOW</option>
+				</field>
+				<field name="button_name_refund" type="text" label="JSHOP_PUSHKA_BTN_NAME_REFUND"  default="JSHOP_PUSHKA_BTN_DEFAULT_REFUND" translate_default="true" 
+					showon="pushka_refund:1" /> 
+				<field
+					name="pushka_refund_status"
+					type="sql"
+					multiple="false"
+					label="[[%1:]],JSHOP_PUSHKA_STATUSREFUND" 
+					description="JSHOP_PUSHKA_STATUS_DESCRIPTION"
+					query="SELECT status_id id,  CONCAT( `name_en-GB`,' /',`name_ru-RU`) title  FROM `#__jshopping_order_status` ORDER BY status_id; "
+					key_field="id"
+					value_field="title"
+                    default="[6]"
+					showon="pushka_refund:1"
+				>
+				</field>
+				<field
+					name="btn_refund_statuses"
+					type="sql"
+					multiple="true"
+					label="[[%1:]],JSHOP_PUSHKA_VISIBLEREFUND" 
+					query="SELECT status_code code, CONCAT( `name_en-GB`,' /',`name_ru-RU`) title  FROM `#__jshopping_order_status` ORDER BY status_id; "
+					key_field="code"
+					value_field="title"
+					layout="joomla.form.field.list-fancy-select"
+                    default="[&quot;O&quot;]"
+					showon="pushka_refund:1" 
+				>
+				</field>
+				
+				
+				
+				
+				
+				<field name="pushka_cancel" type="radio" class=" btn-group btn-group-yesno" label="JSHOP_PUSHKA_CANCEL"  default="0">
+					<option value="1">OPTION_ALLOW</option>
+					<option value="0">OPTION_DISALLOW</option>
+				</field>
+                                 
+				
+				<field name="button_name_cancel" type="text" label="JSHOP_PUSHKA_BTN_NAME_CANCEL" default="JSHOP_PUSHKA_BTN_DEFAULT_CANCEL" translate_default="true" 
+					showon="pushka_cancel:1"/> 
+				<field
+					name="pushka_cancel_status"
+					type="sql"
+					multiple="false"
+					label="[[%1:]],JSHOP_PUSHKA_STATUSCANCEL" 
+					description="JSHOP_PUSHKA_STATUS_DESCRIPTION"
+					query="SELECT status_id id,  CONCAT( `name_en-GB`,' /',`name_ru-RU`) title  FROM `#__jshopping_order_status` ORDER BY status_id; "
+					key_field="id"
+					value_field="title"
+                    default="[]"
+					showon="pushka_cancel:1"
+				>
+				</field>
+				<field
+					name="btn_cancel_statuses"
+					type="sql"
+					multiple="true"
+					label="[[%1:]],JSHOP_PUSHKA_VISIBLECANCEL" 
+					query="SELECT status_code code, CONCAT( `name_en-GB`,' /',`name_ru-RU`) title  FROM `#__jshopping_order_status` ORDER BY status_id; "
+					key_field="code"
+					value_field="title"
+					layout="joomla.form.field.list-fancy-select"
+                    default="[&quot;O&quot;]"
+					showon="pushka_cancel:1" 
+					class="advancedSelect"
+				>
+				</field>
+				
+				 
+				
+				
+				<field
+					type="spacer"
+					label="&lt;hr>"
+					description=""
+					hr="false" 
+				/>
+				
+				<field name="pushka_camera" type="radio" class=" btn-group btn-group-yesno" label="JSHOP_PUSHKA_CAMERA"  
+					   default="1">
+					<option value="1">JENABLED</option>
+					<option value="0">JDISABLED</option>
+				</field>
+				
+				
+				<field name="pushka_camera_beep" type="radio" class=" btn-group btn-group-yesno" label="JSHOP_PUSHKA_CAMERA_BEEP"  
+					   default="1">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				
+				<field name="pushka_camera_select" type="radio" class=" btn-group " label="JSHOP_PUSHKA_CAMERA_DEFAULT"  
+					   default="first">
+					<option value="first">JFIRST</option>
+					<option value="last">JLAST</option>
+				</field>
+				
+				<field name="pushka_platform" type="radio" class=" btn-group btn-group-yesno" label="JSHOP_PUSHKA_OTHER_PLATFORM"  
+					   default="auto">
+					<option value="this">OPTION_THIS</option>
+					<option value="auto">JGLOBAL_AUTO</option>
+					<option value="other">OPTION_OTHER</option>
+				</field>
+				<field name="pushka_event_interval_old" type="list"
+					   label="JSHOP_PUSHKA_INTERVALOLD"    showon="pushka_platform:auto" 
+					   default="1 DAY">
+					<option value="1 MINUTEATE">JSHOP_PUSHKA_NOW</option>
+					<option value="1 HOUR">JSHOP_PUSHKA_INHOUR</option>
+					<option value="2 HOUR">JSHOP_PUSHKA_INHOUR2</option>
+					<option value="3 HOUR">JSHOP_PUSHKA_INHOUR3</option>
+					<option value="6 HOUR">JSHOP_PUSHKA_INHOUR6</option>
+					<option value="12 HOUR">JSHOP_PUSHKA_INHOUR12</option>
+					<option value="18 HOUR">JSHOP_PUSHKA_INHOUR18</option>
+					<option value="1 DAY">JSHOP_PUSHKA_INDAY</option>
+					<option value="2 DAY">JSHOP_PUSHKA_INDAY2</option>
+					<option value="3 DAY">JSHOP_PUSHKA_INDAY3</option>
+					<option value="5 DAY">JSHOP_PUSHKA_INDAY5</option>
+					<option value="7 DAY">JSHOP_PUSHKA_INWEEK</option>
+					<option value="14 DAY">JSHOP_PUSHKA_INWEEK2</option>
+					<option value="32 DAY">JSHOP_PUSHKA_INMONTH</option>
+					<option value="61 DAY">JSHOP_PUSHKA_INMONTH2</option>
+					<option value="92 DAY">JSHOP_PUSHKA_INMONTH3</option>
+					<option value="183 DAY">JSHOP_PUSHKA_INMONTH6</option>
+					<option value="366 DAY">JSHOP_PUSHKA_INYEAR</option>
+					<option value="0">JSHOP_PUSHKA_NOLIMIT</option>
+				</field>
+				
+				<field name="pushka_event_interval_future" type="list"  
+					   label="JSHOP_PUSHKA_INTERVALFUTURE" showon="pushka_platform:auto" 
+					   default="7 DAY">
+					<option value="1 MINUTEATE">JSHOP_PUSHKA_NOW</option>
+					<option value="1 HOUR">JSHOP_PUSHKA_INHOUR</option>
+					<option value="2 HOUR">JSHOP_PUSHKA_INHOUR2</option>
+					<option value="3 HOUR">JSHOP_PUSHKA_INHOUR3</option>
+					<option value="6 HOUR">JSHOP_PUSHKA_INHOUR6</option>
+					<option value="12 HOUR">JSHOP_PUSHKA_INHOUR12</option>
+					<option value="18 HOUR">JSHOP_PUSHKA_INHOUR18</option>
+					<option value="1 DAY">JSHOP_PUSHKA_INDAY</option>
+					<option value="2 DAY">JSHOP_PUSHKA_INDAY2</option>
+					<option value="3 DAY">JSHOP_PUSHKA_INDAY3</option>
+					<option value="5 DAY">JSHOP_PUSHKA_INDAY5</option>
+					<option value="7 DAY">JSHOP_PUSHKA_INWEEK</option>
+					<option value="14 DAY">JSHOP_PUSHKA_INWEEK2</option>
+					<option value="32 DAY">JSHOP_PUSHKA_INMONTH</option>
+					<option value="61 DAY">JSHOP_PUSHKA_INMONTH2</option>
+					<option value="92 DAY">JSHOP_PUSHKA_INMONTH3</option>
+					<option value="183 DAY">JSHOP_PUSHKA_INMONTH6</option>
+					<option value="366 DAY">JSHOP_PUSHKA_INYEAR</option>
+					<option value="0">JSHOP_PUSHKA_NOLIMIT</option>
+				</field>
+			</fieldset>
+			
+			
+			
+
+			<fieldset name="options">
+				
+				
+				<field name="pushka_showstatus_fields" type="list"
+						label="JSHOP_PUSHKA_STATUSSHOW_FIELDS"
+						layout="joomla.form.field.list-fancy-select"
+						default='["fio","f_name","l_name","comment"]'
+						multiple="true">
+				<option value="fio">JSHOP_PUSHKA_STATUSSHOW_FIO</option> 
+				<option value="f_name">jshop_pushka_statusshow_f_name</option> 
+				<option value="l_name">jshop_pushka_statusshow_l_name</option> 
+				<option value="m_name">jshop_pushka_statusshow_m_name</option> 
+				<option value="firma_name">jshop_pushka_statusshow_firma_name</option> 
+				<option value="client_type">jshop_pushka_statusshow_client_type</option> 
+				<option value="client_type_name">jshop_pushka_statusshow_client_type_name</option> 
+				<option value="firma_code">jshop_pushka_statusshow_firma_code</option> 
+				<option value="email">jshop_pushka_statusshow_email</option> 
+				<option value="phone">jshop_pushka_statusshow_phone</option> 
+				<option value="mobil_phone">jshop_pushka_statusshow_mobil_phone</option>
+				<option value="birthday">jshop_pushka_statusshow_birthday</option> 
+				<option value="street">jshop_pushka_statusshow_street</option> 
+				<option value="street_nr">jshop_pushka_statusshow_street_nr</option> 
+				<option value="home">jshop_pushka_statusshow_home</option> 
+				<option value="apartment">jshop_pushka_statusshow_apartment</option> 
+				<option value="zip">jshop_pushka_statusshow_zip</option> 
+				<option value="city">jshop_pushka_statusshow_city</option> 
+				<option value="state">jshop_pushka_statusshow_state</option> 
+				<option value="country">jshop_pushka_statusshow_country</option> 
+				<option value="comment">jshop_pushka_statusshow_comment</option> 
+				<option value="bonus">jshop_pushka_statusshow_bonus</option> 
+				<option value="address">jshop_pushka_statusshow_address</option> 
+				<option value="shiping_date">jshop_pushka_statusshow_shiping_date</option> 
+				<option value="shiping_time">jshop_pushka_statusshow_shiping_time</option> 
+				<option value="housing">jshop_pushka_statusshow_housing</option> 
+				<option value="porch">jshop_pushka_statusshow_porch</option> 
+				<option value="level">jshop_pushka_statusshow_level</option> 
+				<option value="intercom">jshop_pushka_statusshow_intercom</option>
+				<option value="metro">jshop_pushka_statusshow_metro</option> 
+				<option value="transport_name">jshop_pushka_statusshow_transport_name</option> 
+				<option value="transport_no">jshop_pushka_statusshow_transport_no</option> 
+				<option value="track_stop">jshop_pushka_statusshow_track_stop</option>
+			</field>
+			</fieldset>
+			
+
+			<fieldset name="advanced">
+				
+				
+
+				<field
+					type="spacer"
+					label="&lt;hr>"
+					description=""
+					hr="false" 
+				/>
+				<field
+					type="spacer"
+					label="&lt;hr>"
+					description=""
+					hr="false" 
+				/>
+				
+				
+				<field
+					name="cache"
+					type="radio"
+					label="COM_MODULES_FIELD_CACHING_LABEL"
+					default="1"
+					layout="joomla.form.field.radio.switcher"
+					filter="integer"
+					validate="options"
+					>
+					<option value="1">JGLOBAL_USE_GLOBAL</option>
+					<option value="0">COM_MODULES_FIELD_VALUE_NOCACHING</option>
+				</field>
+				<field
+					name="cache_time"
+					type="number"
+					label="COM_MODULES_FIELD_CACHE_TIME_LABEL"
+					default="900"
+					filter="integer"
+					min="1"
+					validate="number"
+				/>
+				<field
+					name="layout"
+					type="modulelayout"
+					label="JFIELD_ALT_LAYOUT_LABEL"
+					class="form-select"
+				/>
+
+				<field
+					name="moduleclass_sfx"
+					type="textarea"
+					label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+					rows="3"
+					validate="CssIdentifier"
+				/>
+
+				
+				
+				
+				
+				
+
+			</fieldset>
+		</fields>
+	</config>
+</extension>

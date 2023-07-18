@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <style>
+    #v {
+        width:100%;
+        height:240px;
+    }
+    #qr-canvas{
+        display:none;
+    }
+    </style>
+    <script type="text/javascript" src="js/qr.js"></script>
+    <script type="text/javascript" src="js/webqr.js"></script>
+  </head>
+
+  <body onload="load()">
+    <div id="main">
+      <button onclick="setwebcam()">scan with webcam</button>
+      
+      <div id="outdiv">
+          <video id="v"></video>
+      </div>
+      
+      <div id="result"></div>
+      
+      <canvas id="qr-canvas"></canvas>
+    
+    </div>
+  </body>
+
+  <script>
+
+  </script>
+</html>

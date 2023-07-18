@@ -1,0 +1,231 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 30 янв. 2023 г., 16:11:15
+    Author     : koren
+*/
+
+.module-wrapper:has(.mod-placebilet.placebilet){
+	max-width: 90vw;
+}
+.com_cpanel .content:has(.mod-placebilet.placebilet form.active){
+	margin-top: 10px;
+}
+.card-header:has(+.card-body  form.active){
+	display: none;
+}
+
+.card-body > .mod-placebilet.placebilet,
+.card-body:has(.mod-placebilet.placebilet){
+	overflow:visible
+}
+
+.mod-placebilet.placebilet{
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 10px;
+	grid-template-areas:
+        "controlsScan"
+        "controlsAjax";
+}
+.mod-placebilet.placebilet > form{
+	grid-area: controlsScan;
+}
+.mod-placebilet.placebilet > message{
+	grid-area: controlsScan;
+	background-color: lightgray;
+    position: relative;
+    z-index: 4;
+	z-index: 2;
+	border-radius: 10px;
+	border: 1px solid graytext;
+	cursor: pointer;
+}
+.mod-placebilet.placebilet > message h3{
+	text-align: center;
+	font-size: x-large;
+	color: var(--template-bg-dark-60);
+    text-shadow: 0px 1px 1px black, 0px -2px 2px white;
+}
+.mod-placebilet.placebilet > message .place_name_info{
+	font-size: large;
+	font-size: medium;
+    text-shadow: 0px 1px 1px grey, 0px -1px 1px white;
+}
+.mod-placebilet.placebilet > message h4{
+	text-align: center;
+}
+.mod-placebilet.placebilet > message div{
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	font-size: smaller;
+	margin-block-start: 5px;
+	margin-inline-start: 5px;
+}
+.mod-placebilet.placebilet > message .date{
+	color: blue;
+	font-size: larger;
+	    font-size: small;
+    display: none;
+}
+.mod-placebilet.placebilet > message .datetime{
+	font-size: x-large;
+    display: block;
+    color: blue;
+	text-shadow: 0px 0px 4px white, 0px 0px 4px white, 0px 0px 4px white, 0px 0px 4px white, 0px 0px 4px white, 0px 0px 4px white, 0px 0px 4px white,
+		0px 0px 8px black, 0px 0px 8px black, 0px 0px 8px transparent, 0px 0px 8px black, 0px 0px 8px transparent;
+}
+.mod-placebilet.placebilet > message .product{
+	border: 1px solid gray;
+    display: block;
+    border-radius: 5px;
+    /*margin: revert;*/ 
+    margin-left: 5px;
+    margin-right: 5px;
+	
+	box-shadow: 0px 2px 5px grey;
+}
+.mod-placebilet.placebilet > message .statusBilet > .status_name{ 
+    border-radius: 5px;
+    box-shadow: 0 3px 5px grey;
+    display: block;
+    margin: 5px;
+	border: 1px solid gray;
+	text-shadow: -1px 1px #0008, 1px 1px #0008, 0px -1px #fff8;
+}
+.mod-placebilet.placebilet > message .statusBilet.P > .status_name{ 
+	/*В ожидании Pending Active*/
+	background-color: green;
+    color: white;
+}
+.mod-placebilet.placebilet > message .statusBilet.C > .status_name{
+	/*Подтверждён Confirmed*/
+	
+}
+.mod-placebilet.placebilet > message .statusBilet.X > .status_name{
+	/*Отменён Canceled Cancel*/
+	background-color: gray;
+    color: white;
+}
+.mod-placebilet.placebilet > message .statusBilet.R > .status_name{
+	/*Возмещён Refunded Refund*/
+	background-color: yellow;
+    color: black;
+}
+.mod-placebilet.placebilet > message .statusBilet.S > .status_name{
+	/*Отправлен Shipped */
+}
+.mod-placebilet.placebilet > message .statusBilet.O > .status_name{
+	/*Оплачен Paid*/
+}
+.mod-placebilet.placebilet > message .statusBilet.F > .status_name{
+	/*Завершён Complete - Visit*/
+	background-color: blue;
+    color: white;
+}
+
+.mod-placebilet.placebilet > message .count_places{
+}
+.mod-placebilet.placebilet > message .place_price{
+}
+.mod-placebilet.placebilet > message .date_event_info{
+	/*display: none;*/
+}
+.mod-placebilet.placebilet > div.action{
+	grid-area: controlsAjax;
+}
+.mod-placebilet.placebilet .controls{
+	display: flex;
+	gap: 10px;
+    justify-content: space-between;
+	margin-bottom: 8px;
+}
+.mod-placebilet.placebilet .controls.camera{
+	display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.mod-placebilet.placebilet .controls.action{
+	flex-wrap: wrap;
+}
+.mod-placebilet.placebilet .button-visit{
+	/*width: 50%;*/
+	flex: 1 auto;
+}
+.mod-placebilet.placebilet .button-refund {
+	
+}
+.mod-placebilet.placebilet .button-cancel{
+	
+}
+
+.mod-placebilet.placebilet .btn{
+	text-shadow: 0 0 5px black;
+	transition: 0.5s;
+	z-index: 1;
+}
+.mod-placebilet.placebilet .action .btn{
+	box-shadow: 0 0 0 0.25rem rgb(54 78 109 / 0%);
+	/*transform: scale(1.05);*/
+}
+.mod-placebilet.placebilet .action .btn:hover{
+	box-shadow: 0 0 0 0.25rem rgb(54 78 109 / 50%);
+	/*transform: scale(1.05);*/
+}
+.mod-placebilet.placebilet .controls.camera .btn{
+	text-shadow: none;
+}
+.mod-placebilet.placebilet .video{
+	width: 100%;
+	max-height: 40vh;
+	max-height: calc(100vh - 250px);
+	max-height: calc(100vh - 320px);
+	max-height: calc(100svh - 320px);
+	
+	min-height: calc(100px);
+}
+
+.mod-placebilet.placebilet .fa{
+	text-shadow: none;
+}
+.mod-placebilet.placebilet .input-group-text .fa,
+.mod-placebilet.placebilet .input-group-text.fa,
+.mod-placebilet.placebilet label .fa,
+.mod-placebilet.placebilet label.fa{
+	color: white;
+}
+.mod-placebilet.placebilet .video{
+	border: 1px solid gray;
+	border-radius: 4px;
+}
+.qrcode-text-btn {
+    background: url(qr_icon.svg) 50% 50% no-repeat;
+	background-size: 60%;
+    cursor: pointer;
+}
+ 
+.mod-placebilet.placebilet form{
+	display: grid;
+	gap: 10px;
+	align-content: start;
+}
+
+/*
+js13.03798261282
+js13.1435031300
+js13.22924690169
+js14.1444440871
+*/
+
+.statusPushka + div{
+	background-image: url(Pushkin_Small_color.webp);
+	background-position-x: right;
+	background-position-y: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	border-end-end-radius: 10px;
+}
+
+
+ 
