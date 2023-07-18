@@ -7,8 +7,8 @@
 	<creationDate>2018-06-01</creationDate>
 	<modificationDate>2023-07-18</modificationDate>
 	<copyright>Copyright (C) Explorer-Office</copyright>
-	<authorEmail>info@explorer-office.ru</authorEmail>
-	<authorUrl>//explorer-office.ru/download</authorUrl>
+	<authorEmail>korenevskiys@ya.ru</authorEmail>
+	<authorUrl>http://explorer-office.ru/download</authorUrl>
 	<version>4.0.0</version>
 	<description>&lt;span  class="badge badge-info" &gt;[[%1:]]:[[%2:]] / [[%3:]]:[[%4:]]&lt;/span&gt;&lt;br>[[%5:]]&lt;br>[[%6:]][[%7:]],JVERSION,
 		4.0.0,JDate,2023-07-18,JSHOP_PLACE_BILET_INFO_D,JSHOP_PLACE_BILET_DEMO,JSHOP_PLACE_BILET_DESCRIPTION</description>

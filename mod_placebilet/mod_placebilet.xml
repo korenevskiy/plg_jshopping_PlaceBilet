@@ -4,15 +4,19 @@
 	<author>Joomla! Project</author>
 	<creationDate>2023-07-18</creationDate>
 	<modificationDate>2023-07-18</modificationDate>
-	<copyright>(C) 2005 Open Source Matters, Inc.</copyright>
-	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<authorEmail>admin@joomla.org</authorEmail>
-	<authorUrl>www.joomla.org</authorUrl>
+	<copyright>Copyright (C) Explorer-Office</copyright>
+	<license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<authorEmail>korenevskiys@ya.ru</authorEmail>
+	<authorUrl>http://explorer-office.ru/download</authorUrl>
 	<version>4.0.0</version>
 	<description>MOD_PLACEBILET_XML_DESCRIPTION</description>
 
 	<!--<customContent />-->
 
+	<updateservers>
+		<server type="extension" priority="1" name="&lt;b&gt;&quot;Bilet Movie-Theater&quot; tickets PRO&lt;/b&gt;">https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_placebilet_update.xml</server>
+		<server type="extension" priority="1" name="&lt;b&gt;&quot;Bilet Movie-Theater&quot; tickets PRO&lt;/b&gt;">http://explorer-office.ru/files/mod_placebilet_update.xml</server>
+	</updateservers>     
 	<files>
 		<filename module="mod_placebilet">mod_placebilet.php</filename>
 		<filename>helper.php</filename>
