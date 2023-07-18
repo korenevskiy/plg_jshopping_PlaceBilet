@@ -1,9 +1,10 @@
 # plg_jshopping_PlaceBilet Free
 # "Bilet Movie-Theater" tickets - Plugin sales tickets and bilets for cinemas and theaters for JoomShopping Plugin for JoomShopping-Joomla ticket sales for cinemas, theaters, circuses, museums. parties, courses, lessons, trainings, couching.
 
-Link for online installation Plugin:
+Link for online installation Plugin and Module:
 
-[https://korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets4.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets4.zip)
+[https://korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_4.0.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_4.0.zip)
+[https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_4.0.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_4.0.zip)
 
 Link for online installation Component:
 
