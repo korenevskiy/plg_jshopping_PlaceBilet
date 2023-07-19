@@ -68,7 +68,7 @@ class plgjshoppingPlaceBiletInstallerScript{//PlgjshoppingPlaceBiletInstallerScr
 		 $this->InstallerAdapter = $adapter;
 			$lang = JFactory::getLanguage()->getTag(); 
 			$lang = substr($lang,0,2);// reset(explode ('-', $lang));
-			$this->isRU = in_array($lang, ['ru','uk','be','kz','by','ab','be','be']);  
+			$this->isRU = in_array($lang, ['ru','uk','be','kz','by','ab','be','be']);
 	 }
     
 	 private $isRU = false;
@@ -86,12 +86,13 @@ class plgjshoppingPlaceBiletInstallerScript{//PlgjshoppingPlaceBiletInstallerScr
 //		JFactory::getApplication()->enqueueMessage("<pre>".$query."</pre>"); //->dump()
 //		JFactory::getApplication()->enqueueMessage("<pre>".print_r($existJshopping,true)."</pre>");
 //		JFactory::getApplication()->enqueueMessage("<pre>".($existJshopping?'Yes':'No')."</pre>");
-		
-		
+
 		if($existJshopping)
 			return TRUE;
 		
-// JFactory::getApplication()->enqueueMessage("<pre>$query ". print_r($existJshopping, true)."</pre> ". gettype($existJshopping).' '. strlen($existJshopping).' PreFlightInstaller');
+
+// JFactory::getApplication()->enqueueMessage("<pre>$query ". print_r($existJshopping, true)."</pre> ". gettype($existJshopping).' '. strlen($existJshopping).' PreFlightInstaller');		
+		
 		
 		$message = JText::_('JSHOP_PLACE_BILET_EXIST_JSHOPPING_INFO');
 			
@@ -158,9 +159,11 @@ class plgjshoppingPlaceBiletInstallerScript{//PlgjshoppingPlaceBiletInstallerScr
 //			$all_columns[$tbl] = array_column($columns, 'Field');
 			$all_columns[$tbl] = JFactory::getDbo()->setQuery($query)->loadAssocList('Field', 'Type');
 		}
+//JFactory::getApplication()->enqueueMessage('Show Columns: '. count($all_columns) . '<pre>' . print_r($all_columns, true) . '</pre>');
 		
 		
-$debugs_columns = JFactory::getDbo()->setQuery('SHOW COLUMNS FROM #__jshopping_orders;')->loadAssocList('Field', 'Type');
+//JFactory::getApplication()->enqueueMessage( count($debugs_columns) . '<pre>' . print_r($debugs_columns, true) . '</pre>');
+//$debugs_columns = JFactory::getDbo()->setQuery('SHOW COLUMNS FROM #__jshopping_orders;')->loadAssocList('Field', 'Type');
 //JFactory::getApplication()->enqueueMessage( count($debugs_columns) . '<pre>' . print_r($debugs_columns, true) . '</pre>');
 //		return;
 //JFactory::getApplication()->enqueueMessage(JVersion::MAJOR_VERSION );
@@ -188,17 +191,19 @@ $debugs_columns = JFactory::getDbo()->setQuery('SHOW COLUMNS FROM #__jshopping_o
 			$cols = [];
 				
 			foreach ($columns as $column => $query){
+				// Модифицирование существующих колонок
 				if(isset($all_columns[$tbl][$column]) && isset($this->queries_tbl_mods[$tbl][$column]) ){
-					
+//JFactory::getApplication()->enqueueMessage("Exist: ".str_replace('#__', $prefix, $query));
 					$queries[] = $this->queries_tbl_mods[$tbl][$column] ;
 					$cols[] = $column;
 				}
-			}
-			foreach ($columns as $column => $query){
 				
+				// Добавление не существующих колонок
 				if(empty($all_columns[$tbl][$column])){
 					$queries[] = $query;
 					$cols[] = $column;
+//JFactory::getApplication()->enqueueMessage("Add!: ".str_replace('#__', $prefix, $query));
+//JFactory::getApplication()->enqueueMessage("--------- [$tbl][$column]". '<pre>' . (isset($all_columns[$tbl][$column])?print_r($all_columns[$tbl][$column], true):'-/NoExist/-.') . '</pre>');
 				}
 			}
 			
@@ -212,7 +217,7 @@ $debugs_columns = JFactory::getDbo()->setQuery('SHOW COLUMNS FROM #__jshopping_o
 		
 //return;
 		foreach ($queries as $query){
-//JFactory::getApplication()->enqueueMessage(str_replace('#__', $prefix, $query));
+//JFactory::getApplication()->enqueueMessage('Query:'.str_replace('#__', $prefix, $query));
 			JFactory::getDbo()->setQuery($query)->execute();
 		}
         
@@ -278,7 +283,7 @@ $debugs_columns = JFactory::getDbo()->setQuery('SHOW COLUMNS FROM #__jshopping_o
 //                SET us.location = REPLACE(us.location, 'PlaceBilet_update.', 'PlaceBilet_update_prox.') 
 //                WHERE e.element = 'PlaceBilet' AND se.extension_id = e.extension_id AND se.update_site_id = us.update_site_id; ";
 //        JFactory::getDbo()->setQuery($query)->execute();
-			
+
 		
 //		JFactory::getApplication()->enqueueMessage('Ok 0');
 		
@@ -288,17 +293,24 @@ $debugs_columns = JFactory::getDbo()->setQuery('SHOW COLUMNS FROM #__jshopping_o
 		
 		$this->install($parent, false);
 //		return TRUE;
+		
+		
+		static::moveControllers();
+		
 
-$debugs_columns = JFactory::getDbo()->setQuery('SHOW COLUMNS FROM #__jshopping_orders;')->loadAssocList('Field', 'Type');
+		return TRUE;
+//$debugs_columns = JFactory::getDbo()->setQuery('SHOW COLUMNS FROM #__jshopping_orders;')->loadAssocList('Field', 'Type');
 //JFactory::getApplication()->enqueueMessage( count($debugs_columns) . '<pre>' . print_r($debugs_columns, true) . '</pre>');
 // <editor-fold defaultstate="expanded" desc="Модификация типов колонок">
 		$all_columns = [];
+		//       $this->queries_tbl_columns - Show Columns
 		foreach ($this->queries_tbl_columns as $tbl => $query) {
 //			if(JFactory::getConfig()->get('debug') || JFactory::getConfig()->get('error_reporting') == 'maximum')
 //				JFactory::getApplication()->enqueueMessage(str_replace('#__', $prefix, $query));
 			$columns = JFactory::getDbo()->setQuery($query)->loadObjectList('Field');
 			$all_columns[$tbl] = array_column($columns, 'Field');
 		}
+//JFactory::getApplication()->enqueueMessage( count($all_columns) . '<pre>' . print_r($all_columns, true) . '</pre>');
 
 		/* Список не существующих полей */
 		$cols = [];
@@ -353,7 +365,6 @@ $debugs_columns = JFactory::getDbo()->setQuery('SHOW COLUMNS FROM #__jshopping_o
 //		JFactory::getApplication()->enqueueMessage('Ok 2');
 		
 //static::toLog('ERROR ????????????????????????????????????? -- XXXXXXXXXXXXXXXXXXXX','','',TRUE);
-            static::moveControllers();
 //            $file = 'update.sql';
 //            static::executeScript($file); 
 //		echo '<p>' . JText::_('') . '</p>';
@@ -364,14 +375,8 @@ $debugs_columns = JFactory::getDbo()->setQuery('SHOW COLUMNS FROM #__jshopping_o
 //                SET us.location = REPLACE(us.location, 'PlaceBilet_update.', 'PlaceBilet_update_prox.') 
 //                WHERE e.element = 'PlaceBilet' AND se.extension_id = e.extension_id AND se.update_site_id = us.update_site_id; ";
 //            JFactory::getDbo()->setQuery($query)->execute();
-		// 	/* ---------------------------------------------- Этот запрос ↓↓↓ для PRO Версии. ------------------------------------- */
-            $query = "
-                UPDATE #__extensions e SET e.params= REPLACE(e.params, '3772199444', '4245918837') 
-				WHERE e.element = 'placebilet'; ";
-            JFactory::getDbo()->setQuery($query)->execute();
  
 //		JFactory::getApplication()->enqueueMessage('Ok 4');
-            return TRUE;
 	}
  
 //	/**
@@ -552,34 +557,34 @@ $debugs_columns = JFactory::getDbo()->setQuery('SHOW COLUMNS FROM #__jshopping_o
 				'FIO'			=>'ALTER TABLE #__jshopping_users ADD FIO TINYTEXT NOT NULL  DEFAULT ""; ',
 				'd_FIO'			=>'ALTER TABLE #__jshopping_users ADD d_FIO TINYTEXT NOT NULL  DEFAULT ""; ',
 			
-				'comment'		=>'ALTER TABLE #__jshopping_orders ADD `comment` TINYTEXT NOT NULL ; ',
-				'd_comment'		=>'ALTER TABLE #__jshopping_orders ADD d_comment TINYTEXT NOT NULL ; ',
+				'comment'		=>'ALTER TABLE #__jshopping_users ADD `comment` TINYTEXT NOT NULL  DEFAULT ""; ',
+				'd_comment'		=>'ALTER TABLE #__jshopping_users ADD `d_comment` TINYTEXT NOT NULL  DEFAULT ""; ',
 
-				'bonus'			=> 'ALTER TABLE #__jshopping_orders ADD bonus TINYTEXT NOT NULL ;  ',
-				'address'		=> 'ALTER TABLE #__jshopping_orders ADD address TINYTEXT NOT NULL ;  ',
-				'd_address'		=> 'ALTER TABLE #__jshopping_orders ADD d_address TINYTEXT NOT NULL ;  ',
+				'bonus'			=> 'ALTER TABLE #__jshopping_users ADD bonus TINYTEXT NOT NULL  DEFAULT "";  ',
+				'address'		=> 'ALTER TABLE #__jshopping_users ADD address TINYTEXT NOT NULL  DEFAULT "";  ',
+				'd_address'		=> 'ALTER TABLE #__jshopping_users ADD d_address TINYTEXT NOT NULL  DEFAULT "";  ',
 
-				'shiping_date'	=> 'ALTER TABLE #__jshopping_orders ADD shiping_date TINYTEXT NOT NULL ;  ',
-				'd_shiping_date'=> 'ALTER TABLE #__jshopping_orders ADD d_shiping_date TINYTEXT NOT NULL ;  ',
-				'shiping_time'	=> 'ALTER TABLE #__jshopping_orders ADD shiping_time TINYTEXT NOT NULL ;  ',
-				'd_shiping_time'=> 'ALTER TABLE #__jshopping_orders ADD d_shiping_time TINYTEXT NOT NULL ;  ',
+				'shiping_date'	=> 'ALTER TABLE #__jshopping_users ADD shiping_date TINYTEXT NOT NULL  DEFAULT "";  ',
+				'd_shiping_date'=> 'ALTER TABLE #__jshopping_users ADD d_shiping_date TINYTEXT NOT NULL  DEFAULT "";  ',
+				'shiping_time'	=> 'ALTER TABLE #__jshopping_users ADD shiping_time TINYTEXT NOT NULL  DEFAULT "";  ',
+				'd_shiping_time'=> 'ALTER TABLE #__jshopping_users ADD d_shiping_time TINYTEXT NOT NULL  DEFAULT "";  ',
 
-				'housing'		=> 'ALTER TABLE #__jshopping_orders ADD housing TINYTEXT NOT NULL ;  ',
-				'd_housing'		=> 'ALTER TABLE #__jshopping_orders ADD d_housing TINYTEXT NOT NULL ;  ',
-				'porch'			=> 'ALTER TABLE #__jshopping_orders ADD porch TINYTEXT NOT NULL ;  ',
-				'd_porch'		=> 'ALTER TABLE #__jshopping_orders ADD d_porch TINYTEXT NOT NULL ;  ',
-				'level'			=> 'ALTER TABLE #__jshopping_orders ADD level TINYTEXT NOT NULL ;  ',
-				'd_level'		=> 'ALTER TABLE #__jshopping_orders ADD d_level TINYTEXT NOT NULL ;  ',
-				'intercom'		=> 'ALTER TABLE #__jshopping_orders ADD intercom TINYTEXT NOT NULL ;  ',
-				'd_intercom'	=> 'ALTER TABLE #__jshopping_orders ADD d_intercom TINYTEXT NOT NULL ;  ',
-				'metro'			=> 'ALTER TABLE #__jshopping_orders ADD metro TINYTEXT NOT NULL ;  ',
-				'd_metro'		=> 'ALTER TABLE #__jshopping_orders ADD d_metro TINYTEXT NOT NULL ;  ',
-				'transport_name'=> 'ALTER TABLE #__jshopping_orders ADD transport_name TINYTEXT NOT NULL ;  ',
-				'd_transport_name'=>'ALTER TABLE #__jshopping_orders ADD d_transport_name TINYTEXT NOT NULL ;  ',
-				'transport_no'	=> 'ALTER TABLE #__jshopping_orders ADD transport_no TINYTEXT NOT NULL ;  ',
-				'd_transport_no'=> 'ALTER TABLE #__jshopping_orders ADD d_transport_no TINYTEXT NOT NULL ;  ',
-				'track_stop'	=> 'ALTER TABLE #__jshopping_orders ADD track_stop TINYTEXT NOT NULL ;  ',
-				'd_track_stop'	=> 'ALTER TABLE #__jshopping_orders ADD d_track_stop TINYTEXT NOT NULL ;  ',
+				'housing'		=> 'ALTER TABLE #__jshopping_users ADD housing TINYTEXT NOT NULL  DEFAULT "";  ',
+				'd_housing'		=> 'ALTER TABLE #__jshopping_users ADD d_housing TINYTEXT NOT NULL  DEFAULT "";  ',
+				'porch'			=> 'ALTER TABLE #__jshopping_users ADD porch TINYTEXT NOT NULL  DEFAULT "";  ',
+				'd_porch'		=> 'ALTER TABLE #__jshopping_users ADD d_porch TINYTEXT NOT NULL  DEFAULT "";  ',
+				'level'			=> 'ALTER TABLE #__jshopping_users ADD level TINYTEXT NOT NULL  DEFAULT "";  ',
+				'd_level'		=> 'ALTER TABLE #__jshopping_users ADD d_level TINYTEXT NOT NULL  DEFAULT "";  ',
+				'intercom'		=> 'ALTER TABLE #__jshopping_users ADD intercom TINYTEXT NOT NULL  DEFAULT "";  ',
+				'd_intercom'	=> 'ALTER TABLE #__jshopping_users ADD d_intercom TINYTEXT NOT NULL  DEFAULT "";  ',
+				'metro'			=> 'ALTER TABLE #__jshopping_users ADD metro TINYTEXT NOT NULL  DEFAULT "";  ',
+				'd_metro'		=> 'ALTER TABLE #__jshopping_users ADD d_metro TINYTEXT NOT NULL  DEFAULT "";  ',
+				'transport_name'=> 'ALTER TABLE #__jshopping_users ADD transport_name TINYTEXT NOT NULL  DEFAULT "";  ',
+				'd_transport_name'=>'ALTER TABLE #__jshopping_users ADD d_transport_name TINYTEXT NOT NULL  DEFAULT "";  ',
+				'transport_no'	=> 'ALTER TABLE #__jshopping_users ADD transport_no TINYTEXT NOT NULL  DEFAULT "";  ',
+				'd_transport_no'=> 'ALTER TABLE #__jshopping_users ADD d_transport_no TINYTEXT NOT NULL  DEFAULT "";  ',
+				'track_stop'	=> 'ALTER TABLE #__jshopping_users ADD track_stop TINYTEXT NOT NULL  DEFAULT "";  ',
+				'd_track_stop'	=> 'ALTER TABLE #__jshopping_users ADD d_track_stop TINYTEXT NOT NULL  DEFAULT "";  ',
 			],
 		
 			'orders' => [
@@ -664,70 +669,70 @@ $debugs_columns = JFactory::getDbo()->setQuery('SHOW COLUMNS FROM #__jshopping_o
 	
 	private $queries_tbl_mods = [
 		'users' => [
-			'FIO'			=>'ALTER TABLE #__jshopping_users ADD FIO TINYTEXT NOT NULL  DEFAULT ""; ',
-			'd_FIO'			=>'ALTER TABLE #__jshopping_users ADD d_FIO TINYTEXT NOT NULL  DEFAULT ""; ',
-			
-				'comment'		=>'ALTER TABLE #__jshopping_orders MODIFY `comment` TINYTEXT NOT NULL ; ',
-				'd_comment'		=>'ALTER TABLE #__jshopping_orders MODIFY d_comment TINYTEXT NOT NULL ; ',
-
-				'bonus'			=> 'ALTER TABLE #__jshopping_orders MODIFY bonus TINYTEXT NOT NULL ;  ',
-				'address'		=> 'ALTER TABLE #__jshopping_orders MODIFY address TINYTEXT NOT NULL ;  ',
-				'd_address'		=> 'ALTER TABLE #__jshopping_orders MODIFY d_address TINYTEXT NOT NULL ;  ',
-
-				'shiping_date'	=> 'ALTER TABLE #__jshopping_orders MODIFY shiping_date TINYTEXT NOT NULL ;  ',
-				'd_shiping_date'=> 'ALTER TABLE #__jshopping_orders MODIFY d_shiping_date TINYTEXT NOT NULL ;  ',
-				'shiping_time'	=> 'ALTER TABLE #__jshopping_orders MODIFY shiping_time TINYTEXT NOT NULL ;  ',
-				'd_shiping_time'=> 'ALTER TABLE #__jshopping_orders MODIFY d_shiping_time TINYTEXT NOT NULL ;  ',
-
-				'housing'		=> 'ALTER TABLE #__jshopping_orders MODIFY housing TINYTEXT NOT NULL ;  ',
-				'd_housing'		=> 'ALTER TABLE #__jshopping_orders MODIFY d_housing TINYTEXT NOT NULL ;  ',
-				'porch'			=> 'ALTER TABLE #__jshopping_orders MODIFY porch TINYTEXT NOT NULL ;  ',
-				'd_porch'		=> 'ALTER TABLE #__jshopping_orders MODIFY d_porch TINYTEXT NOT NULL ;  ',
-				'level'			=> 'ALTER TABLE #__jshopping_orders MODIFY level TINYTEXT NOT NULL ;  ',
-				'd_level'		=> 'ALTER TABLE #__jshopping_orders MODIFY d_level TINYTEXT NOT NULL ;  ',
-				'intercom'		=> 'ALTER TABLE #__jshopping_orders MODIFY intercom TINYTEXT NOT NULL ;  ',
-				'd_intercom'	=> 'ALTER TABLE #__jshopping_orders MODIFY d_intercom TINYTEXT NOT NULL ;  ',
-				'metro'			=> 'ALTER TABLE #__jshopping_orders MODIFY metro TINYTEXT NOT NULL ;  ',
-				'd_metro'		=> 'ALTER TABLE #__jshopping_orders MODIFY d_metro TINYTEXT NOT NULL ;  ',
-				'transport_name'=> 'ALTER TABLE #__jshopping_orders MODIFY transport_name TINYTEXT NOT NULL ;  ',
-				'd_transport_name'=>'ALTER TABLE #__jshopping_orders MODIFY d_transport_name TINYTEXT NOT NULL ;  ',
-				'transport_no'	=> 'ALTER TABLE #__jshopping_orders MODIFY transport_no TINYTEXT NOT NULL ;  ',
-				'd_transport_no'=> 'ALTER TABLE #__jshopping_orders MODIFY d_transport_no TINYTEXT NOT NULL ;  ',
-				'track_stop'	=> 'ALTER TABLE #__jshopping_orders MODIFY track_stop TINYTEXT NOT NULL ;  ',
-				'd_track_stop'	=> 'ALTER TABLE #__jshopping_orders MODIFY d_track_stop TINYTEXT NOT NULL ;  ',
-		],
+//			'FIO'			=>'ALTER TABLE #__jshopping_users MODIFY FIO TINYTEXT NOT NULL  DEFAULT ""; ',
+//			'd_FIO'			=>'ALTER TABLE #__jshopping_users MODIFY d_FIO TINYTEXT NOT NULL  DEFAULT ""; ',
+//			
+			'comment'		=>'ALTER TABLE #__jshopping_users MODIFY `comment` TINYTEXT NOT NULL  DEFAULT ""; ',
+			'd_comment'		=>'ALTER TABLE #__jshopping_users MODIFY d_comment TINYTEXT NOT NULL  DEFAULT ""; ',
+//
+//			'bonus'			=> 'ALTER TABLE #__jshopping_users MODIFY bonus TINYTEXT NOT NULL ;  ',
+//			'address'		=> 'ALTER TABLE #__jshopping_users MODIFY address TINYTEXT NOT NULL ;  ',
+//			'd_address'		=> 'ALTER TABLE #__jshopping_users MODIFY d_address TINYTEXT NOT NULL ;  ',
+//
+//			'shiping_date'	=> 'ALTER TABLE #__jshopping_users MODIFY shiping_date TINYTEXT NOT NULL ;  ',
+//			'd_shiping_date'=> 'ALTER TABLE #__jshopping_users MODIFY d_shiping_date TINYTEXT NOT NULL ;  ',
+//			'shiping_time'	=> 'ALTER TABLE #__jshopping_users MODIFY shiping_time TINYTEXT NOT NULL ;  ',
+//			'd_shiping_time'=> 'ALTER TABLE #__jshopping_users MODIFY d_shiping_time TINYTEXT NOT NULL ;  ',
+//
+//			'housing'		=> 'ALTER TABLE #__jshopping_users MODIFY housing TINYTEXT NOT NULL ;  ',
+//			'd_housing'		=> 'ALTER TABLE #__jshopping_users MODIFY d_housing TINYTEXT NOT NULL ;  ',
+//			'porch'			=> 'ALTER TABLE #__jshopping_users MODIFY porch TINYTEXT NOT NULL ;  ',
+//			'd_porch'		=> 'ALTER TABLE #__jshopping_users MODIFY d_porch TINYTEXT NOT NULL ;  ',
+//			'level'			=> 'ALTER TABLE #__jshopping_users MODIFY level TINYTEXT NOT NULL ;  ',
+//			'd_level'		=> 'ALTER TABLE #__jshopping_users MODIFY d_level TINYTEXT NOT NULL ;  ',
+//			'intercom'		=> 'ALTER TABLE #__jshopping_users MODIFY intercom TINYTEXT NOT NULL ;  ',
+//			'd_intercom'	=> 'ALTER TABLE #__jshopping_users MODIFY d_intercom TINYTEXT NOT NULL ;  ',
+//			'metro'			=> 'ALTER TABLE #__jshopping_users MODIFY metro TINYTEXT NOT NULL ;  ',
+//			'd_metro'		=> 'ALTER TABLE #__jshopping_users MODIFY d_metro TINYTEXT NOT NULL ;  ',
+//			'transport_name'=> 'ALTER TABLE #__jshopping_users MODIFY transport_name TINYTEXT NOT NULL ;  ',
+//			'd_transport_name'=>'ALTER TABLE #__jshopping_users MODIFY d_transport_name TINYTEXT NOT NULL ;  ',
+//			'transport_no'	=> 'ALTER TABLE #__jshopping_users MODIFY transport_no TINYTEXT NOT NULL ;  ',
+//			'd_transport_no'=> 'ALTER TABLE #__jshopping_users MODIFY d_transport_no TINYTEXT NOT NULL ;  ',
+//			'track_stop'	=> 'ALTER TABLE #__jshopping_users MODIFY track_stop TINYTEXT NOT NULL ;  ',
+//			'd_track_stop'	=> 'ALTER TABLE #__jshopping_users MODIFY d_track_stop TINYTEXT NOT NULL ;  ',
+			],
 		'orders' => [			
-			'comment'		=>'ALTER TABLE #__jshopping_orders MODIFY `comment` TINYTEXT NOT NULL ; ',
-			'd_comment'		=>'ALTER TABLE #__jshopping_orders MODIFY d_comment TINYTEXT NOT NULL ; ',
-			
-			'bonus'			=> 'ALTER TABLE #__jshopping_orders MODIFY bonus TINYTEXT NOT NULL ;  ',
-			'address'		=> 'ALTER TABLE #__jshopping_orders MODIFY address TINYTEXT NOT NULL ;  ',
-			'd_address'		=> 'ALTER TABLE #__jshopping_orders MODIFY d_address TINYTEXT NOT NULL ;  ',
-			
-			'FIO'			=> 'ALTER TABLE #__jshopping_orders MODIFY FIO TINYTEXT NOT NULL ;  ',
-			'd_FIO'			=> 'ALTER TABLE #__jshopping_orders MODIFY d_FIO TINYTEXT NOT NULL ; ',
-			
-			'shiping_date'	=> 'ALTER TABLE #__jshopping_orders MODIFY shiping_date TINYTEXT NOT NULL ;  ',
-			'd_shiping_date'=> 'ALTER TABLE #__jshopping_orders MODIFY d_shiping_date TINYTEXT NOT NULL ;  ',
-			'shiping_time'	=> 'ALTER TABLE #__jshopping_orders MODIFY shiping_time TINYTEXT NOT NULL ;  ',
-			'd_shiping_time'=> 'ALTER TABLE #__jshopping_orders MODIFY d_shiping_time TINYTEXT NOT NULL ;  ',
-			
-			'housing'		=> 'ALTER TABLE #__jshopping_orders MODIFY housing TINYTEXT NOT NULL ;  ',
-			'd_housing'		=> 'ALTER TABLE #__jshopping_orders MODIFY d_housing TINYTEXT NOT NULL ;  ',
-			'porch'			=> 'ALTER TABLE #__jshopping_orders MODIFY porch TINYTEXT NOT NULL ;  ',
-			'd_porch'		=> 'ALTER TABLE #__jshopping_orders MODIFY d_porch TINYTEXT NOT NULL ;  ',
-			'level'			=> 'ALTER TABLE #__jshopping_orders MODIFY level TINYTEXT NOT NULL ;  ',
-			'd_level'		=> 'ALTER TABLE #__jshopping_orders MODIFY d_level TINYTEXT NOT NULL ;  ',
-			'intercom'		=> 'ALTER TABLE #__jshopping_orders MODIFY intercom TINYTEXT NOT NULL ;  ',
-			'd_intercom'	=> 'ALTER TABLE #__jshopping_orders MODIFY d_intercom TINYTEXT NOT NULL ;  ',
-			'metro'			=> 'ALTER TABLE #__jshopping_orders MODIFY metro TINYTEXT NOT NULL ;  ',
-			'd_metro'		=> 'ALTER TABLE #__jshopping_orders MODIFY d_metro TINYTEXT NOT NULL ;  ',
-			'transport_name'=> 'ALTER TABLE #__jshopping_orders MODIFY transport_name TINYTEXT NOT NULL ;  ',
-			'd_transport_name'=>'ALTER TABLE #__jshopping_orders MODIFY d_transport_name TINYTEXT NOT NULL ;  ',
-			'transport_no'	=> 'ALTER TABLE #__jshopping_orders MODIFY transport_no TINYTEXT NOT NULL ;  ',
-			'd_transport_no'=> 'ALTER TABLE #__jshopping_orders MODIFY d_transport_no TINYTEXT NOT NULL ;  ',
-			'track_stop'	=> 'ALTER TABLE #__jshopping_orders MODIFY track_stop TINYTEXT NOT NULL ;  ',
-			'd_track_stop'	=> 'ALTER TABLE #__jshopping_orders MODIFY d_track_stop TINYTEXT NOT NULL ;  ',
-			]
+			'comment'		=>'ALTER TABLE #__jshopping_orders MODIFY `comment` TINYTEXT NOT NULL  DEFAULT ""; ',
+			'd_comment'		=>'ALTER TABLE #__jshopping_orders MODIFY d_comment TINYTEXT NOT NULL  DEFAULT ""; ',
+//			
+//			'bonus'			=> 'ALTER TABLE #__jshopping_orders MODIFY bonus TINYTEXT NOT NULL ;  ',
+//			'address'		=> 'ALTER TABLE #__jshopping_orders MODIFY address TINYTEXT NOT NULL ;  ',
+//			'd_address'		=> 'ALTER TABLE #__jshopping_orders MODIFY d_address TINYTEXT NOT NULL ;  ',
+//			
+//			'FIO'			=> 'ALTER TABLE #__jshopping_orders MODIFY FIO TINYTEXT NOT NULL ;  ',
+//			'd_FIO'			=> 'ALTER TABLE #__jshopping_orders MODIFY d_FIO TINYTEXT NOT NULL ; ',
+//			
+//			'shiping_date'	=> 'ALTER TABLE #__jshopping_orders MODIFY shiping_date TINYTEXT NOT NULL ;  ',
+//			'd_shiping_date'=> 'ALTER TABLE #__jshopping_orders MODIFY d_shiping_date TINYTEXT NOT NULL ;  ',
+//			'shiping_time'	=> 'ALTER TABLE #__jshopping_orders MODIFY shiping_time TINYTEXT NOT NULL ;  ',
+//			'd_shiping_time'=> 'ALTER TABLE #__jshopping_orders MODIFY d_shiping_time TINYTEXT NOT NULL ;  ',
+//			
+//			'housing'		=> 'ALTER TABLE #__jshopping_orders MODIFY housing TINYTEXT NOT NULL ;  ',
+//			'd_housing'		=> 'ALTER TABLE #__jshopping_orders MODIFY d_housing TINYTEXT NOT NULL ;  ',
+//			'porch'			=> 'ALTER TABLE #__jshopping_orders MODIFY porch TINYTEXT NOT NULL ;  ',
+//			'd_porch'		=> 'ALTER TABLE #__jshopping_orders MODIFY d_porch TINYTEXT NOT NULL ;  ',
+//			'level'			=> 'ALTER TABLE #__jshopping_orders MODIFY level TINYTEXT NOT NULL ;  ',
+//			'd_level'		=> 'ALTER TABLE #__jshopping_orders MODIFY d_level TINYTEXT NOT NULL ;  ',
+//			'intercom'		=> 'ALTER TABLE #__jshopping_orders MODIFY intercom TINYTEXT NOT NULL ;  ',
+//			'd_intercom'	=> 'ALTER TABLE #__jshopping_orders MODIFY d_intercom TINYTEXT NOT NULL ;  ',
+//			'metro'			=> 'ALTER TABLE #__jshopping_orders MODIFY metro TINYTEXT NOT NULL ;  ',
+//			'd_metro'		=> 'ALTER TABLE #__jshopping_orders MODIFY d_metro TINYTEXT NOT NULL ;  ',
+//			'transport_name'=> 'ALTER TABLE #__jshopping_orders MODIFY transport_name TINYTEXT NOT NULL ;  ',
+//			'd_transport_name'=>'ALTER TABLE #__jshopping_orders MODIFY d_transport_name TINYTEXT NOT NULL ;  ',
+//			'transport_no'	=> 'ALTER TABLE #__jshopping_orders MODIFY transport_no TINYTEXT NOT NULL ;  ',
+//			'd_transport_no'=> 'ALTER TABLE #__jshopping_orders MODIFY d_transport_no TINYTEXT NOT NULL ;  ',
+//			'track_stop'	=> 'ALTER TABLE #__jshopping_orders MODIFY track_stop TINYTEXT NOT NULL ;  ',
+//			'd_track_stop'	=> 'ALTER TABLE #__jshopping_orders MODIFY d_track_stop TINYTEXT NOT NULL ;  ',
+			],
 		];
 }
