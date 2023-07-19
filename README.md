@@ -9,7 +9,7 @@ Module: [https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_t
 
 Link for online installation Component:
 
-[https://korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping_5.1.1.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping_5.1.1.zip)
+[https://korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping_5.2.0.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping_5.2.0.zip)
 
 Link for payment plugin SberBank.
 
