@@ -29,7 +29,7 @@ use Joomla\CMS\Factory as JFactory;
 //    $module->content = HTMLHelper::_('content.prepare', $module->content, '', 'mod_custom.content');
 //}
 
-// require_once JPATH_ROOT . '/functions.php';
+//require_once JPATH_ROOT . '/functions.php';
 
 
 //require_once '_src/Helper/PlacebiletHelper.php';
@@ -49,7 +49,7 @@ Helper::$param = $params->toObject();
 
 require ModuleHelper::getLayoutPath('mod_placebilet', $params->get('layout', 'default'));
 
- return;
+return;
 
 //$cacheparams = new \stdClass;
 //$cacheparams->cachemode = 'safeuri';

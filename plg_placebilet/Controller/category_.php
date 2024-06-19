@@ -61,7 +61,7 @@ class JshoppingControllerCategory_mod extends JshoppingControllerCategory{
 //        $user = JFactory::getUser();
 //        $jshopConfig = JSFactory::getConfig();
 //		$dispatcher = \JFactory::getApplication();        
-//        $category_id = PlaceBiletHelper::JRequest()->getInt('category_id');
+//        $category_id = PlaceBiletHelper::JInput()->getInt('category_id');
 //
 //		JSFactory::getModel('productShop', 'jshop')->storeEndPages();
 //

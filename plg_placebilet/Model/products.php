@@ -25,6 +25,10 @@ class JshoppingModelProducts_mod extends JshoppingModelProducts{
 ////        return $post;
 //    }
     
+	/*
+	 * Сохранение атрибутов Которые не относятся к билетам.
+	 * Атрибуты не относящиеся к плагину билетов
+	 */
     function saveAttributesPlace($product, $product_id, $post){
       
         $dispatcher = \JFactory::getApplication();

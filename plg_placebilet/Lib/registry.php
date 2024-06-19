@@ -40,13 +40,31 @@
 //use Joomla\DI\Container;
 //use Joomla\Registry\Registry;
 //use PHPMailer\PHPMailer\Exception as phpmailerException;
+ 
+
+//JLoader::register('JRegistry', 'Reg',true);
+
+if(empty(class_exists('Reg'))){
 /**
  * Joomla Platform Factory class.
  *
  * @since  1.7.0
  */
-class xRegistry extends Joomla\Registry\Registry
-{
+class Reg extends \Joomla\Registry\Registry{
+	
+	/**
+	 * Get a registry value.
+	 *
+	 * @param   string  $name     Registry path (e.g. joomla.content.showauthor)
+	 *
+	 * @return  mixed  Value of entry or null
+	 *
+	 * @since   1.0
+	 */
+	public function __get($nameProperty) {
+		return $this->get($nameProperty, null);
+	}
+	
 	/**
 	 * Set a registry value.
 	 *
@@ -57,26 +75,10 @@ class xRegistry extends Joomla\Registry\Registry
 	 *
 	 * @since   1.0
 	 */
-	public function __set($name = '', $value = null): void
-	{
-//		toPrint($value,'$value',0,'pre',true);
-		$this->set($name, $value);
+	public function __set($nameProperty, $value = null) {
+		$this->set($nameProperty, $value);
 	}
-
-	/**
-	 * Get a registry value.
-	 *
-	 * @param   string  $name     Registry path (e.g. joomla.content.showauthor)
-	 *
-	 * @return  mixed  Value of entry or null
-	 *
-	 * @since   1.0
-	 */
-	public function __get( $name) //$path, $default = null
-	{
-		return $this->get($name, null);
-	}
-
+	
 	/**
 	 * Check if a registry path exists.
 	 *
@@ -86,20 +88,41 @@ class xRegistry extends Joomla\Registry\Registry
 	 *
 	 * @since   1.0
 	 */
-	public function __isset(string $name): bool
-	{
-		return $this->exists($name);
+	public function __isset($nameProperty) {
+		return $this->exists($nameProperty);
 	}
-
+	
+	public function __unset(string $name): void
+	{
+		$this->remove($name);
+	}
+	
+	public function ArrayItem($nameProperty, $index = null, $value = null){
+		
+		if(!isset($this->data->$nameProperty))
+			$this->data->$nameProperty = [];
+		
+		
+		if($index === null && $value === null)
+			return $this->data->$nameProperty ?? [];
+		
+		$old = $this->data->$nameProperty[$index] ?? null;
+		
+		if($value === null)
+			return $old;
+		
+		if($index === '' || $index === null)
+			$this->data->$nameProperty[] = $value;
+		else
+			$this->data->$nameProperty[$index] = $value;
+		
+		return $old;
+	}
 	/** 
 	 * Delete a registry value 
 	 * @param   string  $name  Registry Path (e.g. joomla.content.showauthor) 
 	 * @return void
 	 */
-	public function __unset(string $name): void
-	{
-		$this->remove($name);
-	}
 
 	public function __invoke($data): mixed
 	{
@@ -119,5 +142,4 @@ class xRegistry extends Joomla\Registry\Registry
 		}
 	}
 }
-
-//JLoader::register('JRegistry', 'XRegistry',true);
+}

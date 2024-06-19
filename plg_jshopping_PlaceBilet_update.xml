@@ -5,8 +5,8 @@
         <description>Plugin for JoomShopping-Joomla ticket sales for cinemas, theaters, circuses, museums. parties, courses, lessons, trainings, couching.</description>
         <element>PlaceBilet</element>
         <type>plugin</type>
-        <version>1.36</version>
-      	<modificationDate>2023-01-10</modificationDate>
+        <version>5.00</version>
+      	<modificationDate>2024-06-19</modificationDate>
         <folder>jshopping</folder>
         <client>0</client>
         <infourl title="PlaceBilet Movie-Theater tickets for JS">//explorer-office.ru/download</infourl>
@@ -17,6 +17,6 @@
         <php_minimum>7.4</php_minimum>
         <maintainer>Korenevskiy Sergei Borisovich</maintainer>
         <maintainerurl>//fb.com/groups/placebilet/</maintainerurl>
-        <targetplatform name="joomla" version="4.*" />
+        <targetplatform name="joomla" version="5.*" />
     </update>
 </updates>

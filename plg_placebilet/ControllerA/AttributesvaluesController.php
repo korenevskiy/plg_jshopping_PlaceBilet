@@ -62,13 +62,13 @@ class AttributesvaluesModController extends AttributesvaluesController{ // Jshop
     }
     function display($cachable = false, $urlparams = false){
         //parent::display($cachable = false, $urlparams = false);
-        if(\PlaceBiletHelper::JRequest()->getCmd("attr_id")==""){
+        if(\PlaceBiletHelper::JInput()->getCmd("attr_id")==""){
                 JError::raiseError( 403, JText::_('JSHOP_NOT_SELECTED_ATRIBUTE') );
                 $this->setRedirect("index.php?option=com_jshopping&controller=attributes", JText::_('JSHOP_NOT_SELECTED_ATRIBUTE'));
                 return;                
         }   
         
-        $attr_id = \PlaceBiletHelper::JRequest()->getInt("attr_id");
+        $attr_id = \PlaceBiletHelper::JInput()->getInt("attr_id");
         $jshopConfig = \JSFactory::getConfig();
         $nameLang = \JSFactory::getLang()->get("name"); 
         
@@ -128,7 +128,11 @@ $debugs .= "|$key|";
         
 		/* Массив сгруппированных массиов по группам подрят идущих мест. */
         $tuple= array();
-        $i = reset($itemsInt)->name;//key
+		
+		/* Номер сравнения подрят идущих цифр мест */
+		$number = 0;
+		if($itemsInt)
+			$number = reset($itemsInt)->name;//key
 		/* Индекс массива для груп подрят идущих мест. */
         $carriage = 0;
 //toPrint($i,'$i',0,'message',true);
@@ -136,12 +140,12 @@ $debugs .= "|$key|";
 		/* Группировка списка мест по группам в каждой которой места идут подрят. */
         foreach ($itemsInt as $item)
         {
-            if($i != $item->name)
+            if($number != $item->name)
                 ++$carriage;
           
             $tuple[$carriage][$item->name] = $item;
             
-            $i = $item->name + 1;
+            $number = $item->name + 1;
         }
         
         
@@ -237,7 +241,7 @@ $debugs .= "|$key|";
     }
     
     function remove(){// недействительный метод
-//		$cid = \PlaceBiletHelper::JRequest()->get("cid");        
+//		$cid = \PlaceBiletHelper::JInput()->get("cid");        
 //		$dispatcher = \JFactory::getApplication();	
 //		$model = JSFactory::getModel("attribut");
 //        
@@ -255,8 +259,8 @@ $debugs .= "|$key|";
     }
             
     function AddsRange(){
-            $attr_id = \PlaceBiletHelper::JRequest()->getInt("attr_id");  
-            $places = \PlaceBiletHelper::JRequest()->getString("PlacesRangeAdd");
+            $attr_id = \PlaceBiletHelper::JInput()->getInt("attr_id");  
+            $places = \PlaceBiletHelper::JInput()->getString("PlacesRangeAdd");
             
             //if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("Places: ".print_r($places, TRUE));
             
@@ -270,7 +274,7 @@ $debugs .= "|$key|";
             if($arr == '' || (count($arr)==0)){
                 JError::raiseError( 403, JText::_('JSHOP_NOT_SELECTED_STRING') );
                 $this->setRedirect("index.php?option=com_jshopping&controller=attributes", JText::_('JSHOP_NOT_SELECTED_STRING'));
-                return;                
+                return;
             }                
             $query = \PlaceBiletHelper::PlacesAttrValueArrayAdd($attr_id, $arr);
             
@@ -284,38 +288,58 @@ $debugs .= "|$key|";
     }
     
     function AddString(){
-            $attr_id = \PlaceBiletHelper::JRequest()->getInt("attr_id");  
-            $places = \PlaceBiletHelper::JRequest()->getString("PlacesStringAdd");
-//            $places = trim($places);
+		$attr_id = \PlaceBiletHelper::JInput()->getInt("attr_id");  
+		$places = \PlaceBiletHelper::JInput()->getString("PlacesStringAdd");
+//		$places = trim($places);
             
-            $query = \PlaceBiletHelper::PlacesAttrValueStringAdd($attr_id, $places);
-            //if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("AddsRange: ".print_r($places, TRUE));
-            //if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("<pre>Query: \t".$query."</pre>");//Warning,Error,Notice,Message
-            unset($query);
+		$query = \PlaceBiletHelper::PlacesAttrValueStringAdd($attr_id, $places);
+		//if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("AddsRange: ".print_r($places, TRUE));
+		//if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("<pre>Query: \t".$query."</pre>");//Warning,Error,Notice,Message
+		unset($query);
+		
+		$count = '1';
 			 
         $this->setRedirect("index.php?option=com_jshopping&controller=attributesvalues&attr_id=$attr_id", JText::_('JSHOP_ADDED_SEATS_1').$count.JText::_('JSHOP_ADDED_SEATS_2'). $places.JText::_('JSHOP_ADDED_SEATS_3'));
     }
+	
+//	function AddCount(){
+//		$attr_id = \PlaceBiletHelper::JInput()->getInt("attr_id");
+//		$placeCountName = \PlaceBiletHelper::JInput()->getString("PlacesCountStrAdd");
+//		
+//		$placeCountName = trim($placeCountName);
+//		
+//		$count = ' 0 ';
+//		
+//		if($placeCountName){
+//			$query = \PlaceBiletHelper::PlacesAttrValueCountAdd($attr_id, $placeCountName);
+//			
+//			$count = '1';
+//		} 
+//		$this->setRedirect("index.php?option=com_jshopping&controller=attributesvalues&attr_id=$attr_id", JText::_('JSHOP_ADDED_SEATS_1').$count.JText::_('JSHOP_ADDED_SEATS_2'). $places.JText::_('JSHOP_ADDED_SEATS_3'));
+//	}
     
     function RemoveRange(){
-            $attr_id = \PlaceBiletHelper::JRequest()->getInt("attr_id");  
-            $places = \PlaceBiletHelper::JRequest()->getString("PlacesRangeRemove");
+            $attr_id = \PlaceBiletHelper::JInput()->getInt("attr_id");  
+            $places = \PlaceBiletHelper::JInput()->getString("PlacesRangeRemove");
             //if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("Places: ".print_r($places, TRUE));
             //$range = explode (",",$places);              
 
-            $arr = \PlaceBiletHelper::getArrayFromString($places);
-            $count = count($arr);
-            $query = \PlaceBiletHelper::PlacesAttrValueArrayRemove($attr_id, $arr);
+            $arr_numerics = \PlaceBiletHelper::getArrayFromString($places);
+            $count = count($arr_numerics);
+            \PlaceBiletHelper::PlacesAttrValueArrayRemove($attr_id, $arr_numerics);
+			
+			\PlaceBiletHelper::PlacesProdValueDeleteNotExist($attr_id);
             
-            //if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("RemoveRange: ".print_r($places, TRUE));
-            //if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("RemoveRange: ".print_r($arr, TRUE));
-            //if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("<pre>Query: \t".$query."</pre>");//Warning,Error,Notice,Message
+//if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("RemoveRange: ".print_r($places, TRUE));
+//if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("RemoveRange: ".print_r($arr, TRUE));
+//if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("<pre>Query: \t".$query."</pre>");//Warning,Error,Notice,Message
             unset($query);
         $this->setRedirect("index.php?option=com_jshopping&controller=attributesvalues&attr_id=$attr_id", JText::_('JSHOP_DELETED_SEATS_1').$count.JText::_('JSHOP_DELETED_SEATS_2'). $places.JText::_('JSHOP_DELETED_SEATS_3'));
     }
     
     function RemoveString(){
-            $attr_id = \PlaceBiletHelper::JRequest()->getInt("attr_id");  
-            $places = \PlaceBiletHelper::JRequest()->getCmd("PlacesStringRemove");
+            $attr_id = \PlaceBiletHelper::JInput()->getInt("attr_id");  
+            $places = \PlaceBiletHelper::JInput()->getCmd("PlacesStringRemove");
             
             $type = substr($places, 0, 2);            
             $places =strval ( substr($places, 2));
@@ -363,7 +387,7 @@ $debugs .= "|$key|";
                 unset($query);
             }
             
-            //if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("<pre>Places: \t".\PlaceBiletHelper::JRequest()->getCmd("Places")."</pre>",'Notice');//Warning,Error,Notice,Message        
+            //if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("<pre>Places: \t".\PlaceBiletHelper::JInput()->getCmd("Places")."</pre>",'Notice');//Warning,Error,Notice,Message        
         $this->setRedirect("index.php?option=com_jshopping&controller=attributesvalues&attr_id=$attr_id",  JText::_('JSHOP_DELETED_SEATS_1').$count.JText::_('JSHOP_DELETED_SEATS_2'). $places.JText::_('JSHOP_DELETED_SEATS_3'));
     }
     

@@ -18,7 +18,7 @@ jimport('joomla.html.pagination');
 class JshoppingControllerSearch_mod extends JshoppingControllerSearch{
     
     function result(){
-        $word = PlaceBiletHelper::JRequest()->getString('search');
+        $word = PlaceBiletHelper::JInput()->getString('search');
         return;
 		
 		parent::result();

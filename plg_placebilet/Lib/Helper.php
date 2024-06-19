@@ -35,6 +35,7 @@ if(JVersion::MAJOR_VERSION == 3){
 	require_once (JPATH_SITE.'/components/com_jshopping/Helper/Helper.php');
 }
 
+JLoader::registerAlias('JSFactory', 'Joomla\\Component\\Jshopping\\Site\\Lib\\JSFactory');
 
 defined('_') or define('_', ' ');
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
@@ -292,6 +293,30 @@ WHERE id $where ;";
 		
 
 	}
+	/**
+	 * Удаляет билеты/места для несуществующих полей 
+	 * @param string|array $id
+	 */
+    public static function PlacesProdValueDeleteNotExist($attribute_id = 0, $product_id = 0) {
+		
+		$where = '';
+		
+		if($product_id)
+			$where .= " #__jshopping_products_attr2.product_id = $product_id AND ";
+		
+		if($attribute_id)
+			$where .= " #__jshopping_products_attr2.attr_id = $attribute_id AND ";
+		
+		$query = "
+DELETE #__jshopping_products_attr2
+FROM #__jshopping_products_attr2  
+LEFT JOIN #__jshopping_attr_values av ON av.attr_id = #__jshopping_products_attr2.attr_id AND #__jshopping_products_attr2.attr_value_id = av.value_id
+WHERE $where av.value_ordering IS NULL;"; 
+		
+		JFactory::getDBO()->setQuery($query)->execute();
+		
+		return $query;
+	}
 
 
 
@@ -335,6 +360,24 @@ WHERE id $where ;";
 	$db->setQuery($query);
 	$db->execute();
         return $query;
+    }
+
+    public static function PlacesAttrValueCountAdd($attr_id, $placeCountName){
+		
+        $nameLang = JSFactory::getLang()->get("name");
+        $db = JFactory::getDBO();
+        
+        $query = "INSERT INTO `#__jshopping_attr_values` (attr_id, value_ordering, image, `$nameLang`) VALUES ";
+        $query .= "(".$db->escape($attr_id).", 0, '','".$db->escape($value)."' ); ";
+        
+        //INSERT INTO #__jshopping_attr_values (attr_id,value_ordering,image,`name_en-GB`,`name_ru-RU`)
+        //VALUES
+        //(9631, 0, '','',2 ),
+        //(9631, 0, '','',23 )
+        
+		$db->setQuery($query);
+		$db->execute();
+		return $query;
     }
     
     public static function PlacesAttrValueArrayAdd($attr_id, $arr_values){
@@ -477,6 +520,10 @@ WHERE id $where ;";
         
 //        toPrint($attrib_place_Int_tuple,'$attrib_place_Int_tuple 11111111111111111111111111111111111111111111111111111111111',0,TRUE);
 //        toPrint($post,'$post  111111',0,TRUE);
+//toPrint(null,'',0,'message');
+//toPrint($attrib_place_price_mod,'$attrib_place_price_mod',0,'message');
+//toPrint($post,'$post',0,'message');
+//toPrint(new \Reg($post),'Reg$post',0,'message');
         
         $attribs_id = $attrib_place_id;
 //return; 
@@ -523,11 +570,20 @@ WHERE id $where ;";
             $attr_id    = $attrib_place_id[$key];
             $mod        = $attrib_place_price_mod[$key];
             $price      = $attrib_place_price[$key];
+			$count		= 1;
+			
+			if(is_numeric($mod)){
+				$count = (int)$mod;
+				$mod = '+';
+			}
+//			else{
+//				$mod = '';
+//			}
             
-            $query .= "($product_id, $attr_id, $value_id, '$mod', $price )";     
+            $query .= "($product_id, $attr_id, $value_id, '$mod', $price, $count)";     
         }
         if($query)
-            $arr_query[] = "INSERT INTO #__jshopping_products_attr2 (product_id, attr_id, attr_value_id, price_mod, addprice) VALUES $query ; ";
+            $arr_query[] = "INSERT INTO #__jshopping_products_attr2 (product_id, attr_id, attr_value_id, price_mod, addprice, count) VALUES $query ; ";
         
         
         
@@ -590,7 +646,7 @@ WHERE id $where ;";
         $places = JFactory::getApplication()->input->getHtml('jshop_place_id');
 //        $places = \Joomla\CMS\Factory::getApplication()->input->getHtml('jshop_place_id');
 //			$app = Factory::getApplication();
-//        $places = PlaceBiletHelper::JRequest()->get('jshop_place_id');
+//        $places = PlaceBiletHelper::JInput()->get('jshop_place_id');
         if (!is_array($places)) 
             $places = (array)$places;
         foreach($places as $k=>$v){
@@ -945,7 +1001,7 @@ WHERE id $where ;";
     }
     
     
-    public static function JRequest(){
+    public static function JInput(){
         //J Request::get();
         $input = JFactory::getApplication()->input;//->getHtml('jshop_place_id');
 //        $places = \Joomla\CMS\Factory::getApplication()->input->getHtml('jshop_place_id');
@@ -1115,9 +1171,16 @@ WHERE s.order_status_id IN ( $order_status_id ) ;";// AND oh.order_status_id = {
         
 		if(empty(static::$languageList)){
 			$query ="
-SELECT CONCAT ('`','name_',language,'`') language, language lang  FROM `#__jshopping_languages` WHERE publish ORDER BY ordering, id DESC;
+SELECT CONCAT ('`','name_',language,'`') language, language lang  FROM #__jshopping_languages WHERE publish ORDER BY ordering, id DESC;
 			";
 			static::$languageList = JFactory::getDBO()->setQuery($query)->loadAssocList('lang', 'language');
+			
+			$admin_show_languages = \Joomla\Component\Jshopping\Site\Lib\JSFactory::getConfig()->admin_show_languages;
+			$tag = JFactory::getApplication()->getLanguage()->getTag();
+			
+			if(empty($admin_show_languages) && isset(static::$languageList[$tag]) && count(static::$languageList) > 1){
+				static::$languageList = array_filter(static::$languageList, function($k)use($tag) {return $k == $tag;},ARRAY_FILTER_USE_KEY);
+			}
 		}
 		
 		if($prefix == 'name_'){

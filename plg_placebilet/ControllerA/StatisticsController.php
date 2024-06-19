@@ -24,6 +24,7 @@ use \Joomla\Component\Jshopping\Site\Lib\JSFactory  as JSFactory;
 //JLoader::registerAlias('JFormField', '\\Joomla\\CMS\\Form\\FormField', '6.0');
 //JLoader::registerAlias('JFormHelper', '\\Joomla\\CMS\\Form\\FormHelper', '6.0');
 
+//toPrint();
 
 jimport( 'joomla.html.html.select' );
 JFormHelper::loadFieldClass('radio');
@@ -50,6 +51,8 @@ class StatisticsModController extends BaseadminController{//JControllerLegacy  /
 // Член требуемый для J4, для совместимости J3 отключен, но компенсируется $config['default_view'] в конструкторе
 //	protected $name = 'Empty';
 	
+    protected $template_name;
+	
 //	protected $default_view = 'Empty';
 	
     function __construct( $config = array(), \Joomla\CMS\MVC\Factory\MVCFactoryInterface $factory = null, $app = null, $input = null  ){
@@ -69,7 +72,8 @@ class StatisticsModController extends BaseadminController{//JControllerLegacy  /
         $this->registerTask( 'saveorder','display' );
         $this->registerTask( 'back', 'display' );
         $this->registerTask( 'delete_foto','display' ); 
-
+		
+		$this->template_name = \PlaceBiletHelper::$template_name;
     }
     
     function display($cachable = false, $urlparams = false){
@@ -79,10 +83,10 @@ class StatisticsModController extends BaseadminController{//JControllerLegacy  /
         $db = \JFactory::getDBO();
         
 		
-        $viewName = $this->input->get('view', 'statistics');			// $this->default_view-> 'displaymod'
-        $viewLayout = $this->input->get('layout', 'default', 'string');		// -> 'default'
-        $taskView = $this->input->get('task', '', 'string');		// -> 'default'
-        $viewType = $this->app->getDocument()->getType(); 
+        $viewName	= $this->input->get('view', 'statistics');			// $this->default_view-> 'displaymod'
+        $viewLayout	= $this->input->get('layout', 'default', 'string');		// -> 'default'
+        $taskView	= $this->input->get('task', '', 'string');		// -> 'default'
+        $viewType	= $this->app->getDocument()->getType(); 
 		
 		
 		if(file_exists(PlaceBiletPath."/View/$viewName"))
@@ -143,7 +147,7 @@ class StatisticsModController extends BaseadminController{//JControllerLegacy  /
 		$where[] =  "'$fieldDateStart' <= o.order_date AND o.order_date < '$fieldDateStop'"; //--  Покупка
 		
 		
-toPrint(null,'',0,'',true);
+//toPrint(null,'',0,'',true);
 //toPrint($where,'$where',0,'pre',true);
 		
 		
@@ -192,8 +196,7 @@ WHERE " . join("\n AND ", $where) . "
 GROUP BY i.product_id 
 ORDER BY i.date_event ; ";
 //		return;
-        $order_items = $db->setQuery($query)->loadObjectList('product_id');
-		$view->order_items = $order_items;
+		$view->order_items = $db->setQuery($query)->loadObjectList('product_id');
 		
 		
 //toPrint($query,'$query',0,'pre');		
@@ -206,8 +209,9 @@ FROM (
 		i.date_tickets,
 		i.order_item_id,
 		i.product_id,
+		i.count_places,
 		i.product_name,
-        i.count_places,
+        i.place_counts,
 		i.place_go,
 		i.place_prices,  -- {4766:30.0000, 4771:30.0000}	value_id=>  addprice
 		i.places,		 -- {17:1,21:1}						var_id  =>	attr_id
@@ -244,18 +248,26 @@ ORDER BY rawData.place_go DESC; ";
 			$places_goes = str_getcsv($item->place_go);
 			
 			
-			$item->place_prices	= json_decode($item->place_prices, JSON_OBJECT_AS_ARRAY);//-- {4766:30.0000, 4771:30.0000}	value_id=>  addprice
-			$prices				= array_values($item->place_prices);				// [30.0000, 30.0000]
-			$item->places		= json_decode($item->places, JSON_OBJECT_AS_ARRAY);	//-- {17:1,21:1}					var_id  =>	attr_id
-			$item->attributes_IDs	= array_values($item->places);			//	index  =>	attr_id
+			$item->place_prices	= json_decode($item->place_prices, JSON_OBJECT_AS_ARRAY);//-- {166:"30.0", 162:"30.0"}	array( ProdValID =>	price, ...)
+//			$item->place_prices = array_map(fn($item)=>(int)$item, $item->place_prices);
+			$prices				= array_values($item->place_prices);	//[30.0, 30.0]
+			$item->places		= json_decode($item->places, JSON_OBJECT_AS_ARRAY);		// -- {166:"83,10",162:"72,10"}	array( ProdValID => "value_id,attr_id", ...)
+//			$item->attributes_IDs= array_values($item->places);			//	index  =>	attr_id
+			
+			$item->place_counts	= json_decode($item->place_counts, JSON_OBJECT_AS_ARRAY);	//	array( ProdValID =>	count, ...)
+//			$item->place_counts = array_map(fn($item)=>(int)$item, $item->place_counts);
+//toPrint($item->place_counts,'$item->place_counts',0,'message');
+//return;
+//			$item->place_names	= serialize($item->place_names);	//	array( ProdValID => attr_Name . ' - ' . place_name,... )
+			
 //			$view->order_items[$item->product_id]->attributes_IDs		=   ;
 					
 			/* Определение названий мероприятий  */
 			if(! isset($view->order_items[$item->product_id])){
 				$view->order_items[$item->product_id] = new \stdClass ();
-				$view->order_items[$item->product_id]->product_name	= $item->product_name;
-				$view->order_items[$item->product_id]->product_id	= $item->product_id;
-				$view->order_items[$item->product_id]->currency_code = $item->currency_code;
+				$view->order_items[$item->product_id]->product_name		= $item->product_name;
+				$view->order_items[$item->product_id]->product_id		= $item->product_id;
+				$view->order_items[$item->product_id]->currency_code	= $item->currency_code;
 			}
 			
 			/* Определение повторно суммы и количества Купленных билетов */
@@ -265,19 +277,30 @@ ORDER BY rawData.place_go DESC; ";
 				$view->order_items[$item->product_id]->count_tickets_active = 0;
 			
 			if($view->fieldDateStart <= $item->order_date && $item->order_date <= $view->fieldDateStop){
-//toPrint($item->order_date,'$item->order_date 1',0,'pre');	
-				$view->order_items[$item->product_id]->summ_tickets_active	+= array_sum($prices) ?: 0;
+//toPrint($item->order_date,'$item->order_date 1',0,'pre');
+				
+				$summ_tickets_active = 0;
+				foreach ($item->place_prices as $ProdValID => $cost){
+					$summ_tickets_active += $cost * $item->place_counts[$ProdValID];
+				}
+				
+				$view->order_items[$item->product_id]->summ_tickets_active	+= $summ_tickets_active;//array_sum($item->place_prices) ?: 0;
 				$view->order_items[$item->product_id]->count_tickets_active	+= $item->count_places;
-				foreach ($item->attributes_IDs as $index => $attr_id){
-//					if(!isset($view->order_items[$item->product_id]->attr_tickets_active[$attr_id][$index]))
-//						$view->order_items[$item->product_id]->attr_tickets_active[$attr_id][$index][$item->order_item_id] = 0;
-//					else
-					$view->order_items[$item->product_id]->attr_tickets_active[$attr_id][$index][$item->order_item_id] = $prices[$index] ?? 0;
+				foreach ($item->places as $ProdValID => $str_valID_attrID){ //$item->attributes_IDs as $index => $attr_id
+					[$value_id, $attr_id] = str_getcsv($str_valID_attrID);
+					$item->places[$ProdValID] = (object)['value_id'=>$value_id,'attr_id'=>$attr_id];
 					
-//					if(!isset($view->order_items[$item->product_id]->attr_tickets_active[$attr_id][$index]))
-//						$view->order_items[$item->product_id]->attr_tickets_active[$attr_id][$index] = 0;
+//					if(!isset($view->order_items[$item->product_id]->attr_tickets_active[$attr_id][$ProdValID]))
+//						$view->order_items[$item->product_id]->attr_tickets_active[$attr_id][$ProdValID][$item->order_item_id] = 0;
 //					else
-//						$view->order_items[$item->product_id]->attr_tickets_active[$attr_id][$index] += 1;
+					$view->order_items[$item->product_id]->attr_tickets_active[$attr_id][$ProdValID][$item->order_item_id] = ($item->place_prices[$ProdValID] ?? 0) * ($item->place_counts[$ProdValID] ?? 0);
+					$view->order_items[$item->product_id]->attr_tickets_active_counts[$attr_id][$ProdValID][$item->order_item_id] = $item->place_counts[$ProdValID] ?? 0;
+					$view->order_items[$item->product_id]->attr_tickets_active_prices[$attr_id][$ProdValID][$item->order_item_id] = $item->place_prices[$ProdValID] ?? 0;
+					
+//					if(!isset($view->order_items[$item->product_id]->attr_tickets_active[$attr_id][$ProdValID]))
+//						$view->order_items[$item->product_id]->attr_tickets_active[$attr_id][$ProdValID] = 0;
+//					else
+//						$view->order_items[$item->product_id]->attr_tickets_active[$attr_id][$ProdValID] += 1;
 					$view->order_items[$item->product_id]->attributes[$attr_id] = [];
 					$view->rowAttributes[$attr_id] = $attr_id;
 					$view->order_items[$item->product_id]->currency_code = $item->currency_code;
@@ -315,8 +338,8 @@ ORDER BY rawData.place_go DESC; ";
 			/* Определение сумм и количества по атрибутам */
 			// <editor-fold defaultstate="_collapsed" desc="Определение сумм и количества по атрибутам">
 			
-			if (! isset($view->order_items[$item->product_id]->attributes_IDs))
-				$view->order_items[$item->product_id]->attributes_IDs = $item->attributes_IDs;
+//			if (! isset($view->order_items[$item->product_id]->attributes_IDs))
+//				$view->order_items[$item->product_id]->attributes_IDs = $item->attributes_IDs;
 			if (! isset($view->order_items[$item->product_id]->attributes))
 				$view->order_items[$item->product_id]->attributes = [];
 			
@@ -341,7 +364,7 @@ ORDER BY rawData.place_go DESC; ";
 				
 				$place_go	= explode(':', $place_go);
 				$go_date	= end($place_go);	// DateTime
-				$date		= JDate::getInstance($date);
+				$date		= JDate::getInstance($go_date);
 				
 				/* Если статус билета входит в диапазон, то ведём подсчёт суммы, количества билетов и определение колонок для статусов  */
 				if($view->fieldDateStart <= $date && $date <= $view->fieldDateStop){
@@ -377,7 +400,19 @@ ORDER BY rawData.place_go DESC; ";
 //					$view->order_items[$item->product_id]->attributes_IDs[]  ;
 //					$view->order_items[$item->product_id]->attributes[]  ;
 					
-					foreach ($item->attributes_IDs as $index => $attr_id){
+					foreach ($item->places as $ProdValID => $valID_attrID){// $item->attributes_IDs as $index => $attr_id
+						
+						if(is_string($valID_attrID)){
+							[$value_id, $attr_id] = str_getcsv($valID_attrID);
+							$item->places[$ProdValID] = (object)['value_id'=>$value_id,'attr_id'=>$attr_id];
+						}else{
+							$value_id	= $valID_attrID->value_id;
+							$attr_id	= $valID_attrID->attr_id;
+						}
+
+//if(empty($attr_id)){
+//	toPrint($item->places,'$item->order_item_id '.$item->order_item_id.':',0,'message');
+//}
 //						if(! isset($view->order_items[$item->product_id]->attributes[$attr_id][$go_status_code])){
 //							$view->order_items[$item->product_id]->attributes[$attr_id][$go_status_code] = (object)['summ_tickets'=>0,'count_tickets'=>0];
 //						}
@@ -414,6 +449,7 @@ ORDER BY rawData.place_go DESC; ";
 FROM #__jshopping_attr
 WHERE attr_id IN (" . join(",", $view->rowAttributes) . ")
 ORDER BY attr_ordering ; ";
+
 		if($view->rowAttributes){
 			$view->rowAttributes = $db->setQuery($query)->loadObjectList('attr_id');
 		}
@@ -435,7 +471,7 @@ ORDER BY attr_ordering ; ";
 //toPrint($where,'$where',0,'message',true);
 //toPrint($query,'$query',0,'pre',true);
 //toPrint($this->input->getArray(),'$this->input',0,'message',true);
-//toPrint($order_items,'$order_items',0,'pre',true);
+//toPrint($view->order_items,'$view->order_items',0,'pre',true);
 //        echo "<pre>ControllerEmptyDisplay: ";
 //        var_dump($this->get('redirect'));
 //        echo "</pre>"; 

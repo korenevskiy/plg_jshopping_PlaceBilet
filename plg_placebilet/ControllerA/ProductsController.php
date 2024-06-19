@@ -194,16 +194,16 @@ class ProductsModController extends ProductsController{
 //        $dispatcher = \JFactory::getApplication();
 //        $dispatcher->triggerEvent('onLoadEditProduct', array());
 //        $id_vendor_cuser = getIdVendorForCUser();
-//        $category_id = \PlaceBiletHelper::JRequest()->getInt('category_id');
+//        $category_id = \PlaceBiletHelper::JInput()->getInt('category_id');
 //        
 //        $tmpl_extra_fields = null;
 //        
-//        $product_id = \PlaceBiletHelper::JRequest()->getInt('product_id');
-//        $product_attr_id = \PlaceBiletHelper::JRequest()->getInt('product_attr_id');        
+//        $product_id = \PlaceBiletHelper::JInput()->getInt('product_id');
+//        $product_attr_id = \PlaceBiletHelper::JInput()->getInt('product_attr_id');        
 //        
 //        //parent product
 //        if ($product_attr_id){
-//            //\PlaceBiletHelper::JRequest()->set("hidemainmenu", 1);
+//            //\PlaceBiletHelper::JInput()->set("hidemainmenu", 1);
 //            $product_attr = JSFactory::getTable('productAttribut', 'jshop');
 //            $product_attr->load($product_attr_id);
 //			if ($product_attr->ext_attribute_product_id){
@@ -586,7 +586,7 @@ class ProductsModController extends ProductsController{
             die();
         }
         
-        //$product_id = \PlaceBiletHelper::JRequest()->getInt('product_id');
+        //$product_id = \PlaceBiletHelper::JInput()->getInt('product_id');
         $product_id = $product->product_id;
         
 //        toPrint($product_id,'$product_id !!!!!!!',0,'message');
@@ -606,6 +606,12 @@ class ProductsModController extends ProductsController{
 ////        echo $reflector->getStartLine();
 //        toPrint($reflector->getFileName().' '.$reflector->getStartLine(),'PlaceBiletHelper->: ','',0,TRUE);
         
+		
+		
+		/* 
+		 * Сохранение значений атрибутов(цен для мест) в базу для Админки.
+		 * PlaceBiletHelper::saveAttributesPlace($product, $product_id, $post)
+		 */
         $count_row = \PlaceBiletHelper::saveAttributesPlace($product, $product_id, $post);// Изменено добавлено строка
         
         
@@ -620,14 +626,12 @@ class ProductsModController extends ProductsController{
             }
             JFactory::getApplication()->enqueueMessage("<a href='/administrator/index.php?option=com_jshopping&controller=products&task=edit&product_id=$product_id'>$name</a>"); 
         }
-		 
-		
 		
 		
 		
         if ($this->getTask()=='apply'){
             $this->setRedirect("index.php?option=com_jshopping&controller=products&task=edit&product_id=".$product->product_id, 
-					\JText::_('JSHOP_PRODUCT_SAVED').JText::sprintf('JSHOP_PLACE_ADDED',$count_row));
+				\JText::_('JSHOP_PRODUCT_SAVED').JText::sprintf('JSHOP_PLACE_ADDED',$count_row));
         }elseif ($this->getTask()=='save2new') {
             $this->setRedirect($this->getUrlEditItem());
         }else{
@@ -647,7 +651,7 @@ class ProductsModController extends ProductsController{
         $dispatcher = \JFactory::getApplication();
 
         $db = JFactory::getDBO();
-        $post = JFactory::getApplication()->input->post;//\PlaceBiletHelper::JRequest()->get('post');
+        $post = JFactory::getApplication()->input->post;//\PlaceBiletHelper::JInput()->get('post');
         $_products = JSFactory::getModel("products");//
         //$_products = JSFactory::getModel("products");//JshoppingModelProducts_mod
         $product = JSFactory::getTable('product', 'jshop');
@@ -762,8 +766,8 @@ class ProductsModController extends ProductsController{
                 JError::raiseWarning("", __('JSHOP_ERROR_ALIAS_ALREADY_EXIST'));
             }            
              
-            $post['description_'.$lang->language] = \PlaceBiletHelper::JRequest()->getString('description'.$lang->id,'','post',"string", 2);
-            $post['short_description_'.$lang->language] = \PlaceBiletHelper::JRequest()->getString('short_description_'.$lang->language,'','post',"string", 2);
+            $post['description_'.$lang->language] = \PlaceBiletHelper::JInput()->getString('description'.$lang->id,'','post',"string", 2);
+            $post['short_description_'.$lang->language] = \PlaceBiletHelper::JInput()->getString('short_description_'.$lang->language,'','post',"string", 2);
         }
         
         $dispatcher->triggerEvent('onBeforeDisplaySaveProduct', array(&$post, &$product) );

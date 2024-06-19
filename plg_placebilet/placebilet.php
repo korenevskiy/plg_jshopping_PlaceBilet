@@ -26,11 +26,14 @@ if(function_exists('toLog') == false){
 		
 	}
 }
-
+ 
 if(file_exists(JPATH_ROOT . '/libraries/fof40/Utils/helpers.php')){
 	require_once JPATH_ROOT . '/libraries/fof40/Utils/helpers.php';
 }
 
+if(file_exists(JPATH_ROOT . '/libraries/vendor/voku/portable-utf8/src/voku/helper/UTF8.php')){
+	require_once JPATH_ROOT . '/libraries/vendor/voku/portable-utf8/src/voku/helper/UTF8.php';
+}
 //toPrint(null,'',0,'');
 
 
@@ -76,8 +79,9 @@ use \Joomla\CMS\Layout\LayoutHelper as JLayoutHelper;
 use \Joomla\CMS\Layout\LayoutInterface as JLayout;
 use \Joomla\CMS\Uri\Uri as JUri;
 use \Joomla\CMS\Router\Route as JRoute;
-use \Joomla\Component\Jshopping\Site\Helper\Request as JshopHelpersRequest;
+use \Joomla\Component\Jshopping\Site\Helper\Request as JshopRequest;
 use \Joomla\Component\Jshopping\Site\Lib\ImageLib;
+use \Joomla\Component\Jshopping\Site\Table\MultilangTable;
 
 
 jimport('joomla.plugin.plugin');
@@ -85,6 +89,10 @@ jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
 //JTable::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_spidervideoplayer/tables');
 //JHTML::_('behavior.modal');
+
+//if(JFactory::getApplication()->input->getCmd('format')!='json')
+//if(!in_array(JFactory::getApplication()->input->getCmd('format'), ['json','debug']))
+//toPrint();
 
 //require_once (JPATH_PLUGINS.'/components/com_jshopping/Helper/Error.php');
 
@@ -110,6 +118,12 @@ class plgJshoppingPlacebilet extends JPlugin
 	 * @var \Joomla\Registry\Registry
 	 */
 	protected $param;
+	
+	/*
+	 * Дополнительные поля пользователя для покупки ФИО, этаж, корпус, подъезд и пр.
+	 * @var array
+	 */
+	protected $fields = [];
 			
     function __construct( $dispatcher = null, $config = array()){
         //$config['params']= array();
@@ -142,8 +156,8 @@ class plgJshoppingPlacebilet extends JPlugin
         define('PlaceBiletAdminDev', FALSE && $this->config->error_reporting == 'development' || FALSE);
         define('PlaceBiletPathView', dirname(__FILE__));
 		
-		JLoader::registerAlias('JRegistry','\\xRegistry', '5.0');
-		$this->params = new xRegistry($this->params); // $this->params->toObject();
+		JLoader::registerAlias('JRegistry','\\Reg', '5.0');
+		$this->params = new Reg($this->params); // $this->params->toObject();
 		
 		//$this->params->organization_id;
 		$this->params->pushka_url = '';
@@ -539,6 +553,58 @@ class plgJshoppingPlacebilet extends JPlugin
 //        }
     }
   
+	
+	
+	/**
+	 * Клиент - Вызывается при отображении списка подкатегорий для отображения продуктов(Пункт меню Категория). Перез запросом БД на список категоррий
+	 * @param \Joomla\Component\Jshopping\Site\Table\CategoryTable $tableCategory
+	 * @param string $queryAllCategories
+	 */
+	function onGetSubCategoriesCategoryTable(\Joomla\Component\Jshopping\Site\Table\CategoryTable &$tableCategory, string &$queryAllCategories){
+
+//		toPrint();
+//		toPrint($queryAllCategories);
+	}
+    
+	/**
+	 * Клиент - Вызывается в контроллере после получения категорий из БД
+	 * @param type $tableCategory
+	 * @param type $categoriesDB
+	 * @param type $appParams
+	 */
+	function onBeforeDisplayMainCategory(&$tableCategory, &$categoriesDB, &$appParams){
+		
+//		toPrint();
+//		toPrint($appParams);
+	}
+	
+	/**
+	 * Клиент - Выполняется после получения категорий до формирования запроса БД и фильтра к этому запросу
+	 * @param type $tableCategory
+	 * @param type $sub_categoriesDB
+	 */
+	function onBeforeDisplayCategory(&$tableCategory, &$sub_categoriesDB){
+		
+//		toPrint();
+//		toPrint(array_column($sub_categoriesDB, 'category_id'));
+		
+		$this->sub_categoriesDBforCategoryPageClient = array_filter(array_column($sub_categoriesDB, 'category_id'));
+//		toPrint($this->sub_categoriesDBforCategoryPageClient,'$this->sub_categoriesDBforCategoryPageClient');
+	}
+	
+	private $sub_categoriesDBforCategoryPageClient = [];
+	
+	/**
+	 * Клиент - Вызывается после создания фильтра до формирования условий запроса получения списка продуктов.
+	 * @param array $filters
+	 * @param type $no_filter
+	 */
+	function onAfterGetBuildFilterListProduct(&$filters, &$no_filter){
+		$filters['categorys'] = array_merge($filters['categorys'],$this->sub_categoriesDBforCategoryPageClient);
+//		toPrint($filters['categorys'], '$filters[categorys]');
+//		toPrint();
+//		toPrint(array_column($sub_categoriesDB, 'category_id'));
+	}
     /** 
      * При вызове из модели всех продуктов
      * @param type $type
@@ -554,10 +620,12 @@ class plgJshoppingPlacebilet extends JPlugin
         //prod.product_date_added
         $adv_query = str_replace( 'prod.product_date_added', 'prod.date_event ',$adv_query);
         $order_query = str_replace( 'prod.product_date_added,', 'prod.date_event, ',$order_query);
-        $adv_result = str_replace( 'prod.product_ean,', 'prod.date_event, prod.date_tickets, prod.event_id, prod.product_ean,  prod.params,prod.RepertoireId,prod.StageId, ',$adv_result);
+        $adv_result = str_replace( 'prod.product_ean,', 'prod.date_event, prod.date_tickets, prod.event_id, prod.product_ean,  prod.params, prod.RepertoireId, prod.StageId, ',$adv_result);
         //count(prod_attr.id) count,
 		
-		
+//toPrint($adv_result);
+//toPrint($adv_query);
+		$adv_result .= " , GROUP_CONCAT(DISTINCT cat.category_id) category_ids ";
 /*
 z2a3x_jshopping_products_attr2 (product_id, attr_id, attr_value_id, price_mod, addprice) ;
 
@@ -624,7 +692,7 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
 //					$min_addprice = " NULL min_addprice "; break;
 //					
 //			}
-			
+//toPrint($type);
 			
             $adv_result .= ', count(prod_attr.id) count ';//", count(prod_attr.id) count"; //count(prod_attr.product_id) 'count',  //   ', "count(prod_attr.id) count" ';//
             if($this->params->get('bilets_list_min_addprice', 1))
@@ -632,7 +700,7 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
 			$adv_from .= " LEFT JOIN #__jshopping_products_attr2 prod_attr ON prod_attr.product_id = prod.product_id     "; //  USING (product_id) --USING (product_id)
             if($this->params->get('bilets_list_min_addprice', 1)==2)
 				$adv_from .= " AND prod_attr.addprice != 0 ";
-            if(!in_array($type, ['all_products','search','x-equals_products'])) //all_products 
+            if( in_array($type, ['random',])) // !in_array($type, ['all_products','search','x-equals_products','products']) // all_products 
                     $order_query = " GROUP BY prod.product_id ". $order_query;
 //            toPrint($adv_result,'$adv_result');
 //            toPrint($adv_from,'$adv_from');
@@ -646,8 +714,22 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
         //toPrint($adv_query);
     }
 
-
-    
+	
+	/**
+	 * Клиент - Вызывается после создания запроса BD для получения продуктов
+	 * @param type $typeName
+	 * @param type $query
+	 * @param type $filters
+	 * @param type $obj
+	 */
+	function onBeforeExeQueryGetProductList($typeName, &$query, &$filters, &$obj){
+		
+		
+		
+//		toPrint();
+//		toPrint($query, $typeName );
+	}
+	
     /**
      * Сайт - Вьювер категории - контролер 
      * @param JViewLegacy $viewobject
@@ -655,6 +737,8 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
     function onBeforeDisplayCategoryView(&$viewobject){ // случается в конце работы контролера перед визуализацией представления
         
 //         return;
+//		https://tickets.hc-grad.ru/components/com_jshopping/files/img_products	/plugins/jshopping/placebilet/media/noimage.png
+		$viewobject->set('noimage', 'noimage.png');
         
         if (FALSE) {// Реорганизация
             $view = new JViewLegacy(array('name' => 'category', 'base_path' => PlaceBiletPath)); //, 'template_path'=>PlaceBiletPath."/view/category/category_default.php"
@@ -700,25 +784,30 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
     }
     
                 
-    /**
-     * Изменение в ссылках продуктов ID категорий для редиректа перед отображением списка продуктов  категории
-     * @param array $products
-     */
-    function onListProductUpdateData(&$products){
-//        toPrint($products,'$products');
-//        PlaceBiletHelper::addLinkToProducts($products);
-//        toPrint($products,'$products');
-    }
 
     /**
-     * Подгрузка метаданных для каждого из списка продуктов для Table(Category)->getProducts()
+     * Клиент -  Подгрузка метаданных для каждого из списка продуктов для Table(Category)->getProducts()
      * @param array $products
      * @param int $key
      * @param var $product
      * @param int $use_userdiscount
      */
     function onListProductUpdateDataProduct(&$products, &$key, &$product, &$use_userdiscount){//trigger('onBeforeDisplayProductList', array(&$products))
+		
+		foreach ($products as &$prod){
+			if(isset($prod->category_ids) && is_string($prod->category_ids)){
+				$prod->category_ids = str_getcsv($prod->category_ids);
+			}
+		}
+    }
+    /**
+     * Клиент - Изменение в ссылках продуктов ID категорий для редиректа перед отображением списка продуктов  категории
+     * @param array $products
+     */
+    function onListProductUpdateData(&$products){
+//        toPrint($products,'$products');
 //        PlaceBiletHelper::addLinkToProducts($products);
+//        toPrint($products,'$products');
     }
     
     /**
@@ -750,6 +839,7 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
     function onBeforeDisplayProductListView(&$viewobject){ // случается в конце работы контролера перед визуализацией представления 
                 
 
+		$viewobject->set('noimage', 'noimage.png');
 //        return;
 //        toPrint('УУУУУУУУУУУРРРРРРРРРРАААА!!!!!!!!!!!'); 
         if (FALSE) {// Реорганизация products products
@@ -905,7 +995,7 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
 		if($acc_jQuery)JHtml::stylesheet("plugins/jshopping/placebilet/media/jquery-ui.structure.css");
 		if($acc_jQuery)JHtml::stylesheet("plugins/jshopping/placebilet/media/jquery-ui.theme.css");
 		if($acc_jQuery)JHtml::script("plugins/jshopping/placebilet/media/jquery-ui.js"); 
-		if($acc_jQuery)JHtml::script("plugins/jshopping/placebilet/media/bilet.js");
+		JHtml::script("plugins/jshopping/placebilet/media/bilet.js");
 
 		jimport ('joomla.html.html.bootstrap');
 		JHtml::_('bootstrap.framework');
@@ -1507,7 +1597,7 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
 //        foreach($jshopModelCart->products as $key=> $productCart){
 //            if($productCart['product_id'] == $productTable->product_id){
 //                
-//                $places= JshopHelpersRequest::getAttribute('jshop_place_id');
+//                $places= JshopRequest::getAttribute('jshop_place_id');
 //                ksort($places);
 //                $placesJson = json_encode($places); 
 //                if(isset($productCart['places']) && $productCart['places'] == $placesJson)
@@ -1536,6 +1626,7 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
      */
     function onBeforeSaveUpdateProductToCart(&$jshopModelCart, &$productTable, $key, &$errors, &$displayErrorMessage, &$product_in_cart, &$quantity){
         
+			
         $bonus = 1;
         $bonusEnabled = $this->params->get('bonusEnabled', FALSE); 
         if($bonusEnabled)
@@ -1545,7 +1636,9 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
         if($productCart['product_id'] != $productTable->product_id)
             return;
         
-        $places= JshopHelpersRequest::getAttribute('jshop_place_id');
+        $places = JshopRequest::getAttribute('jshop_place_id');
+		$places = array_filter($places);
+		$places_counts = $places;
         
         if(PlaceBiletDev)JFactory::getApplication()->enqueueMessage(  "\$places-: ".print_r($places,TRUE));
         ksort($places);
@@ -1554,43 +1647,56 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
             return; 
         
         $lang = JSFactory::getLang();
-        $values_ids = array_keys($places);
-        $prod_value_price_ids = array_values ($places);
+//        $values_ids = array_keys($places);
+//        $prod_value_price_ids = array_values ($places);
+        $prod_value_price_ids = array_keys ($places);
         
 		$place_pushka = JFactory::getApplication()->getInput()->getBool('place_pushka', false);
 		
 		$productTable->place_pushka = $place_pushka;
 		$productCart['place_pushka'] = $place_pushka;
 
-//toPrint(null,'',0,'',true);
-//toPrint($productCart,'$productCart UPD',0,'message',true);
+//toPrint($places,'',0,'',true);
+//toPrint($values_ids,'$values_ids ->UpdCart()',0,'message',true);
+//toPrint($prod_value_price_ids,'$prod_value_price_ids ->UpdCart()',0,'message',true);
+//toPrint($places,'$places ->UpdCart()',0,'message',true);
+//toPrint($productCart,'$productCart ->UpdCart()',0,'message',true);
         
-        if(count($values_ids) && count($prod_value_price_ids) && (count($values_ids)==count($prod_value_price_ids))){
-            $query = "SELECT pa2.*,                pa2.id product_attr2_id,  a.cats, "//pa2.id id,pa2.product_id,pa2.attr_id,pa2.attr_value_id,pa2.price_mod,pa2.addprice,pa2.OfferId,
-                    . " av.`".$lang->get('name')."` place_name, "
-                    . " a.attr_ordering, a.`".$lang->get('name')."` attr_name, a.`".$lang->get('description')."` attr_description, a.attr_admin_type,  "
-                    . " a.`group` group_id, ag.`".$lang->get('name')."` group_name, ag.ordering group_order "
-               . "FROM #__jshopping_products_attr2 AS pa2, #__jshopping_attr_values av,  #__jshopping_attr a "
-               . "LEFT JOIN #__jshopping_attr_groups ag ON a.`group`=ag.id "
-               . "WHERE  pa2.attr_id = a.attr_id AND pa2.attr_value_id=av.value_id AND pa2.product_id=$productTable->product_id AND a.attr_admin_type=4 "
-               . " AND pa2.attr_value_id IN (".  join(', ', $values_ids).") AND pa2.id IN (".  join(', ', $prod_value_price_ids).") "
-               . "ORDER BY a.attr_ordering, ag.ordering, pa2.addprice, av.`".$lang->get('name')."`; ";
-        
+        if($prod_value_price_ids){
+            $query = "SELECT   " // pa2.*, 
+					. "    pa2.count, pa2.addprice, pa2.attr_id, pa2.attr_value_id, pa2.id id, pa2.OfferId, " 
+					. "    pa2.id product_attr2_id,  a.cats, "//pa2.product_id, pa2.price_mod, 
+                    . " av.`".$lang->get('name')."` place_name, " 
+                    . " a.attr_ordering, a.`".$lang->get('name')."` attr_name, a.`".$lang->get('description')."` attr_description, a.attr_admin_type,  " 
+                    . " a.`group` group_id, ag.`".$lang->get('name')."` group_name, ag.ordering group_order " 
+				. "FROM #__jshopping_products_attr2 AS pa2, #__jshopping_attr_values av,  #__jshopping_attr a " 
+				. "LEFT JOIN #__jshopping_attr_groups ag ON a.`group`=ag.id " 
+				. "WHERE  pa2.attr_id = a.attr_id AND pa2.attr_value_id=av.value_id AND pa2.product_id=$productTable->product_id AND a.attr_admin_type=4 " 
+//				. " AND pa2.attr_value_id IN (".  join(', ', $values_ids).") " 
+				. " AND pa2.id IN (".  join(', ', $prod_value_price_ids).") " 
+               . " ORDER BY a.attr_ordering, ag.ordering, pa2.addprice, av.`" . $lang->get('name') . "`; "; 
 
+//toPrint($query,'$query ->UpdCart()',0,'message',true);
 
-            
-        $places = JFactory::getDBO()->setQuery($query)->loadObjectList('attr_value_id');
+		
+			$places = JFactory::getDBO()->setQuery($query)->loadObjectList('product_attr2_id'); //attr_value_id
+			
+//			foreach($places as $prod_attr2_id => $_)
+//				$places[$prod_attr2_id]->count = $places_counts[$prod_attr2_id] ?? 0;
+				
+//toPrint($_places,'$_places',0,'message',true);
+//toPrint($places,'$places',0,'message',true);
             //$places = $db->loadObjectList('id'); 
             
-        if(PlaceBiletDev)JFactory::getApplication()->enqueueMessage(  "\$places-: ".print_r($places,TRUE));        
-        if(PlaceBiletDev)JFactory::getApplication()->enqueueMessage(  "\$query-: ".print_r($query,TRUE));
+			if(PlaceBiletDev)JFactory::getApplication()->enqueueMessage(  "\$places-: ".print_r($places,TRUE));        
+			if(PlaceBiletDev)JFactory::getApplication()->enqueueMessage(  "\$query-: ".print_r($query,TRUE));
         
             unset($query);
         }
         else{
             //JRoute::_( SEFLink($cart->getUrlList(),0,1) );
             $category_id = $this->JInput()->getInt('category_id', 1);
-            $product_id = $this->JInput()->getInt('product_id', 1); 
+            $product_id = $this->JInput()->getInt('product_id', 1);
             
             JRoute::_(SEFLink('index.php?option=com_jshopping&controller=product&task=view&category_id='.$category_id.'&product_id='.$product_id,1,1));
         }
@@ -1600,14 +1706,14 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
         $unsearializeplace = json_decode( $productCart['places']);
         foreach ($unsearializeplace as $av_id=> $place){
             unset($productCart['attributes_value'][$av_id]);
-        }            
+        }
         //$productCart['attributes_value']=array_diff_key($productCart['attributes_value'],$unsearializeplace);
         
         $arr_attr_places = array();
         $price = 0;
         $roundBonusExist = (bool)$this->params->get('roundBonus', FALSE); // Нужно ли округлять
         
-        foreach($places as $av_id=> $place){     
+        foreach($places as $prod_attr2_id => $place){ // $av_id
             if($bonusEnabled)
                 $place->addprice *= $bonus;   
             
@@ -1615,27 +1721,36 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
             $place->addprice = PlaceBiletHelper::RoundPrice($place->addprice);
             
             //$place->addprice *=
-			if($summ_price)
-				$price +=$place->addprice;
+//			if($summ_price)
+				$price += $place->addprice * ($places_counts[$prod_attr2_id] ?? 0);
+			
             //$arr_attr_places[intval($place->attr_value_id)]=  intval($place->id);
-            $arr_attr_places[$av_id]= (int)$place->product_attr2_id;
+            $arr_attr_places[$prod_attr2_id] = (int)$place->product_attr2_id;
             
                     //$i = $place->product_attr2_id; 
-			$productCart['attributes_value'][$av_id] = new stdClass();
+			$productCart['attributes_value'][$prod_attr2_id] = new stdClass();
                     
-			$productCart['attributes_value'][$av_id]->attr_id = $place->attr_id;
-			$productCart['attributes_value'][$av_id]->value_id = $place->attr_value_id;
+			$productCart['attributes_value'][$prod_attr2_id]->attr_id	= $place->attr_id;
+			$productCart['attributes_value'][$prod_attr2_id]->value_id	= $place->attr_value_id;
                                         
-			$productCart['attributes_value'][$av_id]->attr = $place->attr_name.' '.$place->group_name;
-			$productCart['attributes_value'][$av_id]->value = $place->place_name;
-			$productCart['attributes_value'][$av_id]->addprice = $place->addprice;
-			$productCart['attributes_value'][$av_id]->id = $place->id;
+			$productCart['attributes_value'][$prod_attr2_id]->attr		= $place->attr_name.' '.$place->group_name;
+			$productCart['attributes_value'][$prod_attr2_id]->value		= $place->place_name;
+			$productCart['attributes_value'][$prod_attr2_id]->id		= $place->id;
+			$productCart['attributes_value'][$prod_attr2_id]->addprice	= $place->addprice;
+			$productCart['attributes_value'][$prod_attr2_id]->count		= $places_counts[$prod_attr2_id] ?? 0;
             if(isset($place->OfferId))
-				$productCart['attributes_value'][$av_id]->OfferId = $place->OfferId;
+				$productCart['attributes_value'][$prod_attr2_id]->OfferId = $place->OfferId;
+			
+			if(($places_counts[$prod_attr2_id] ?? 0) > 1)
+				$productCart['attributes_value'][$prod_attr2_id]->value	.= ' ' . ($places_counts[$prod_attr2_id] ?? 0) . JText::_('JSHOP_PLACE_PCS');
         }
-        $productCart['quantity']=1;
-        if($summ_price)
-            $productCart['price']+=$price;
+//toPrint($productCart['attributes_value'],'$productCart[attributes_value]',0,'message',true);
+		
+        $productCart['quantity'] = 1;
+		
+//        if($summ_price)
+            $productCart['price'] += $price;
+		
         ksort($arr_attr_places);
         $placesJson = json_encode($arr_attr_places);
         $productCart['places']=$placesJson;
@@ -1650,14 +1765,11 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
 //                    ."<br> \$productCart:".print_r( $productCart,true)." </pre><BR><BR><BR>"; 
         $jshopModelCart->products[$key]=$productCart;
         unset($placesJson);
-        unset($price);
-        unset($arr_attr_places); 
-        unset($av_id); 
+        unset($arr_attr_places);  
         unset($place); 
         unset($productCart); 
         unset($unsearializeplace); 
-        unset($query);  
-        unset($values_ids); 
+        unset($query);
         unset($prod_value_price_ids); 
         unset($places); 
         
@@ -1674,7 +1786,10 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
       if($bonusEnabled)
         $bonus = PlaceBiletHelper::getBonusProduct($productTable->date_event);
         
-        $places= JshopHelpersRequest::getAttribute('jshop_place_id');
+        $places = JshopRequest::getAttribute('jshop_place_id');
+		$places = array_filter($places);
+		$places_counts = $places;
+//toPrint($places,'$places ->NewCart()',0,'message',true);
         
         if(PlaceBiletDev)JFactory::getApplication()->enqueueMessage(  "\$places: ".print_r($places,TRUE));
         
@@ -1690,33 +1805,40 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
 		$productTable->place_pushka = $place_pushka;
 		$temp_product['place_pushka'] = $place_pushka;
 		
-//toPrint(null,'',0,'',true);
-//toPrint($temp_product,'$temp_productNEW',0,'message',true);
+//toPrint($places,'$places ->NewCart()',0,'message',true);
+//toPrint($temp_product,'$temp_productNEW ->NewCart()',0,'message',true);
         
         $db = JFactory::getDBO();
         $lang = JSFactory::getLang();
-        $values_ids = array_keys($places);
-        $prod_value_price_ids = array_values ($places);
-        
+//        $values_ids = array_keys($places);
+//        $prod_value_price_ids = array_values ($places);
+        $prod_value_price_ids = array_keys ($places);
 
-
         
-        if(count($values_ids) && count($prod_value_price_ids) && (count($values_ids)==count($prod_value_price_ids))){
+        if($prod_value_price_ids){
+			
+			
+			
             $query = "SELECT   pa2.*,      pa2.id product_attr2_id,      a.cats, "//pa2.id id, pa2.attr_id,pa2.product_id,pa2.attr_value_id, pa2.price_mod, pa2.addprice,pa2.OfferId,
-                    . " av.`".$lang->get('name')."` place_name, "
-                    . " a.attr_ordering, a.`".$lang->get('name')."` attr_name, a.`".$lang->get('description')."` attr_description, a.attr_admin_type,  "
-                    . " a.`group` group_id, ag.`".$lang->get('name')."` group_name, ag.ordering group_order "
-               . "FROM #__jshopping_products_attr2 AS pa2, #__jshopping_attr_values av,  #__jshopping_attr a "
-               . "LEFT JOIN #__jshopping_attr_groups ag ON a.`group`=ag.id "
-               . "WHERE  pa2.attr_id = a.attr_id AND pa2.attr_value_id=av.value_id AND pa2.product_id=".$temp_product['product_id']." AND a.attr_admin_type=4 "
-               . " AND pa2.attr_value_id IN (".  join(', ', $values_ids).") AND pa2.id IN (".  join(', ', $prod_value_price_ids).") "
-               . "ORDER BY a.attr_ordering, ag.ordering, pa2.addprice, av.`".$lang->get('name')."`; ";
+                    . " av.`" . $lang->get('name') . "` place_name, "
+                    . " a.attr_ordering, a.`".$lang->get('name') . "` attr_name, a.`" . $lang->get('description') . "` attr_description, a.attr_admin_type,  "
+                    . " a.`group` group_id, ag.`" . $lang->get('name') . "` group_name, ag.ordering group_order "
+				. "FROM #__jshopping_products_attr2 AS pa2, #__jshopping_attr_values av,  #__jshopping_attr a "
+				. "LEFT JOIN #__jshopping_attr_groups ag ON a.`group`=ag.id "
+				. "WHERE  pa2.attr_id = a.attr_id AND pa2.attr_value_id=av.value_id AND pa2.product_id=" . ((int)$temp_product['product_id']) . " AND a.attr_admin_type=4 "
+//				. " AND pa2.attr_value_id IN (".  join(', ', $values_ids).") "
+				. " AND pa2.id IN (" .  join(', ', $prod_value_price_ids) . ") "
+               . "ORDER BY a.attr_ordering, ag.ordering, pa2.addprice, av.`" . $lang->get('name') . "`; ";
         
 //if(PlaceBiletDev)JFactory::getApplication()->enqueueMessage(  "\$places: ".print_r($query,TRUE));   
             
             $db->setQuery($query);
             //$places = $db->loadObjectList('id');
-            $places = $db->loadObjectList('attr_value_id');
+            $places = $db->loadObjectList('product_attr2_id');// attr_value_id
+			
+//			foreach($places as $prod_attr2_id => $count)
+//				$places[$prod_attr2_id]->count = $_places[$prod_attr2_id] ?? 0;
+			
             unset($query);
         }
         else{
@@ -1730,11 +1852,11 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
         $arr_attr_places = array();
         
         $summ_price = FALSE;
-        $temp_product['price_places']=0;
+        $temp_product['price_places'] = 0;
         $price = 0;
         $roundBonusExist = (bool)$this->params->get('roundBonus', FALSE); // Нужно ли округлять
         
-        foreach($places as $av_id=> $place){
+        foreach($places as $prod_attr2_id => $place){
             if($bonusEnabled)
                 $place->addprice *= $bonus;
             
@@ -1742,26 +1864,30 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
                 $place->addprice = PlaceBiletHelper::RoundPrice($place->addprice);
             
             //if($summ_price)
-                $price +=$place->addprice;
+                $price += $place->addprice * ($places_counts[$prod_attr2_id] ?? 0);
             //$arr_attr_places[intval($place->attr_value_id)]=  intval($place->id);
-            $arr_attr_places[$av_id]= (int)$place->product_attr2_id;
+					$arr_attr_places[$prod_attr2_id] = (int)$place->product_attr2_id;
             
                     //$i = $place->product_attr2_id; 
-                    $temp_product['attributes_value'][$av_id] = new stdClass();
-					$temp_product['attributes_value'][$av_id]->attr_id = $place->attr_id;
-					$temp_product['attributes_value'][$av_id]->value_id = $place->attr_value_id;
-                    $temp_product['attributes_value'][$av_id]->attr = $place->attr_name.' '.$place->group_name;
-                    $temp_product['attributes_value'][$av_id]->value = $place->place_name;
-                    $temp_product['attributes_value'][$av_id]->addprice = $place->addprice;
-                    $temp_product['attributes_value'][$av_id]->id = $place->id;
+                    $temp_product['attributes_value'][$prod_attr2_id] = new stdClass();
+					$temp_product['attributes_value'][$prod_attr2_id]->attr_id	= $place->attr_id;
+					$temp_product['attributes_value'][$prod_attr2_id]->value_id	= $place->attr_value_id;
+                    $temp_product['attributes_value'][$prod_attr2_id]->attr		= $place->attr_name . ' ' . $place->group_name;
+                    $temp_product['attributes_value'][$prod_attr2_id]->value	= $place->place_name;
+                    $temp_product['attributes_value'][$prod_attr2_id]->id		= $place->id;
+					$temp_product['attributes_value'][$prod_attr2_id]->addprice	= $place->addprice;
+					$temp_product['attributes_value'][$prod_attr2_id]->count	= $places_counts[$prod_attr2_id] ?? 0;
                     
-                    if(isset($place->OfferId))
-                        $temp_product['attributes_value'][$av_id]->OfferId = $place->OfferId;
+			if(isset($place->OfferId))
+				$temp_product['attributes_value'][$prod_attr2_id]->OfferId = $place->OfferId;
+					
+			if(($places_counts[$prod_attr2_id] ?? 0) > 1)
+				$temp_product['attributes_value'][$prod_attr2_id]->value	.= ' ' . ($places_counts[$prod_attr2_id] ?? 0) . JText::_('JSHOP_PLACE_PCS');
         }
         $temp_product['quantity']=1;
         //if($summ_price)
-        //    $temp_product['price']+=$price;
-        //$temp_product['price']=$price;
+        //    $temp_product['price'] += $price;
+        //$temp_product['price'] = $price;
         
         $temp_product['date_event']		= $productTable->date_event;
         $temp_product['date_tickets']	= $productTable->date_tickets;
@@ -1777,10 +1903,10 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
         
 //        if(PlaceBiletDev)JFactory::getApplication()->enqueueMessage(  "\$productCart: ".print_r($temp_product,TRUE));
         
-        $temp_product['price_places']=$price;
+        $temp_product['price_places'] = $price;
         ksort($arr_attr_places);
         $placesJson = json_encode($arr_attr_places);//serialize()
-        $temp_product['places']=$placesJson;
+        $temp_product['places'] = $placesJson;
         
 //        if($this->config->error_reporting == 'development'){
 //                    echo "<pre>\$temp_product:  <br>".print_r( $temp_product,true)                    
@@ -1832,7 +1958,7 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
         //$viewCart->set('User',$this->usershop);
         //return;
         
-        //toPrint(5555555);
+//        toPrint(5555555);
         
         $products = $viewCart->products;
         $summ = 0;
@@ -1841,17 +1967,18 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
             //$pdoduct['price'] 
             //$viewCart->products[$key]['price'] = 0;
             //$product['price'] = 0;
-            $viewCart->products[$key]['price_places']=0;
+            $viewCart->products[$key]['price_places'] = 0;
             //$viewCart->products[$key]['price_places_not_bonus'] = 0;
             
-            //toPrint($viewCart->products[$key]['price_places_not_bonus']);
+//toPrint($viewCart->products[$key]['price_places_not_bonus']);
+//toPrint($product['attributes_value'],'$product[attributes_value]',0,'message');
             
             foreach ($product['attributes_value'] as $prod_attr_value){
-                if(isset($prod_attr_value->addprice)){
+                if(isset($prod_attr_value->addprice) && $prod_attr_value->addprice && $prod_attr_value->count){
                     //$product['price'] += $prod_attr_value->addprice;
-                    //$viewCart->products[$key]['price'] += $prod_attr_value->addprice;
-                    $summ += $prod_attr_value->addprice; 
-                    $viewCart->products[$key]['price_places']+=$prod_attr_value->addprice;
+                    $viewCart->products[$key]['price'] += $prod_attr_value->addprice * $prod_attr_value->count;
+                    $summ += $prod_attr_value->addprice;
+                    $viewCart->products[$key]['price_places'] += $prod_attr_value->addprice * $prod_attr_value->count;
                     //toPrint($viewCart->products[$key],'$viewCart->products[$key]');
                     //$viewCart->products[$key]['price_places_not_bonus'] += PlaceBiletHelper::getBonusProduct($viewCart->products[$key]['date_event'])*$prod_attr_value->addprice;
                     //var_dump($viewCart->products[$key]['price']);
@@ -1872,46 +1999,65 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
         
     }
     
-
+	/*
+	 * Клиент: Выполняется перед сохранением Ордера при покупке товара
+	 */
+	function onAfterCreateOrder(&$order, &$cart){
+		
+		
+		$order->f_name .= ' ' . $order->phone;
+		$order->f_name .= ' ' . $order->mobile_phone;
+		$order->l_name .= ' ' . $order->d_FIO ?: $order->FIO;
+		
+	}
+	
 	/**
+	 * Клиент: При покупе товара
 	 *  - Указать поля которые будут сохранены в таблицу заказа продукта в БД
+	 * Выполняется после onAfterCreateOrder
 	 */
     function onBeforeSaveOrderItem (&$order_itemTable, &$productItemOrderSession = []){//$productItemOrderSession 
-            $productItemOrderSession['price'] += $productItemOrderSession['price_places'];
-            $order_itemTable->product_item_price+= $productItemOrderSession['price_places'];
-            $order_itemTable->date_event	= $productItemOrderSession['date_event'];
-            $order_itemTable->date_tickets	= $productItemOrderSession['date_tickets'];
-            $order_itemTable->event_id		= $productItemOrderSession['event_id'];
-            $order_itemTable->count_places	= $productItemOrderSession['count_places'];
+		$productItemOrderSession['price'] += $productItemOrderSession['price_places'];
+		$order_itemTable->product_item_price+= $productItemOrderSession['price_places'];
+		$order_itemTable->date_event	= $productItemOrderSession['date_event'];
+		$order_itemTable->date_tickets	= $productItemOrderSession['date_tickets'];
+		$order_itemTable->event_id		= $productItemOrderSession['event_id'];
+		$order_itemTable->count_places	= $productItemOrderSession['count_places'];
             
-            $places = array();
-            $place_prices = array();
-            $place_names = array();
-
-            
+		$places			= array();
+		$place_prices	= array();
+		$place_counts	= array();
+		$place_names	= array();
+		
+		
 //toPrint($order_itemTable,'$order_itemTable '.($r?'True':'False'),0,'pre',true); 
 //toLog(array_keys((array)$order_itemTable), get_class($order_itemTable). ' '.($r?'True':'False'), 'finish.txt','',true);
 //toLog(array_keys((array)$productItemOrderSession), ' '.($r?'True':'False'), 'finish.txt','',true);
-			
+//toPrint($productItemOrderSession['attributes_value'],'$productItemOrderSession[attributes_value]',0,'message');
+		
         foreach ($productItemOrderSession['attributes_value'] as $prod_attr_value){ 
-			if(isset($prod_attr_value->addprice)){
-				$places			[$prod_attr_value->value_id]	= $prod_attr_value->attr_id;
-                $place_prices	[$prod_attr_value->id]			= $prod_attr_value->addprice; // !
-                $place_names	[$prod_attr_value->value_id]	= $prod_attr_value->attr.' - '.$prod_attr_value->value;
+			if(isset($prod_attr_value->addprice) && $prod_attr_value->addprice && $prod_attr_value->count){
+				$places			[$prod_attr_value->id]	= $prod_attr_value->value_id . ',' . $prod_attr_value->attr_id;
+                $place_prices	[$prod_attr_value->id]	= $prod_attr_value->addprice; // !
+				$place_counts	[$prod_attr_value->id]	= $prod_attr_value->count; // !
+                $place_names	[$prod_attr_value->id]	= $prod_attr_value->attr.' - '.$prod_attr_value->value;
+				if($prod_attr_value->count > 1)
+					$place_names[$prod_attr_value->id]	.= ' ' . $prod_attr_value->count . JText::_('JSHOP_PLACE_PCS');
                 //$product['price'] += $prod_attr_value->addprice;
                 //$viewCart->products[$key]['price'] += $prod_attr_value->addprice;
                 $summ += $prod_attr_value->addprice;
 //                 $viewCart->products[$key]['price_places'] += $prod_attr_value->addprice;
-                $productItemOrderSession['price_places'] += $prod_attr_value->addprice;
-				$productItemOrderSession['price'] += $prod_attr_value->addprice;
+                $productItemOrderSession['price_places'] += $prod_attr_value->addprice * $prod_attr_value->count;
+				$productItemOrderSession['price'] += $prod_attr_value->addprice * $prod_attr_value->count;
 		
                 //var_dump($viewCart->products[$key]['price']);
             }
         }
             
-        $order_itemTable->places		= json_encode($places);		 // array( value_id  => attr_id,...)
-        $order_itemTable->place_prices	= json_encode($place_prices);// array( ProdValID =>	price,...)
-        $order_itemTable->place_names	= serialize($place_names);	//	array( value_id => attr_Name . ' - ' . place_name,... )
+		$order_itemTable->places		= json_encode($places);		 // array( ProdValID => "value_id,attr_id", ...)
+		$order_itemTable->place_prices	= json_encode($place_prices);// array( ProdValID =>	price, ...)
+		$order_itemTable->place_counts	= json_encode($place_counts);// array( ProdValID =>	count, ...)
+		$order_itemTable->place_names	= serialize($place_names);	//	array( ProdValID => attr_Name . ' - ' . place_name,... )
         
 			
 		if(empty($order_itemTable->order_id) || empty($order_itemTable->order_status))
@@ -1950,27 +2096,243 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
 //        }   
     }
             
-    function onAfterLoadPriceAndCountProducts(&$modelCart){
-        //return;
-                $jshopConfig = JSFactory::getConfig();
-        $modelCart->price_product = 0;
-        $modelCart->price_product_brutto = 0;
-        $modelCart->count_product = 0;
-        $modelCart->count_places = 0;
+	
+	/**
+	 * Клиент:  После сохранения Ордера после сохранения ->onBeforeSaveOrderItem()
+	 * @param type $orderTable
+	 * @param type $cartModel
+	 */
+	function onAfterCreateOrderFull(&$orderTable=null, &$cartModel=null){
         
-        
-        $new_prods= array();
+//		$orderTable->f_name .= ' ' . $orderTable->phone;
+//		$orderTable->f_name .= ' ' . $orderTable->mobile_phone;
+//		$orderTable->l_name .= ' ' . $orderTable->d_FIO ?: $orderTable->FIO;
+		
+		
+		$place_go = '';
+		$i = 0;
+		
+		$timezone = \PlacebiletHelper::getTimezone();
+		$unix_timestamp = JDate::getInstance('now',$timezone)->getTimestamp();
+		
+		
+//		$order_itemTable->place_go		= $place_go; // Default Status tickets   
+//		$place_go += ',' . $i++ . ':' . '' . ':' . $unix_timestamp;// Index:Status:Time
+		
+//            $orderTable->places	   ;	// array( value_id  => attr_id,...)	//JSON
+//            $orderTable->place_prices;	// array( ProdValID =>	price,...)	//JSON
+//            $orderTable->place_names ;	// array( value_id => attr_Name . ' - ' . place_name,... )//serializeArray
+//            $orderTable->place_go	   ;	// Index:StatusCode:TimeUnix,...   //CSV	123:P:1676813832,... 
+		
+//			PlaceBiletHelper::$param;
+		
+		$idProds = array_column($cartModel->products, 'product_id');
+			
+		$query = "
+SELECT i.product_id, i.order_item_id 
+FROM #__jshopping_order_item i
+WHERE i.product_id IN (" . implode(',', $idProds) . ") AND i.order_id = $orderTable->order_id ;
+		";
+		if (count($idProds))
+			$idProds = JFactory::getDBO()->setQuery($query)->loadAssocList('product_id', 'order_item_id');
+			
+		
+//toPrint(null,'',0,false,false);
+		// Определение QRcode для места
+		foreach ($cartModel->products as $prod_i => $prod){
+				
+			if (empty($prod['attributes_value'])){
+				continue;
+			}
+			
+			/* ID подзаказа для продукта */
+			$order_item_id = $idProds[$prod['product_id']] ?? 0;
+				
+//toPrint($prod['attributes_value'],'$prod[attributes_value]',0,'message',true);
+			/* Определение количества разрядов индекса */
+//			$index_length = strlen(($prod['count_places'] - 1));
+			$index = 0;
+				
+			foreach($prod['attributes_value'] as $av_id => $attr){
+						
+//				$index_string = str_pad($index, $index_length, "0", STR_PAD_LEFT);
+		
+//toPrint($av_id,'$index',0,'message',true);
+//toPrint($prod['count_places'],'$prod[count_places]',0,'message',true);
+				$QRcode = $this->getQRcode($order_item_id, $index++, $prod['count_places']);
+				
+//toPrint($QRcode,'$QRcode',0,'message',true);
+				/* QR код билета */
+				$cartModel->products[$prod_i]['attributes_value'][$av_id]->QRcode = $QRcode;
+			}
+		}
+		
+//toPrint(null,'',0,false,false);
+//toPrint($this->params,'$Plugin->param:',0,'message',true);
+//return;
+		
+		$idKeysPuska = []; // $idKeysPuska[orderItemID][index] = key
+
+		$pushka = $this->getPushka();
+//toPrint($pushka,'$pushka:',0,'message',true);
+			
+		if($pushka && $this->params->organization_id ?? false){
+			$phone = $orderTable->d_mobil_phone ?: $orderTable->d_phone ?: $orderTable->mobil_phone ?: $orderTable->phone;
+			$phone = str_replace(['-','(',')',' ','#','.',',','tel','t','тел','т'], '', trim($phone));
+			$phone = substr($phone, strlen($phone) - 10);
+		
+			$name_FIO = $orderTable->d_FIO ?: $orderTable->FIO;
+			$name_F = $orderTable->d_f_name ?: $orderTable->f_name;
+			$name_L = $orderTable->d_l_name ?: $orderTable->l_name;
+			$name_M = $orderTable->d_m_name ?: $orderTable->m_name;
+			
+//toPrint($pushka,'$pushka',0,'message',true);
+//toPrint($this->params->organization_id,'$organization_id',0,'message',true);
+				
+//toPrint($cartModel->products,'$prods Item:',0,'message',true);
+			
+			/* Публикация билета Пушка в системе ПроКультураРФ  */
+			foreach ($cartModel->products as $prod_i => $prod){
+//toPrint($prod['event_id'],'$event_id',0,'message',true);
+				if(empty($prod['event_id']) || empty($prod['attributes_value'])){
+					continue;
+				}
+//toPrint($prod_i,'$prod_i',0,'message',true);
+				$order_item_id = $idProds[$prod['product_id']] ?? 0;
+				$prod['order_item_id'] = $order_item_id;
+				
+//continue;
+//toPrint(count($prod['attributes_value']),'count(attributes_value)',0,'message',true);
+				foreach($prod['attributes_value'] as $av_id => $attr){
+//					$attributes_value .= $attr->attr.': '.$attr->value."\n";	$attributes_value .= $attr->attr.': '.$attr->value."\n";
+
+//toPrint(null,'',0,''); //2023-01-01 12:00:00
+//toPrint($prod['date_tickets'],  ':('.  ''
+//		. ' 1:' .empty($prod['date_tickets'])
+//		. ' 2:' .$prod['date_tickets'] == '0000-00-00 00:00:00'
+//		.  ' -'. $prod['product_id'],true, 'message',true );// 2023-04-24 01:00:00  // 0000-00-00 00:00:00
+
+					$dataPushka = \API\Kultura\Pushka\Ticket::new();
+
+					// Публикация Билета */
+					$dataPushka->buyer_mobile_phone		= $phone;//'9004881200'; // *Мобильный телефон (10 цифр)
+
+					$dataPushka->payment_ticket_price	= (int)$attr->addprice; //'30';		// *Цена билета (номинал)
+					$dataPushka->payment_amount			= (int)$attr->addprice; //30; // *Сумма платежа по Пушкинской карте
+					$dataPushka->payment_date			= $unix_timestamp; //time();//0;//time();		// *Дата/время совершения платежа (unix timestamp
+					
+					$dataPushka->session_event_id		= $prod['event_id']; //1299361; //*ID мероприятия в PRO.Культура   1299361	1243159		1241531
+					$dataPushka->session_organization_id= $this->params->organization_id; //666666; //*ID организации в Про.Культура
+					$dataPushka->session_date			= 
+							(empty($prod['date_tickets']) || $prod['date_tickets'] == '0000-00-00 00:00:00') ?
+							JDate::getInstance($prod['date_event'],$timezone)->getTimestamp() :
+							JDate::getInstance($prod['date_tickets'],$timezone)->getTimestamp();//mktime(10, 00, 00, 01, 31, 2023);	//*Дата/Время проведения сеанса (unix timestamp)
+//	https://orelmusizo.ru/bilety/punkty/product/view/1/9
+//toPrint($dataPushka->session_date,  ':'
+//		. JDate::getInstance($dataPushka->session_date)
+//		.  ' -'. $prod['product_id'],true, 'message',true );// 2023-04-24 01:00:00  // 0000-00-00 00:00:00
+//continue;
+					$dataPushka->barcode				= $attr->QRcode;// $QRcode;//'9004881200123';
+					$dataPushka->barcode_type			= '5'; //EAN-13 Штрихкод -3бит,  Code128 Штрихкод -2бит,  QRcode -1бит,(5- QR и EAN13; 1 - QR; 4 - EAN13, 3 -QRиCODE128, ) 
+					$dataPushka->visitor_full_name		= $name_FIO ?? '';//"Kornelius";// Серджио Великий
+					$dataPushka->visitor_first_name		= $name_F ?? '';
+					$dataPushka->visitor_last_name		= $name_L ?? '';
+					$dataPushka->visitor_middle_name	= $name_M ?? '';
+
+					// Необязательные свойства
+					$dataPushka->comment				= "OrderID:$orderTable->order_id,ProdID:$prod[product_id]";
+					$dataPushka->payment_id				= $orderTable->order_id;//getNewId('payment_id');  // ID платежа у Билетного оператора
+					$dataPushka->payment_rrn			= $orderTable->order_id;//getNewId('payment_rrn');	// RRN (Retrieval Reference Number) уникальный идентификатор транзакции
+					$dataPushka->session_place			= $prod['product_name'] ?? '';
+					$dataPushka->session_params			= $attr->attr . ' - ' . $attr->value;
+
+//toPrint($dataPushka,'$dataPushka:',0,'message',true);
+		//			$orderTable->places		= json_encode($places);	
+					// str_getcsv
+//					$orderTable->order_id; 
+//toPrint($dataPushka,'$dataPushka Request:',0,'message',true);
+					
+					if(isset($prod['place_pushka']) && $prod['place_pushka']){
+						$dataPushka = $pushka->AddTicket($dataPushka);
+						$idKeysPuska[$order_item_id][$av_id] = $dataPushka->id ?? '';
+					}
+						
+//toPrint($dataPushka,'$dataPushka Response:',0,'message',true);
+					// номер билета в системе ПушКарта */
+					
+					$cartModel->products[$prod_i]['attributes_value'][$av_id]->pushka_id = $dataPushka->id ?? '';
+					$cartModel->products[$prod_i]['attributes_value'][$av_id]->status	 = $dataPushka->status ?? '';
+				}
+			}
+//return;
+//toPrint($idKeysPuska,'$idKeysPuska:',0,'message',true);
+			
+			foreach ($idKeysPuska as $order_item_id => $keys){
+//				$keys = array_filter($keys);
+				
+				if(empty($keys)){
+					continue;
+				}
+				
+				$keys_string = implode(',', $keys);
+				
+				$query = "
+UPDATE #__jshopping_order_item
+SET place_pushka = '$keys_string'
+WHERE order_item_id = $order_item_id;
+				";
+//toPrint($query,'$query:',0,'message',true);
+				JFactory::getDBO()->setQuery($query)->execute();
+			}
+			
+			
+			
+		}
+			
+		
+//toPrint($cartModel->products,'$prods Item:',0,'message',true);
+		
+		
+		
 		
         
-        if (count($modelCart->products)){
+        foreach($cartModel->products as $key => $prod){
+            $cartModel->products[$key]['price'] += $prod['price_places'];
+        } 
+		
+		if(empty($orderTable) || empty($orderTable->order_id) || empty($orderTable->order_status))
+			return; 
+		
+// return;
+		$r = PlaceBiletHelper::deletePlaces($orderTable->order_id,$orderTable->order_status);
+		
+//		toPrint($orderTable,'$orderTable '.($r?'True':'False'),0,'pre',true);
+//		toLog($orderTable, '$orderTable '.($r?'True':'False'), 'finish.txt','',true);
+    }
+
+	
+    function onAfterLoadPriceAndCountProducts(&$modelCart){
+        //return;
+		$jshopConfig = JSFactory::getConfig();
+		$modelCart->price_product = 0;
+		$modelCart->price_product_brutto = 0;
+		$modelCart->count_product = 0;
+		$modelCart->count_places = 0;
+		
+//toPrint();
+//toPrint($modelCart->products,'$modelCart->products',0,'message');
+        
+		$new_prods= array();
+        
+		if ($modelCart->products){
             
-        foreach ($modelCart->products as $prod){  
-            $prod['quantity']=1;
-            $new_prods[$prod['product_id']] = $prod;
-        }
-        $modelCart->products = $new_prods;   
-            
-            foreach($modelCart->products as $key => $prod){
+			foreach ($modelCart->products as $prod){  
+				$prod['quantity']=1;
+				$new_prods[$prod['product_id']] = $prod;
+			}
+			$modelCart->products = $new_prods;   
+			
+			foreach($modelCart->products as $key => $prod){
                 
                 $modelCart->products[$key]['count_places'] = 0;
 //                $modelCart->products[$key]['AbraCadabra'] = $place_pushka;
@@ -1978,13 +2340,16 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
                 $prod_price = $prod['price'] ?? 0; // 0 ;
                 $prod_price_places = 0;
                     //$modelCart->count_places += count($prod['attributes_value']);
-                if(isset($prod['attributes_value']))
-                foreach ($prod['attributes_value'] as $prod_attr_value){
+
+//toPrint($prod['attributes_value'],'$prod[attributes_value]',0,'message');
+                
+                foreach ($prod['attributes_value'] ?? [] as $prod_attr_value){
                     if(isset($prod_attr_value->addprice)){
                         //$product['price'] += $prod_attr_value->addprice;
                         //$modelCart->products[$key]['price'] += $prod_attr_value->addprice;
-                        $prod_price_places += $prod_attr_value->addprice;
-                        $modelCart->products[$key]['count_places'] += 1;
+                        $prod_price_places += $prod_attr_value->addprice * $prod_attr_value->count;
+                        $modelCart->products[$key]['count_places'] += $prod_attr_value->count;
+//                        $prod_attr_value->value .= ' - ' . $prod_attr_value->count . JText::_('JSHOP_PLACE_PCS');
                         //$modelCart->price_product += $prod_attr_value->addprice;
                         //var_dump($viewCart->products[$key]['price']);
                         //$prod['price_places']+=$price;
@@ -1995,11 +2360,11 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
                 $prod['price_places'] = $prod_price_places;
                 $modelCart->products[$key]['price_places'] = $prod_price_places;
                 //$modelCart->products[$key]['product_name'] .= " ". $prod['count_places'];
-                //---------------------                
+                //---------------------
                 
-                $modelCart->price_product += $prod['price']+$prod_price_places;// * $prod['quantity'];
-                if ($jshopConfig->display_price_front_current==1){
-                    $modelCart->price_product_brutto += (($prod_price + $prod_price_places)*(1+$prod['tax']/100));// * $prod['quantity'];
+                $modelCart->price_product += $prod['price'] + $prod_price_places;// * $prod['quantity'];
+                if ($jshopConfig->display_price_front_current == 1){
+                    $modelCart->price_product_brutto += (($prod_price + $prod_price_places) * (1 + $prod['tax'] / 100));// * $prod['quantity'];
                 }else{
                     $modelCart->price_product_brutto += $prod_price + $prod_price_places;// * $prod['quantity'];
                 }
@@ -2350,9 +2715,9 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
      * Админка: Вызывается в моделе перед удалением элемента заказа
      */
     function onBeforeRemoveOrder(&$cid){ //order_id
-        
+        return;
         $db = JFactory::getDBO();
-        $query = "SELECT oi.order_item_id id, oi.order_item_id, oi.order_id, oi.product_id, oi.places, oi.place_prices "
+        $query = "SELECT oi.order_item_id id, oi.order_item_id, oi.order_id, oi.product_id, oi.place_prices, oi.place_counts " // oi.places, 
                 . " FROM #__jshopping_order_item oi "
                 . " WHERE oi.order_id IN ( ".join(",",$cid)." ); ";
         $db->setQuery($query);
@@ -2361,9 +2726,9 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
         $ar = array();
 
         foreach ($order_items as $item) {
-            $values_place = json_decode($item->places); //unserialize
-            foreach ($values_place as $attr_values_id => $attr_id) {
-                $ar[$item->product_id][$attr_id][] = $attr_values_id;
+            $place_counts = json_decode($item->place_counts); //unserialize
+            foreach ($place_counts as $prod_attr2_id => $place_count) {
+                $ar[$item->product_id][$attr_id][] = $prod_attr2_id;
             }
         }
         $row_delete = 0; 
@@ -2405,7 +2770,8 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
         $types[] = JHTML::_('select.option', '1','≡'.JText::_('JSHOP_INPUT_SELECT'),'attr_type_id','attr_type');
         $types[] = JHTML::_('select.option', '2','☼'.JText::_('JSHOP_INPUT_RADIO'),'attr_type_id','attr_type');
         $types[] = JHTML::_('select.option', '3','☺'.JText::_('JSHOP_INPUT_CHECKBOX'),'attr_type_id','attr_type');
-        $types[] = JHTML::_('select.option', '4','♪'.JText::_('JSHOP_INPUT_CHECKBOX_PLACE'),'attr_type_id','attr_type');        
+//		$types[] = JHTML::_('select.option', '5','♪'.JText::_('JSHOP_INPUT_COUNTNUM_PLACE'),'attr_type_id','attr_type');
+        $types[] = JHTML::_('select.option', '4','♪'.JText::_('JSHOP_INPUT_CHECKBOX_PLACE'),'attr_type_id','attr_type');
         $type_attribut = JHTML::_('select.genericlist', $types, 'attr_admin_type','class = "inputbox" size = "1"','attr_type_id','attr_type',($attribut->attr_admin_type?$attribut->attr_admin_type:$attribut->attr_type));
       //$type_attribut = JHTML::_('select.genericlist', $types, 'attr_type','class = "inputbox" size = "1"','attr_type_id','attr_type',$attribut->attr_type);
         
@@ -3086,6 +3452,9 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
 //        if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("\$adv_user: <pre>".print_r($adv_user, TRUE)."</pre>");
 //        if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("\$model: <pre>".print_r($modelUseredit, TRUE)."</pre>");
 		
+//        $style = JUri::root(). "/plugins/jshopping/placebilet/media/bilet.css";//JUri::root(). 
+//        JHtml::stylesheet($style);
+		
     }
     
     /**
@@ -3101,9 +3470,11 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
 		$config->pushka_key			= $this->params->pushka_key ?? '';
 		$config->pushka_mode		= $this->params->pushka_mode ?? '';
 
-        $style= JUri::root(). "/plugins/jshopping/placebilet/media/bilet.css";
-        JHtml::stylesheet($style);
-		//
+		if(JFactory::getApplication()->getDocument()){
+			$style = "plugins/jshopping/placebilet/media/bilet.css";//JUri::root(). 
+			\Joomla\CMS\HTML\HTMLHelper::stylesheet($style);
+		}
+		
 		$config->product_attribute_type_template[0] = 'attribute_input_place';// 'attribute_input_place';
 		
 		$config->product_attribute_accordion = $this->params->get('accordion',false);
@@ -3208,7 +3579,8 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
      * Как правило это происходит вначале контролера.
      */
     function onBeforeLoadJshopConfig($config){    
-		
+		$config->noimage = 'noimage.png';
+				
 		$config->organization_id	= $this->params->organization_id ?? 0;
 		$config->pushka_url			= $this->params->pushka_url ?? '';
 		$config->pushka_key			= $this->params->pushka_key ?? '';
@@ -3396,213 +3768,6 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
 	
 
 
-	/**
-	 * Клиент:  
-	 * @param type $orderTable
-	 * @param type $cartModel
-	 */
-	function onAfterCreateOrderFull(&$orderTable=null, &$cartModel=null){
-        
-		$place_go = '';
-		$i = 0;
-		
-		$timezone = \PlacebiletHelper::getTimezone();
-		$unix_timestamp = JDate::getInstance('now',$timezone)->getTimestamp();
-		
-		
-//		$order_itemTable->place_go		= $place_go; // Default Status tickets   
-//		$place_go += ',' . $i++ . ':' . '' . ':' . $unix_timestamp;// Index:Status:Time
-		
-//            $orderTable->places	   ;	// array( value_id  => attr_id,...)	//JSON
-//            $orderTable->place_prices;	// array( ProdValID =>	price,...)	//JSON
-//            $orderTable->place_names ;	// array( value_id => attr_Name . ' - ' . place_name,... )//serializeArray
-//            $orderTable->place_go	   ;	// Index:StatusCode:TimeUnix,...   //CSV	123:P:1676813832,... 
-		
-//			PlaceBiletHelper::$param;
-		
-		$idProds = array_column($cartModel->products, 'product_id');
-			
-		$query = "
-SELECT i.product_id, i.order_item_id 
-FROM #__jshopping_order_item i
-WHERE i.product_id IN (" . implode(',', $idProds) . ") AND i.order_id = $orderTable->order_id ;
-		";
-		if (count($idProds))
-			$idProds = JFactory::getDBO()->setQuery($query)->loadAssocList('product_id', 'order_item_id');
-			
-			
-//toPrint(null,'',0,false,false);
-		// Определение QRcode для места
-		foreach ($cartModel->products as $prod_i => $prod){
-				
-			if (empty($prod['attributes_value'])){
-				continue;
-			}
-			
-			/* ID подзаказа для продукта */
-			$order_item_id = $idProds[$prod['product_id']] ?? 0;
-				
-//toPrint($prod['attributes_value'],'$prod[attributes_value]',0,'message',true);
-			/* Определение количества разрядов индекса */
-//			$index_length = strlen(($prod['count_places'] - 1));
-			$index = 0;
-				
-			foreach($prod['attributes_value'] as $av_id => $attr){
-						
-//				$index_string = str_pad($index, $index_length, "0", STR_PAD_LEFT);
-		
-//toPrint($av_id,'$index',0,'message',true);
-//toPrint($prod['count_places'],'$prod[count_places]',0,'message',true);
-				$QRcode = $this->getQRcode($order_item_id, $index++, $prod['count_places']);
-				
-//toPrint($QRcode,'$QRcode',0,'message',true);
-				/* QR код билета */
-				$cartModel->products[$prod_i]['attributes_value'][$av_id]->QRcode = $QRcode;
-			}
-		}
-		
-//toPrint(null,'',0,false,false);
-//toPrint($this->params,'$Plugin->param:',0,'message',true);
-//return;
-		
-		$idKeysPuska = []; // $idKeysPuska[orderItemID][index] = key
-
-		$pushka = $this->getPushka();
-//toPrint($pushka,'$pushka:',0,'message',true);
-			
-		if($pushka && $this->params->organization_id ?? false){
-			$phone = $orderTable->d_mobil_phone ?: $orderTable->d_phone ?: $orderTable->mobil_phone ?: $orderTable->phone;
-			$phone = str_replace(['-','(',')',' ','#','.',',','tel','t','тел','т'], '', trim($phone));
-			$phone = substr($phone, strlen($phone) - 10);
-		
-			$name_FIO = $orderTable->d_FIO ?: $orderTable->FIO;
-			$name_F = $orderTable->d_f_name ?: $orderTable->f_name;
-			$name_L = $orderTable->d_l_name ?: $orderTable->l_name;
-			$name_M = $orderTable->d_m_name ?: $orderTable->m_name;
-			
-//toPrint($pushka,'$pushka',0,'message',true);
-//toPrint($this->params->organization_id,'$organization_id',0,'message',true);
-				
-//toPrint($cartModel->products,'$prods Item:',0,'message',true);
-			
-			/* Публикация билета Пушка в системе ПроКультураРФ  */
-			foreach ($cartModel->products as $prod_i => $prod){
-//toPrint($prod['event_id'],'$event_id',0,'message',true);
-				if(empty($prod['event_id']) || empty($prod['attributes_value'])){
-					continue;
-				}
-//toPrint($prod_i,'$prod_i',0,'message',true);
-				$order_item_id = $idProds[$prod['product_id']] ?? 0;
-				$prod['order_item_id'] = $order_item_id;
-				
-//continue;
-//toPrint(count($prod['attributes_value']),'count(attributes_value)',0,'message',true);
-				foreach($prod['attributes_value'] as $av_id => $attr){
-//					$attributes_value .= $attr->attr.': '.$attr->value."\n";	$attributes_value .= $attr->attr.': '.$attr->value."\n";
-
-//toPrint(null,'',0,''); //2023-01-01 12:00:00
-//toPrint($prod['date_tickets'],  ':('.  ''
-//		. ' 1:' .empty($prod['date_tickets'])
-//		. ' 2:' .$prod['date_tickets'] == '0000-00-00 00:00:00'
-//		.  ' -'. $prod['product_id'],true, 'message',true );// 2023-04-24 01:00:00  // 0000-00-00 00:00:00
-
-					$dataPushka = \API\Kultura\Pushka\Ticket::new();
-
-					// Публикация Билета */
-					$dataPushka->buyer_mobile_phone		= $phone;//'9004881200'; // *Мобильный телефон (10 цифр)
-
-					$dataPushka->payment_ticket_price	= (int)$attr->addprice; //'30';		// *Цена билета (номинал)
-					$dataPushka->payment_amount			= (int)$attr->addprice; //30; // *Сумма платежа по Пушкинской карте
-					$dataPushka->payment_date			= $unix_timestamp; //time();//0;//time();		// *Дата/время совершения платежа (unix timestamp
-					
-					$dataPushka->session_event_id		= $prod['event_id']; //1299361; //*ID мероприятия в PRO.Культура   1299361	1243159		1241531
-					$dataPushka->session_organization_id= $this->params->organization_id; //666666; //*ID организации в Про.Культура
-					$dataPushka->session_date			= 
-							(empty($prod['date_tickets']) || $prod['date_tickets'] == '0000-00-00 00:00:00') ?
-							JDate::getInstance($prod['date_event'],$timezone)->getTimestamp() :
-							JDate::getInstance($prod['date_tickets'],$timezone)->getTimestamp();//mktime(10, 00, 00, 01, 31, 2023);	//*Дата/Время проведения сеанса (unix timestamp)
-//	https://orelmusizo.ru/bilety/punkty/product/view/1/9
-//toPrint($dataPushka->session_date,  ':'
-//		. JDate::getInstance($dataPushka->session_date)
-//		.  ' -'. $prod['product_id'],true, 'message',true );// 2023-04-24 01:00:00  // 0000-00-00 00:00:00
-//continue;
-					$dataPushka->barcode				= $attr->QRcode;// $QRcode;//'9004881200123';
-					$dataPushka->barcode_type			= '5'; //EAN-13 Штрихкод -3бит,  Code128 Штрихкод -2бит,  QRcode -1бит,(5- QR и EAN13; 1 - QR; 4 - EAN13, 3 -QRиCODE128, ) 
-					$dataPushka->visitor_full_name		= $name_FIO ?? '';//"Kornelius";// Серджио Великий
-					$dataPushka->visitor_first_name		= $name_F ?? '';
-					$dataPushka->visitor_last_name		= $name_L ?? '';
-					$dataPushka->visitor_middle_name	= $name_M ?? '';
-
-					// Необязательные свойства
-					$dataPushka->comment				= "OrderID:$orderTable->order_id,ProdID:$prod[product_id]";
-					$dataPushka->payment_id				= $orderTable->order_id;//getNewId('payment_id');  // ID платежа у Билетного оператора
-					$dataPushka->payment_rrn			= $orderTable->order_id;//getNewId('payment_rrn');	// RRN (Retrieval Reference Number) уникальный идентификатор транзакции
-					$dataPushka->session_place			= $prod['product_name'] ?? '';
-					$dataPushka->session_params			= $attr->attr . ' - ' . $attr->value;
-
-//toPrint($dataPushka,'$dataPushka:',0,'message',true);
-		//			$orderTable->places		= json_encode($places);	
-					// str_getcsv
-//					$orderTable->order_id; 
-//toPrint($dataPushka,'$dataPushka Request:',0,'message',true);
-					
-					if(isset($prod['place_pushka']) && $prod['place_pushka']){
-						$dataPushka = $pushka->AddTicket($dataPushka);
-						$idKeysPuska[$order_item_id][$av_id] = $dataPushka->id ?? '';
-					}
-						
-//toPrint($dataPushka,'$dataPushka Response:',0,'message',true);
-					// номер билета в системе ПушКарта */
-					
-					$cartModel->products[$prod_i]['attributes_value'][$av_id]->pushka_id = $dataPushka->id ?? '';
-					$cartModel->products[$prod_i]['attributes_value'][$av_id]->status	 = $dataPushka->status ?? '';
-				}
-			}
-//return;
-//toPrint($idKeysPuska,'$idKeysPuska:',0,'message',true);
-			
-			foreach ($idKeysPuska as $order_item_id => $keys){
-//				$keys = array_filter($keys);
-				
-				if(empty($keys)){
-					continue;
-				}
-				
-				$keys_string = implode(',', $keys);
-				
-				$query = "
-UPDATE #__jshopping_order_item
-SET place_pushka = '$keys_string'
-WHERE order_item_id = $order_item_id;
-				";
-//toPrint($query,'$query:',0,'message',true);
-				JFactory::getDBO()->setQuery($query)->execute();
-			}
-			
-			
-			
-		}
-			
-		
-//toPrint($cartModel->products,'$prods Item:',0,'message',true);
-		
-		
-		
-		
-        
-        foreach($cartModel->products as $key => $prod){
-            $cartModel->products[$key]['price'] += $prod['price_places'];
-        } 
-		
-		if(empty($orderTable) || empty($orderTable->order_id) || empty($orderTable->order_status))
-			return; 
-		
-// return;
-		$r = PlaceBiletHelper::deletePlaces($orderTable->order_id,$orderTable->order_status);
-		
-//		toPrint($orderTable,'$orderTable '.($r?'True':'False'),0,'pre',true);
-//		toLog($orderTable, '$orderTable '.($r?'True':'False'), 'finish.txt','',true);
-    }
 	
 	
     /**
@@ -3630,11 +3795,28 @@ WHERE order_item_id = $order_item_id;
 		
 	}
 	
+	/*
+	 * Переименование Темы письма
+	 * Вызов в: components\com_jshopping\Model\OrdermailModel.php OrderMailModel->getSubjectMail()
+	 */
+	function onJoomlaComponentJshoppingSiteModelOrderMailModelGetSubjectMailAfter($orderMailModel,$vars=[]){//$orderMailModel, $, $order, $subject
+//		$vars['type'];
+//		$vars['order'];
+//		$vars['subject'];
+//		JFactory::getMailer();
+//toPrint(array_keys(func_get_args()),'$order type:'.$type, 0,'message',true);
+//toPrint(array_keys(get_object_vars($vars['order'])),'$order type:'.$vars['type'], 0,'message',true);
+//toPrint($vars['subject'],'$subject type:'.$vars['type'], 0,'message',true);
+//$order = $vars['order'];
+//toPrint("order_number:$order->order_number / f_name:$order->f_name / l_name:$order->l_name ",'$order:subject type:'.$vars['type'], 0,'message',true);
+	}
+	
 //	function onBeforeSendOrderEmailAdmin(&$mailer, &$order, &$manuallysend, &$pdfsend, &$vendor, &$vendors_send_message, &$vendor_send_order){
 //	}
 	function onBeforeSendOrderEmailClient(&$mailer, &$order, &$manuallysend, &$pdfsend, &$vendor, &$vendors_send_message, &$vendor_send_order){
 		
 		
+//toPrint($mailer->Subject,'$mailer->Subject',0,'message',true);
 		
 //toPrint(null,'', false,false,false);
 		
@@ -3666,7 +3848,7 @@ WHERE order_item_id = $order_item_id;
 //      $cur_code = $currencies[$product->currency_id]->currency_code ?? JText::_('JSHOP_CUR');//currency_id,currency_name,currency_code,currency_code_iso,currency_value
     
 		
-		
+		$mailer->setSubject(sprintf(\JText::_('JSHOP_NEW_ORDER'), $order->order_number, ($order->phone ?: $order->mobile_phone ?: $order->email)) . ' ' .($order->d_FIO ?: $order->FIO));
 		
 //		$timezone = 'GMT';
 //		$timezone = 'UTC';
@@ -3681,9 +3863,9 @@ WHERE order_item_id = $order_item_id;
 		
 		$pathTemp	= JFactory::getConfig()->get('tmp_path');
 		$siteName	= JFactory::getConfig()->get('sitename');
-		$siteUrl	= JFactory::getConfig()->get('live_site');
+		$siteUrl	= JFactory::getConfig()->get('live_site')  ?: $_SERVER['SERVER_NAME'];
 
-		include_once __DIR__.'/Lib/phpqrcode/qrlib.php'; 
+		include_once __DIR__.'/Lib/phpqrcode/qrlib.php';
 		
 		
 //		$order = $order;
@@ -3706,7 +3888,7 @@ WHERE pc.category_id = c.category_id AND c.category_publish AND pc.product_id IN
         if ($prodIDs && $langs) 
             $categories = JFactory::getDBO()->setQuery($query)->loadObjectList();
 		
-//toPrint($categories,'$categories:'.$pr_id, TRUE,'message',true);
+toPrint($categories,'$categories:'.$pr_id, TRUE,'message',true);
 //return;
 		foreach ($categories as $cat){
 			$prodCatNames[$cat->product_id][$cat->category_id] = $cat->name;
@@ -3717,124 +3899,147 @@ WHERE pc.category_id = c.category_id AND c.category_publish AND pc.product_id IN
 		
 //toPrint($prodCatNames,'$prodCatNames:'.$pr_id, TRUE,'message',true);
 		
+		//дублирующий текст для письма который отображается перед билетами, для отображения подсказки в списке писем онлайн почты
+		$dates_email_print = '';
+		
 		
 		foreach ($products as $pr_id => $product_order_item){
 //			$product_name = $product['product_name'];
 //			$product_name = $product->product_name;
 //			$product_name = $product->product_name;
 			
+			$dates_email_print .= "<h2 style='width:100%;text-align: center;'>" . JSHelper::formatdate($product_order_item->date_event, true).'  ';
+			
+			$dates_email_print .= $product_order_item->product_name. ',</h2> ';
+			
 //toPrint($product_order_item,'$product_order_item:'.$pr_id, TRUE,'message',true);
 
-			
-//							$product_order_item->places;
-			$place_prices	= json_decode($product_order_item->place_prices, true);
-			$place_names	= unserialize($product_order_item->place_names); //[$prod_attr_value->value_id]	= $prod_attr_value->attr.' - '.$prod_attr_value->value;
+//							= json_decode($product_order_item->places, true);// [$prod_attr_value->id => "value_id,attr_id"]
+			$place_prices	= json_decode($product_order_item->place_prices, true);	// [$prod_attr_value->id => addprice]
+			$place_counts	= json_decode($product_order_item->place_counts, true);	// [$prod_attr_value->id => count]
+			$place_names	= unserialize($product_order_item->place_names); //[$prod_attr_value->id]	= $prod_attr_value->attr.' - '.$prod_attr_value->value;
 			$pushka_IDs		= str_getcsv($product_order_item->place_pushka); // IDs Билетов = Массив Токенов кючей билетов
 			
-			$prices			= array_values($place_prices);
+//			$prices			= array_values($place_prices);
 			
-			$product_attributes		= explode("\n",$product_order_item->product_attributes); //  
-			$product_attributes		= array_map(function($item){$row = explode(':', $item);  return ['attributeName'=>$row[0],'placeName'=>$row[1],];}, $product_attributes);
-//			
+			$product_attributes		= explode("\n",$product_order_item->product_attributes); 
+//			$product_attributes		= array_map(function($attr){$row = explode(':', $attr);  return ['attributeName'=>$row[0],'placeName'=>$row[1],];}, $product_attributes);
+			
 //			$places [$prod_attr_value->value_id] = $prod_attr_value->attr_id;
 //			$place_prices [$prod_attr_value->id] = $prod_attr_value->addprice; // !
 //			$place_names [$prod_attr_value->value_id] = $prod_attr_value->attr . ' - ' . $prod_attr_value->value;
 			
+//			$place_counts_objs = array_map(function($attr_prod_id,$count){return (object)['attr_prod_id'=>$attr_prod_id,'count'=>$count];}, $place_counts);
+			
+			//Индекс порядка билетов
 			$index = 0;
-
-			foreach ($place_names as $value_id => $place_name ){ // $index = 33;
-//				[attr_id] => 1
-//				[value_id] => 5
-//				[attr] => Греческий зал 
-//				[value] => 5
-//				[addprice] => 30.0000
-//				[id] => 4770
-//				[OfferId] => 0
-//				[QRcode] => js71.52365263574
-//				[pushka_id] => 0000721b-69de-41e4-8ccb-69b0f8d5a868
-//				[status] => active
+			//Индекс для получения названий атрибутов
+			$index_field = 0;
+			
+			$product_order_item->count_places;
+			
+//			foreach ($place_names as $value_id => $place_name ){ // $index = 33;
+			foreach ($place_counts as $attr_prod_id => $count){// field
+				list($attributeName, $placeName) = explode(':', array_shift($product_attributes));
+//				current($product_attributes);next($product_attributes);
+				$place_name = $place_names[$attr_prod_id];
+				
+				foreach (range(1, $count) as $i){
+					
+	//				[attr_id] => 1
+	//				[value_id] => 5
+	//				[attr] => Греческий зал 
+	//				[value] => 5
+	//				[addprice] => 30.0000
+	//				[id] => 4770
+	//				[OfferId] => 0
+	//				[QRcode] => js71.52365263574
+	//				[pushka_id] => 0000721b-69de-41e4-8ccb-69b0f8d5a868
+	//				[status] => active
 				
 //toPrint($index,'$index Mail',0,'message',true);
 //toPrint($product_order_item->count_places,'$product_order_item->count_places Mail',0,'message',true);
 
-				$QRcode					= $this->getQRcode($product_order_item->order_item_id, $index, $product_order_item->count_places);
+					$QRcode	= (string)$this->getQRcode($product_order_item->order_item_id, $index, $product_order_item->count_places);
 //toPrint($QRcode,'$QRcode Mail',0,'message',true);
-//				$product_order_item->product_attributes;
-				
-				$data = [];
-				
-				$data['QRcode']			= $QRcode;
-				
-				$data['pushka_id']		= $pushka_IDs[$index] ?? '';
-				$data['addprice']		= $prices[$index] ?? 0;
-				$data['place_name']		= $place_name;
-				$data['attributeName']	= $product_attributes[$index]['attributeName']??'';
-				$data['placeName']		= $product_attributes[$index]['placeName']??'';
-				
-				
-				
-				
-				$imagePath = $pathTemp . '/del_' . (time()  + 100 ) . '_' . md5($QRcode) . uniqid() . '.png';
-				QRcode::png($QRcode, $imagePath, QR_ECLEVEL_L, 4);
-				$imageMimeData = mime_content_type($imagePath);
-//				$imageData = base64_encode(file_get_contents($imagePath));
-//				$data['QRsrc']			= 'data: ' . $imageMimeData . ';base64,' . $imageData;
-//				unlink($imagePath);
-				$imageName = $place_name . ' ' . $QRcode;
-				
-				$data['imageAlias']		= md5($QRcode) ?? '';
-				$mailer->AddEmbeddedImage($imagePath, $data['imageAlias'], $imageName.'.png', 'base64', $imageMimeData);
-				
-		
-				$data['siteName']		= $siteName;
-				$data['siteUrl']		= $siteUrl;
-				$data['categrois_name']	= $prodCatNames[$product_order_item->product_id] ?? [];
-				
-				$data['product_name']	= $product_order_item->product_name;
-				$data['count_places']	= $product_order_item->count_places;
-				$data['date_event']		= $product_order_item->date_event;
-				$data['date_event_unix']= JDate::getInstance($product_order_item->date_event,$timezone)->getTimestamp();
-				$data['date_tickets']	= $product_order_item->date_tickets ?? 0;
-				$data['event_id']		= $product_order_item->event_id ?? '';
-//				$data['order_id']		= $order->manufacturer;
-				
-				$data['order_id']		= $order->order_id;
-				$data['order_number']	= $order->order_number;
-				$data['order_date']		= $order->order_date;
-				$data['order_datetime_print']= $order->order_datetime_print;
-//				$data['order_date_unix']= JDate::getInstance($order->order_date,$timezone)->getTimestamp();
-				$data['phone']			= $order->d_mobil_phone ?: $order->d_phone ?: $order->mobil_phone ?: $order->phone;
-				$data['email']			= $order->d_email ?: $order->email;
-//				$data['order_id']		= $product_order_item->event_id ?? '';
-				
-				
-				$data['f_name']			= $order->d_f_name ?: $order->f_name;
-				$data['l_name']			= $order->d_l_name ?: $order->l_name;
-				$data['m_name']			= $order->d_m_name ?: $order->m_name;
-				$data['FIO']			= $order->d_FIO ?: $order->FIO;
-//				
-				$data['currency_code']	= $order->currency_code;
+	//				$product_order_item->product_attributes;
 
+					$data = [];
+
+					$data['QRcode']			= $QRcode;
+
+					$data['pushka_id']		= $pushka_IDs[$index] ?? '';
+					$data['addprice']		= $place_prices[$attr_prod_id] ?? 0;
+					$data['place_name']		= $place_names[$attr_prod_id];
+					$data['attributeName']	= $attributeName ?? '';
+					$data['placeName']		= $placeName ?? '';
+					$data['placeCount']		= $count;
+					$data['placeIndex']		= $i;
+
+
+ 
+					$imagePath = $pathTemp . '/del_' . (time()  + 100 ) . '_' . md5($QRcode) . uniqid() . '.png';
+					QRcode::png($QRcode, $imagePath, QR_ECLEVEL_L, 4);
+					$imageMimeData = mime_content_type($imagePath);
+	//				$imageData = base64_encode(file_get_contents($imagePath));
+	//				$data['QRsrc']			= 'data: ' . $imageMimeData . ';base64,' . $imageData;
+	//				unlink($imagePath);
+					$imageName = $place_name . ' ' . $QRcode;
+
+					$data['imageAlias']		= md5($QRcode) ?? '';
+					$mailer->AddEmbeddedImage($imagePath, $data['imageAlias'], $imageName.'.png', 'base64', $imageMimeData);
+
+
+					$data['siteName']		= $siteName;
+					$data['siteUrl']		= $siteUrl;
+					$data['categrois_name']	= $prodCatNames[$product_order_item->product_id] ?? [];
+
+					$data['product_name']	= $product_order_item->product_name;
+					$data['count_places']	= $product_order_item->count_places;
+					$data['date_event']		= $product_order_item->date_event;
+					$data['date_event_print']= JSHelper::formatdate($order->order_date, true) ;
+					$data['date_event_unix']= JDate::getInstance($product_order_item->date_event,$timezone)->getTimestamp();
+					$data['date_tickets']	= $product_order_item->date_tickets ?? 0;
+					$data['event_id']		= $product_order_item->event_id ?? '';
+	//				$data['order_id']		= $order->manufacturer;
+
+					$data['order_id']		= $order->order_id;
+					$data['order_number']	= $order->order_number;
+					$data['order_date']		= $order->order_date;
+					$data['order_datetime_print']= $order->order_datetime_print;
+	//				$data['order_date_unix']= JDate::getInstance($order->order_date,$timezone)->getTimestamp();
+					$data['phone']			= $order->d_mobil_phone ?: $order->d_phone ?: $order->mobil_phone ?: $order->phone;
+					$data['email']			= $order->d_email ?: $order->email;
+	//				$data['order_id']		= $product_order_item->event_id ?? '';
+
+
+					$data['f_name']			= $order->d_f_name ?: $order->f_name;
+					$data['l_name']			= $order->d_l_name ?: $order->l_name;
+					$data['m_name']			= $order->d_m_name ?: $order->m_name;
+					$data['FIO']			= $order->d_FIO ?: $order->FIO;
+	//				
+					$data['currency_code']	= $order->currency_code;
+
+
+					$layout = new JLayoutFile('tickets', PlaceBiletPath . '/templates/checkout/', $options = null);
+
+					$layout->addIncludePaths($order->templates);
+					$bodyTickets .= \Joomla\CMS\Mail\MailHelper::cleanText($layout->render($data));
 				
-				$layout = new JLayoutFile('tickets', PlaceBiletPath . '/templates/checkout/', $options = null);
-				
-				$layout->addIncludePaths($order->templates);
-				$bodyTickets .= \Joomla\CMS\Mail\MailHelper::cleanText($layout->render($data));
-				
-				
-				
-				$index += 1;
+					$index += 1;
+				}
+				$index_field += 1;
 			}
 		}
 		
-		$urlName = starts_with($siteUrl,'http:')? substr($siteUrl,5) : $siteUrl;
+		$urlName = str_starts_with($siteUrl,'http:') ? substr($siteUrl,5) : $siteUrl;
 		$planformLabel = JText::_('JSHOP_PLACE_BILET_PLATFORM');
 		
 		$mailer->Body = '<div class="tickets" style="
-	margin:auto;display: flex;
+	margin:auto; display: flex;
     justify-content: center;
 	flex-wrap: wrap;
-    align-items: flex-start;">' . $bodyTickets . '</div>' . $mailer->Body.
+    align-items: flex-start;"> ' . $dates_email_print . ' <br>' . $bodyTickets . '</div>' . $mailer->Body.
 			"<br><center style='
 					margin-top: 5px;
 					word-wrap: break-word;
@@ -3842,18 +4047,28 @@ WHERE pc.category_id = c.category_id AND c.category_publish AND pc.product_id IN
 					font-size: xx-small;
 					line-height: xx-small;'>
 				<a target='_blank'  href='$siteUrl'>$urlName</a> /$siteName
-				<br><a href='https://explorer-office.ru/download/' target='_blank'>$planformLabel//explorer-office.ru</a>
+				<br><a href='https://explorer-office.ru/download/' target='_blank'>$planformLabel //explorer-office.ru</a>
 			</center>";
 		
 //		echo '<div class="tickets">' . $bodyTickets . '</div>';
 		
-		
+		$this->ticketsRenderBilet = '<div class="tickets">' . $bodyTickets . '</div>';
 
 //        $layout->addIncludePath(PlaceBiletPath . '/templates/product/'); //Новый шаблон  
 		
-		
+//toPrint($mailer->Subject,'$mailer->Subject',0,'message',true);
     }
 	
+	private string $ticketsRenderBilet = '';
+	
+//	function onBeforeSendOrderEmailVendor(&$mailer, &$order, &$manuallysend, &$pdfsend, &$vendor, &$vendors_send_message, &$vendor_send_order){
+//		
+//	}
+	
+	
+//	function onAfterSendEmailsOrder(&$order, &$orderMailModel, &$sendMailResult){
+//		echo $ticketsRenderBilet;
+//	}
 	
 	/**
 	 * Клиент: Происходит при смене статуса заказа при оформлении заказа на клиенте 
@@ -3963,12 +4178,18 @@ WHERE pc.category_id = c.category_id AND c.category_publish AND pc.product_id IN
 		
 //		$order_status_id = (int)$this->params->place_old;
 		
+		echo "<div class='descriptionFinish'>" . JText::_('JSHOP_THANK_YOU_ORDER_TEXT_') . "</div>";
+		
+		echo $this->ticketsRenderBilet;
+		
+		$this->ticketsRenderBilet = '';
+		
 		if(empty($order_id))
 			return;
 		
 		$r = PlaceBiletHelper::deletePlaces($order_id);
 		
-//		toPrint($order_id,'$order_id '.($r?'True':'False'),0,'pre',true);
+toPrint($order_id,'$order_id '.($r?'True':'False'),0,'message',true);
 //		toLog($order_id, '$order_id '.($r?'True':'False'),'finish.txt','',true);
 		
 		return;
@@ -4086,7 +4307,7 @@ WHERE pc.category_id = c.category_id AND c.category_publish AND pc.product_id IN
      * @param JTable $category
      * @param array $post
      */
-    function onAfterSaveCategory(JTable &$category, &$post){
+    function onAfterSaveCategory(MultilangTable &$category, &$post){
         //toLog(2,'***');
         Zriteli::UpdateInfoDescritpion($category->category_id);
     }
@@ -4163,9 +4384,9 @@ WHERE pc.category_id = c.category_id AND c.category_publish AND pc.product_id IN
                 $name_thumb = 'thumb_'.$name_image;
                 $name_full = 'full_'.$name_image;
         
-        $path_image = $jshopConfig->image_product_path."$s".$name_image;
-        $path_thumb = $jshopConfig->image_product_path."$s".$name_thumb;
-        $path_full =  $jshopConfig->image_product_path."$s".$name_full;
+        $path_image = $jshopConfig->image_product_path.$s.$name_image;
+        $path_thumb = $jshopConfig->image_product_path.$s.$name_thumb;
+        $path_full =  $jshopConfig->image_product_path.$s.$name_full;
         //rename($path_image, $path_full);
                 
         //image_product_original_width = 0
@@ -4831,13 +5052,43 @@ WHERE pc.category_id = c.category_id AND c.category_publish AND pc.product_id IN
 		return $pushka;
 	}
     
+	public static function languageMinificationRaw(){
+		
+		
+		$lang = JFactory::getApplication()->getLanguage();
+		
+		$dir = getcwd();
+		
+		$dir = __DIR__;
+		
+		while(!file_exists($dir . '/language')){
+			$dir = dirname($dir);
+		}
+
+		$dir .= '/language';
+		
+		$files = Joomla\Filesystem\Folder::files($dir, "raw.ini", true, true);
+		
+		foreach ($files as $file){
+			$text = file_get_contents($file);
+			$text = str_replace("\n[", "[{<!>}][", $text);
+			$text = str_replace("]\n", "][{<!>}]", $text);
+			$text = str_replace("\";\n", "\";[{<!>}]", $text);
+			$text = str_replace("\"\n", "\"[{<!>}]", $text);
+			$text = str_replace("\n", '', $text);
+			$text = str_replace('[{<!>}]', PHP_EOL, $text);
+			$file = str_replace(".raw.ini", '.ini', $file);
+			$f = file_put_contents($file, $text);
+		}
+	}
+	
 	/**
 	 * Генерация QR 
 	 * @param type $order_item_id
 	 * @param string $index
 	 * @return string
 	 */
-	public function getQRcode($order_item_id, string|int $index = '0', int $count_places = 0): string {
+	public function getQRcode($order_item_id, string | int $index = '0', int $count_places = 0): string {
 //		return sprintf("%u",crc32(md5('17.0.6hWthIyGp8mtY1hNhDZzOgdznhVvCqAw')));
 		$secret = JFactory::getApplication()->getConfig()->get('secret');// as JRegisctry
 		
@@ -4865,7 +5116,8 @@ WHERE pc.category_id = c.category_id AND c.category_publish AND pc.product_id IN
         $view->without_shipping = TRUE; // Доставка
         $view->enable_wishlist = FALSE;		// Включить список пожеланий
 		
-		JFactory::getApplication()->getDocument()->addScriptDeclaration("jQuery(function(){ /* Plugin PlaceBilet */
+		JFactory::getApplication()->getDocument()->addScriptDeclaration("
+jQuery(function(){ /* Plugin PlaceBilet */
 				document.getElementsByName('stock')[1].disabled = true;
 				document.getElementsByName('without_shipping')[1].disabled = true;
 				document.getElementsByName('enable_wishlist')[1].disabled = true;

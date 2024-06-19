@@ -6,12 +6,13 @@
 	<author>Korenevskiy Sergei Borisovich</author>
 	<creationDate>2018-06-01</creationDate>
 	<modificationDate>2023-07-18</modificationDate>
+	<modificationsDate>2023-07-18,2024-06-19</modificationsDate>
 	<copyright>Copyright (C) Explorer-Office</copyright>
 	<authorEmail>korenevskiys@ya.ru</authorEmail>
 	<authorUrl>http://explorer-office.ru/download</authorUrl>
-	<version>4.0.0</version>
+	<version>5.0.0</version>
 	<description>&lt;span  class="badge badge-info" &gt;[[%1:]]:[[%2:]] / [[%3:]]:[[%4:]]&lt;/span&gt;&lt;br>[[%5:]]&lt;br>[[%6:]][[%7:]],JVERSION,
-		4.0.0,JDate,2023-07-18,JSHOP_PLACE_BILET_INFO_D,JSHOP_PLACE_BILET_DEMO,JSHOP_PLACE_BILET_DESCRIPTION</description>
+		5.0.0,JDate,2024-06-19,JSHOP_PLACE_BILET_INFO_D,JSHOP_PLACE_BILET_DEMO,JSHOP_PLACE_BILET_DESCRIPTION</description>
     
 	<install>
 		<sql> 
@@ -156,10 +157,10 @@
                     
                     
 				<field name="site" type="hidden" default="//explorer-office.ru" />
-				<field name="site_plugin" type="hidden" default="//explorer-office.ru/download" />  
-                    
-                    
-                    
+				<field name="site_plugin" type="hidden" default="//explorer-office.ru/download" />
+				
+				
+				
 				<field
 					type="spacer"
 					default=""
@@ -169,13 +170,13 @@
                 
                 
 				<field 
-					name="CategoriesRedirect" 
-					type="Categories"  
-					multiple="false" 
-					default="0" 
-					label="JSHOP_PANEL_CATEGORY_DEFAULT" 
-					description="JSHOP_PANEL_CATEGORY_DEFAULT_DESC" 
-					addfieldpath="/plugins/jshopping/placebilet/fields/" 
+					name="CategoriesRedirect"
+					type="Categories"
+					multiple="false"
+					default="0"
+					label="JSHOP_PANEL_CATEGORY_DEFAULT"
+					description="JSHOP_PANEL_CATEGORY_DEFAULT_DESC"
+					addfieldpath="/plugins/jshopping/placebilet/fields/"
 				> 
 				</field>
 				<field name="bilets_list_count" type="radio" class="btn-group " label="JSHOP_FIELD_TICKETS_COUNT_LABEL"    default="0">
@@ -334,7 +335,7 @@
 					   class="btn-group " 
 					   label="JSHOP_PANEL_ACCORDION"  
 					   description="JSHOP_PANEL_ACCORDION_DESC" 
-					   default="jQuery">
+					   default="none">
 					<option value="none">JEMPTY</option> 
 					<option value="jQuery">jQuery</option>
 					<option value="bootstrap">BootStrap</option>
@@ -452,10 +453,10 @@
 					description=""
 				/>
 				<field name="domen" type="Domen"
-                                        label="JSHOP_PANEL_ZRITELI_URL" 
+					label="JSHOP_PANEL_ZRITELI_URL" 
 					description="JSHOP_PANEL_ZRITELI_URL_DESC" 
-					directory="fields" 
-                                        default="http://api.zriteli.ru/index.php?wsdl"  />
+					directory="fields"
+					default="http://api.zriteli.ru/index.php?wsdl"  />
                         
 				<field
 					name="UserId"
@@ -1217,7 +1218,7 @@
 					<option value="custom">Icon</option>
 				</field>
 				<field name="vkShareText" type="text" filter="raw"
-					   label="PLG_JOOMSHOPPING_SOCIAL_VK_SHARE_TEXT" description="PLG_JOOMSHOPPING_SOCIAL_VK_SHARE_STYLE_DESC" default="Share">
+					   label="PLG_JOOMSHOPPING_SOCIAL_VK_SHARE_TEXT" description="PLG_JOOMSHOPPING_SOCIAL_VK_SHARE_TEXT_DESC" default="Share">
 				</field>
 				<field name="vkShareLogoVersion" type="list" default="" label="PLG_JOOMSHOPPING_SOCIAL_VK_SHARE_LOGO_VERSION" description="PLG_JOOMSHOPPING_SOCIAL_VK_SHARE_LOGO_VERSION_DESC" >
 					<option value="">JOPTION_USE_DEFAULT</option>

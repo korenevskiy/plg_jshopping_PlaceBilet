@@ -42,11 +42,27 @@ use Joomla\Module\Placebilet\Administrator\BD\StatusObject;
 
 use Joomla\Module\Placebilet\Administrator\StatusEventObject;
 
+use Joomla\CMS\Response\JsonResponse;
+
+
+use Joomla\Component\Jshopping\Site\Lib\JSFactory;
 
 require_once 'Lib/input.php';
 require_once 'Lib/status.php';
 require_once 'Lib/status_event.php';
 
+JLoader::registerAlias('JSFactory', 'Joomla\\Component\\Jshopping\\Site\\Lib\\JSFactory');
+
+defined('JPATH_JOOMSHOPPING') || define('JPATH_JOOMSHOPPING', JPATH_ROOT.'/components/com_jshopping');
+defined('JPATH_JOOMSHOPPING_ADMIN') || define('JPATH_JOOMSHOPPING_ADMIN', JPATH_ADMINISTRATOR.'/components/com_jshopping');
+
+if(JVersion::MAJOR_VERSION == 3){
+	require_once (JPATH_SITE.'/components/com_jshopping/lib/factory.php'); 
+	require_once (JPATH_SITE.'/components/com_jshopping/lib/functions.php');
+}else{
+	require_once (JPATH_SITE.'/components/com_jshopping/Lib/JSFactory.php');
+	require_once (JPATH_SITE.'/components/com_jshopping/Helper/Helper.php');
+}
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -153,6 +169,8 @@ WHERE i.order_id = $orderID; ";
 		return $QRcodes;
 	}
 	
+	
+	
 	public static function getStatusAjax($param='') {
 		
 		static::$debug = true;
@@ -165,12 +183,15 @@ WHERE i.order_id = $orderID; ";
 		return '{"message":"Привет Дружище! / "}';//.$app->getFormToken();
 	}
 	
+	public static $debugMessage = '';
 	
 	public static function getAjax() {
 //		usleep(1000);  // Задержка
 //static::getHtmlDark();
 		
 		$html = '';
+		
+//		$debugMessage = static::$debugMessage;
 		
 //$html = '';
 //
@@ -197,19 +218,45 @@ WHERE i.order_id = $orderID; ";
 //return '{"message":"'.JText::_('ERROR ACTION').'"}';
 		
 		$input = static::getInputObject();
+//		$html_prefix = $input->format == 'json' ? '' : "<html lang='ru-ru'>\n<meta charset='utf-8'>";
 		
 		if(empty($input)){
-			return '{"message":"'.JText::_('JSHOP_PUSHKA_ERROR_REQUEST').'"}';
+			JFactory::getApplication()->getMessageQueue(true);
+			JFactory::getApplication()->enqueueMessage(JText::_('JSHOP_PUSHKA_ERROR_REQUEST'));
+			JFactory::getApplication()->enqueueMessage('Error Request - Please Reload Page');
+			JText::script('Error Request - Please Reload Page');
+			JFactory::getApplication()->input->set('ignoreMessages', false, 'bool');
+			return null;
+			return new JsonResponse(null,JText::_('JSHOP_PUSHKA_ERROR_REQUEST'), true);
+//			return '{"message":"'.JText::_('JSHOP_PUSHKA_ERROR_REQUEST').'","messages":["Error Request - Please Reload Page"]}';//, "data": {"content":"'.JText::_('JSHOP_PUSHKA_ERROR_REQUEST').'"}
 		}
 		
 		if(empty($input->QRcode)){
-			return '{"message":"'.JText::_('JSHOP_PUSHKA_ERROR_REQUEST_QR').'"}';
+			JFactory::getApplication()->getMessageQueue(true);
+			JFactory::getApplication()->enqueueMessage(JText::_('JSHOP_PUSHKA_ERROR_REQUEST_QR'));
+			JFactory::getApplication()->enqueueMessage('Error QR - Please Reload Page');
+			JText::script('Error QR - Please Reload Page');
+			JFactory::getApplication()->input->set('ignoreMessages', false, 'bool');
+			
+			if($input->format == 'json')
+				return null;// '{"message":"'.JText::_('JSHOP_PUSHKA_ERROR_REQUEST_QR').'","messages":["Error QR - Please Reload Page"]}';//,"data":{ "content":"'.JText::_('JSHOP_PUSHKA_ERROR_REQUEST_QR').'"}
+			
+			return new JsonResponse(null,JText::_('JSHOP_PUSHKA_ERROR_REQUEST_QR'), true);
+			
 		}
 		
 		$param = static::getParam($input->id); /* Module ID param */
 		
 		if(empty($param)){
-			return '{"message":"'.JText::_('JSHOP_PUSHKA_ERROR_PARAMS').'"}';
+			JFactory::getApplication()->getMessageQueue(true);
+			JFactory::getApplication()->enqueueMessage(JText::_('JSHOP_PUSHKA_ERROR_PARAMS'));
+			JFactory::getApplication()->enqueueMessage('Error Params - Please Reload Page');
+			JText::script('Error Params - Please Reload Page');
+			JFactory::getApplication()->input->set('ignoreMessages', false, 'bool');
+			if($input->format == 'json')
+				return null;
+			
+			return new JsonResponse(null,JText::_('JSHOP_PUSHKA_ERROR_PARAMS'), true);
 		}
 		
 //		return "<pre>". get_class(JFactory::getApplication()->getConfig()).json_encode(JFactory::getApplication()->getConfig(), JSON_PRETTY_PRINT)."</pre>";
@@ -218,9 +265,22 @@ WHERE i.order_id = $orderID; ";
 //return '{"message":"'.JText::_('ERROR ACTION').'"}';
 		/* get Status bilet */
 		$statusBD = static::getOrderDBbyQR($input->QRcode);
+static::$debugMessage .= ' status_title267:'. ($statusBD->status_title??'');
 		
-		if(empty($statusBD))
-			return '{"message":"'.JText::_('JSHOP_PUSHKA_ERROR_EXIST_QR').'"}';
+		if(empty($statusBD)){
+			
+			JFactory::getApplication()->getMessageQueue(true);
+			JFactory::getApplication()->enqueueMessage(JText::_('JSHOP_PUSHKA_ERROR_EXIST_QR'));
+			JFactory::getApplication()->enqueueMessage('Error QR - This QR Not Exist');
+			JText::script('Error QR - This QR Not Exist');
+			JFactory::getApplication()->input->set('ignoreMessages', false, 'bool');
+			
+			if($input->format == 'json')
+				return null;
+			
+			return new JsonResponse(null,JText::_('JSHOP_PUSHKA_ERROR_EXIST_QR'), true);
+//			return '{"message":"'.JText::_('JSHOP_PUSHKA_ERROR_EXIST_QR').'","msg":"Error QR - This QR Not Exist"}';
+		}
 		
 		$statusBD->place_index;
 		$statusBD->place_name;
@@ -242,11 +302,30 @@ WHERE i.order_id = $orderID; ";
 //return '{"message":"'.JText::_('ERROR ACTION')." now:$now + ticketsPeriodVisit:$param->ticketsPeriodVisit < date_event:$date_event".'"}';
 		// Новый статус
 		if($input->action && empty($statusBD->pushka_id)) {
-		
+static::$debugMessage .= ($input->action ?? '');
+
+//$debugMessage .= ' / - nowDateEvent:'.static::getDate('now')->getTimestamp();  
+//$debugMessage .= ' / - statusDateEvent:'.static::getDate($statusBD->date_event)->getTimestamp();  
+//$debugMessage .= ' / - statusDateEvent:'.static::getDate($statusBD->date_event)->getTimestamp();  
+//$debugMessage .= ' / - dt1:'.static::getDate($statusBD->date_event);  
+//$debugMessage .= ' / - dt1(()):'.static::getDate(static::getDate($statusBD->date_event)->getTimestamp());  
+//
+//$debugMessage .= ' / - now:'.static::getDate('now');
+//$debugMessage .= ' + Period:'.$param->ticketsPeriodVisit;
+//$debugMessage .= ' > statusDateEvent:'.static::getDate($statusBD->date_event);
+//
+//$debugMessage .= ' / - now:'.static::getDate(static::getDate('now')->getTimestamp() + $param->ticketsPeriodVisit); 
+//$debugMessage .= ' > statusDateEvent:'.static::getDate($statusBD->date_event);
+//
+//$debugMessage .= ' / - PeriodHours:'.($param->ticketsPeriodVisit/60/60);
+//$debugMessage .= ' /- 1if:'.($now + $param->ticketsPeriodVisit > $date_event?'True':'False');
+//$debugMessage .= ' /- 2if:'.($date_tickets > 0 && $statusBD->date_tickets != '0000-00-00 00:00:00' && $now > $date_tickets?'True':'False');
+
+
 			if($param->ticketsPeriodVisit == 'all'
 					|| $now + $param->ticketsPeriodVisit > $date_event
 					|| $date_tickets > 0 && $statusBD->date_tickets != '0000-00-00 00:00:00' && $now > $date_tickets){
-				
+static::$debugMessage .= ' TRUE.';
 				$action = strtolower($input->action);
 				$pushka_status_newID = in_array($input->action, ['Visit','Refund','Cancel',]) ? (int) ($param->{"pushka_{$action}_status"} ?? 0) : 0;
 //return '{"message":"'.JText::_('ERROR ACTION').'"}';
@@ -290,6 +369,8 @@ WHERE i.order_id = $orderID; ";
 //		$html = str_replace("\r", "", $html);
 		
 		$json_array_response = [
+			'Debug' => static::$debugMessage,
+			''	=>	$statusBD->place_status_title,
 			'order_id'			=> $statusBD->order_id,
 			'order_item_id'		=> $statusBD->order_item_id,
 			'event_id'			=> $statusBD->event_id,
@@ -301,6 +382,9 @@ WHERE i.order_id = $orderID; ";
 			'place_status_code'	=> $statusBD->place_status_code,
 			'place_status_date'	=> $statusBD->place_status_date,
 			'place_price'		=> $statusBD->place_price,
+			'place_count'		=> $statusBD->place_count,
+			'place_number'		=> $statusBD->place_number,
+//			'place_index'		=> $statusBD->place_index,
 			'place_velue_id'	=> $statusBD->place_velue_id,
 			'place_prodVal_id'	=> $statusBD->place_prodVal_id,
 			'place_attr_id'		=> $statusBD->place_attr_id,
@@ -309,7 +393,13 @@ WHERE i.order_id = $orderID; ";
 			];
 		
 		if(empty($statusBD->pushka_id)){ //empty($param->pushka_mode) || empty($statusBD->event_id)
-			return ($json_array_response); //json_encode
+			
+			if($input->format == 'json')
+				return $json_array_response;
+			
+//			return utf8_decode(implode(json_decode('[\"'. (string)(new JsonResponse($json_array_response)).'\"]')));
+//			return html_entity_decode(new JsonResponse($json_array_response));
+			return (string) new JsonResponse($json_array_response); //json_encode
 		}
 //JFactory::getApplication()->enqueueMessage('<pre>'.print_r($statusBD,true).'</pre>');
 //echo '<pre>'.print_r($input,true).'</pre>';
@@ -397,7 +487,18 @@ WHERE i.order_id = $orderID; ";
 		$json_array_response['bilet_session_date']	= $bilet->session_date;
 		$json_array_response['content']				= $html;
 		
-		return ($json_array_response); //json_encode
+		
+//			JFactory::getApplication()->getMessageQueue(true);
+//			JFactory::getApplication()->enqueueMessage('Error QR - This QR Not Exist');
+//			JText::script('Error QR - This QR Not Exist');
+//			JFactory::getApplication()->input->set('ignoreMessages', false, 'bool');
+			
+		if($input->format == 'json')
+			return $json_array_response;
+		
+		
+		return new JsonResponse($json_array_response);
+//		return ($json_array_response); //json_encode
 	
 		
 //	htmlentities ($string) ;
@@ -454,13 +555,21 @@ ORDER BY date_event; ";
 	 * example: ('c.desc_', '`') return [en-GB => `c`.`desc_en-GB`, ...]
 	 * @return array
 	 */
-    public static function getLanguageList($prefix = 'name_', $quote = '`'): array {
-        
+    public static function getLanguageList($prefix = 'name_', $quote = '`') : array {
+		
 		if(empty(static::$languageList)){
 			$query ="
 SELECT CONCAT ('`','name_',language,'`') language, language lang  FROM #__jshopping_languages WHERE publish ORDER BY ordering, id DESC;
 			";
 			static::$languageList = JFactory::getDBO()->setQuery($query)->loadAssocList('lang', 'language');
+			
+			$admin_show_languages = \Joomla\Component\Jshopping\Site\Lib\JSFactory::getConfig()->admin_show_languages;
+			
+			$tag = JFactory::getApplication()->getLanguage()->getTag();
+			
+			if(empty($admin_show_languages) && isset(static::$languageList[$tag]) && count(static::$languageList) > 1){
+				static::$languageList = array_filter(static::$languageList, function($k)use($tag) {return $k == $tag;},ARRAY_FILTER_USE_KEY);
+			}
 		}
 		
 		if($prefix == 'name_'){
@@ -475,10 +584,11 @@ SELECT CONCAT ('`','name_',language,'`') language, language lang  FROM #__jshopp
 	
 	/*
 	 * 
-	 * @param string $QRcode 
+	 * @param string $QRcode QR код 
 	 * @return StatusObject|null
 	 */
 	public static function getOrderDBbyQR($QRcode = '') : ?StatusObject {
+
 		if(empty($QRcode)){
 			return null;
 		}
@@ -488,7 +598,7 @@ SELECT CONCAT ('`','name_',language,'`') language, language lang  FROM #__jshopp
 		if($firt_letter != 'js'){
 			return null;
 		}
-		
+
 		$position_dot = strrpos($QRcode, '.');
 		
 		$order_item_id = substr($QRcode, 2, $position_dot - 2);
@@ -502,7 +612,7 @@ SELECT CONCAT ('`','name_',language,'`') language, language lang  FROM #__jshopp
 		
 		
 		$query="
-SELECT  oi.order_item_id, oi.order_id, oi.count_places, oi.date_event, oi.date_tickets, oi.place_go, oi.places, oi.place_names, oi.place_prices, oi.product_name, oi.place_pushka,
+SELECT  oi.order_item_id, oi.order_id, oi.count_places, oi.place_counts, oi.date_event, oi.date_tickets, oi.place_go, oi.places, oi.place_names, oi.place_prices, oi.product_name, oi.place_pushka,
  p.product_id, 
 s.status_id, s.status_code, h.status_date_added, CONCAT_WS(' /', $langs ) status_title,
 p.event_id,
@@ -510,28 +620,38 @@ s.status_code order_status_id,
 o.order_date
 
 FROM #__jshopping_order_item oi
-LEFT  JOIN #__jshopping_orders o ON o.order_id = oi.order_id 
-LEFT  JOIN #__jshopping_products p ON oi.product_id = p.product_id 
-LEFT  JOIN #__jshopping_order_history h ON h.order_id = oi.order_id 
-LEFT  JOIN #__jshopping_order_status s ON s.status_id = h.order_status_id 
-LEFT JOIN omii_jshopping_order_status s2 ON s2.status_id = o.order_status 
+LEFT JOIN #__jshopping_orders o ON o.order_id = oi.order_id 
+LEFT JOIN #__jshopping_products p ON oi.product_id = p.product_id 
+LEFT JOIN #__jshopping_order_history h ON h.order_id = oi.order_id 
+LEFT JOIN #__jshopping_order_status s ON s.status_id = h.order_status_id 
+LEFT JOIN #__jshopping_order_status s2 ON s2.status_id = o.order_status 
 WHERE oi.order_item_id = $order_item_id
-ORDER BY s.status_id DESC
+ORDER BY h.order_history_id DESC
 LIMIT 1;
 ";
-//return $query;
+//JFactory::getApplication()->enqueueMessage($query);	
+//file_put_contents(__DIR__ . '/logHelper.txt', "$query \n\n\n", FILE_APPEND);
+//return null;
 //echo str_replace('#__', JFactory::getApplication()->getConfig()->get('dbprefix'), $query) .'<br>';
 //return null;
-		$data = JFactory::getDbo()->setQuery($query)->loadObject();
+		$data = JFactory::getDbo()->setQuery($query)->loadAssoc();
+		
+		
 		
 		if(empty($data)){
 			return null;
 		}
+		
+//JFactory::getApplication()->enqueueMessage(trim($query),'info');
+// throw new Exception('Error Message СООБЩЕНИЕ!! ');
+//return null; 
+
 
 		$event = StatusObject::new($data, $QRcode);
 //echo str_replace('#__', JFactory::getApplication()->getConfig()->get('dbprefix'), $query) .'<br>';
 //return null;	
 //		$event->QRcode = $QRcode;
+//static::$debugMessage .= ' status_title645:'. $event->status_title;
 		
 		//loadObjectList('order_item_id');		//Joomla\Module\Placebilet\Administrator\BD\
 //		'\Joomla\Module\Placebilet\Administrator\BD\StatusObject'
@@ -550,42 +670,72 @@ LIMIT 1;
 //echo $newQR;
 //echo '  <br>';
 		
-		
 		if($newQR != $QRcode){
 			return null;
 		}
-		
+//		$order_itemTable->places		= json_encode($places);		 // array( ProdValID => "value_id,attr_id", ...)
+//		$order_itemTable->place_prices	= json_encode($place_prices);// array( ProdValID =>	price, ...)
+//		$order_itemTable->place_counts	= json_encode($place_counts);// array( ProdValID =>	count, ...)
+//		$order_itemTable->place_names	= serialize($place_names);	//	array( ProdValID => attr_Name . ' - ' . place_name,... )
 		
 //		$event->place_index = (int)$index;
-		$places			= (array) json_decode($event->places, true);	// ": "{\"17\":1,\"21\":1}",		
-		$place_prices	= (array) json_decode($event->place_prices, true);// ": "{\"4625\":\"30.0000\",\"4629\":\"30.0000\"}",		// ProdValID	:	price
-		$place_names	= (array) unserialize($event->place_names);// ": "a:2:{i:17;s:31:\"\u0413\u0440\u0435\u0447\u0435\u0441\u043a\u0438\u0439 \u0437\u0430\u043b  - 17\";i:21;s:31:\"\u0413\u0440\u0435\u0447\u0435\u0441\u043a\u0438\u0439 \u0437\u0430\u043b  - 21\";}",
+		$place_counts	= (array) json_decode($event->place_counts??'{}', true);// ": "{\"17\":1,\"21\":1}",
+		$places			= (array) json_decode($event->places??'{}', true);		// ": "{\"17\":1,\"21\":1}",
+		$place_prices	= (array) json_decode($event->place_prices??'{}', true);// ": "{\"4625\":\"30.0000\",\"4629\":\"30.0000\"}",		// ProdValID	:	price
+		$place_names	= (array) unserialize($event->place_names??'a:0:{}');	// ": "a:2:{i:17;s:31:\"\u0413\u0440\u0435\u0447\u0435\u0441\u043a\u0438\u0439 \u0437\u0430\u043b  - 17\";i:21;s:31:\"\u0413\u0440\u0435\u0447\u0435\u0441\u043a\u0438\u0439 \u0437\u0430\u043b  - 21\";}",
 		
 		
 		/*  Определение ID ключа из ПроКультура / Выполняется внутри конструкора класса StatusObject объекта $event */
 //		$place_pushka	= (array) str_getcsv($event->place_pushka);// 0000721b-be15-4bc2-a80a-f6c047417134,0000721b-b94d-418e-abdf-73a229404396
 //		$event->pushka_id = $place_pushka[$event->index] ?? '';
 
-		$values_id = array_keys($places);
-		$event->place_velue_id = $values_id[$event->place_index] ?? '';
 		
-		$prodVals_id = array_keys($place_prices);
-		$event->place_prodVal_id = $prodVals_id[$event->place_index] ?? '';
+//file_put_contents(__DIR__ . '/logHelper.txt', '$places : '.print_r($places,true). " \n\n"); //FILE_APPEND
+//file_put_contents(__DIR__ . '/logHelper.txt', '$places : '.print_r($place_prices,true). " \n\n", FILE_APPEND); //FILE_APPEND
+//file_put_contents(__DIR__ . '/logHelper.txt', '$place_names : '.print_r($place_names,true). " \n\n", FILE_APPEND); //FILE_APPEND
+//file_put_contents(__DIR__ . '/logHelper.txt', '$event : '.print_r($event,true). " \n\n", FILE_APPEND); //FILE_APPEND
+
+//		$values_id = array_keys($places);
+//		$event->place_velue_id = $values_id[$event->place_index] ?? 0;
 		
-		$event->place_attr_id = $places[$event->place_velue_id] ?? '';
+		
+		/* @var int индекс билета в заказе */
+		$event->place_index;
+		/* @var int Номер билета в поле  , нумерация с 1 начинается */
+		$event->place_number;
+		/* @var int Количество билетов в поле  */
+		$event->place_count;
+		/* @var int $prod_attr_id ID поля билета  */
+		$event->place_prodVal_id;
+		
+		$i = 0;
+		
+		foreach ($place_counts as $pr_attr_id => $count){
+			foreach (range(1, $count) as $number){
+				if($i++ == $event->place_index){
+					$event->place_prodVal_id = $pr_attr_id;
+					$event->place_number = $number;
+				}
+			}
+		}
+//		$prodVals_id = array_keys($place_prices);
+//		$prodVals_id[$event->place_index] ?? '';
+
+//		$event->place_attr_id = $places[$event->place_velue_id] ?? 0;
+		list($event->place_velue_id, $event->place_attr_id) = str_getcsv($places[$event->place_prodVal_id] ?: '0,0');
 		$event->place_price = $place_prices[$event->place_prodVal_id] ?? '';
-		$event->place_name = $place_names[$event->place_velue_id] ?? '';
-		
-		
+		$event->place_name = $place_names[$event->place_prodVal_id] ?? '';
+		$event->place_count = $place_counts[$event->place_prodVal_id] ?? 1;
 		
 		
 		$statusEventObject = static::getStatusbyCSV($event->place_go, $event->place_index);
 		
 //echo '<br>$event->place_index: <pre>'.print_r($event->place_index,true).'</pre>  ';
 //echo '<br>$event->place_go: <pre>'.print_r($event->place_go,true).'</pre><hr><br>';
-		
+//static::$debugMessage .= print_r($statusEventObject,true);		
 		$event->place_status_code = $statusEventObject ? $statusEventObject->code : $event->order_status_id;
 		$event->place_status_date = $statusEventObject ? $statusEventObject->getDate() : static::getDate($event->order_date);
+//static::$debugMessage .= print_r($event->place_status_code,true);		
 		
 		
 		
@@ -607,6 +757,9 @@ LIMIT 1;
 //echo '<br>$event: <pre>'.print_r($event,true).'</pre><hr><br>';
 		$event->place_status_title = $status->status_title ?? '';
 		$event->place_status_code = $status->status_code ?? '';
+		
+//static::$debugMessage .= print_r($event->place_status_title,true);	
+//static::$debugMessage .= print_r($event->place_status_code,true);	
 		
 //echo '<br>$event: <pre>'.print_r($event,true).'</pre><hr><br>';
 //echo '<br>$query: <pre>'.print_r($query,true).'</pre><hr><br>';
@@ -728,7 +881,10 @@ public static function dirSize($path): int {
 		
 		$data = JFactory::getApplication()->input->json->getArray();
 		foreach ($data as $var => $value){
-			$object->$var = $value;
+			if(isset($object->$var))
+				$object->$var = $value;
+//file_put_contents(__DIR__ . '/logHelper.txt', "$var => $value \n", FILE_APPEND);
+			
 		}
 		
 //		$object->clientId = $clientId;

@@ -4,11 +4,13 @@
 	<author>Joomla! Project</author>
 	<creationDate>2023-07-18</creationDate>
 	<modificationDate>2023-07-18</modificationDate>
+	<modificationsDate>2023-07-18,2024-06-19</modificationsDate>
+	<modificationDate>2024-06-19</modificationDate>
 	<copyright>Copyright (C) Explorer-Office</copyright>
 	<license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
 	<authorEmail>korenevskiys@ya.ru</authorEmail>
 	<authorUrl>http://explorer-office.ru/download</authorUrl>
-	<version>4.0.0</version>
+	<version>5.0.0</version>
 	<description>MOD_PLACEBILET_XML_DESCRIPTION</description>
 
 	<!--<customContent />-->
@@ -21,6 +23,7 @@
 		<filename module="mod_placebilet">mod_placebilet.php</filename>
 		<filename>helper.php</filename>
 		<filename>mod_placebilet.xml</filename>
+		<folder>field</folder>
 		<folder>Lib</folder>
 		<folder>language</folder>
 		<folder>media</folder>
@@ -39,7 +42,8 @@
 			
 			
 			<fieldset   name="basic"  label="JSHOP_PUSHKA">   
-                
+                	
+				<field name="translate" type="translate" />
 				
 				<field name="pushka_mode" type="radio" class=" btn-group btn-group-yesno" label="JSHOP_PUSHKA"  default="0">
 					<option value="0">JDISABLED</option>
@@ -123,7 +127,7 @@
 					key_field="id"
 					value_field="title"
 					showon="pushka_visit:1" 
-					default="[]"
+					default="[7]"
 				>
 				</field>        
 				<field
@@ -159,7 +163,7 @@
 					query="SELECT status_id id,  CONCAT( `name_en-GB`,' /',`name_ru-RU`) title  FROM `#__jshopping_order_status` ORDER BY status_id; "
 					key_field="id"
 					value_field="title"
-                    default="[6]"
+                    default="[4]"
 					showon="pushka_refund:1"
 				>
 				</field>
@@ -198,7 +202,7 @@
 					query="SELECT status_id id,  CONCAT( `name_en-GB`,' /',`name_ru-RU`) title  FROM `#__jshopping_order_status` ORDER BY status_id; "
 					key_field="id"
 					value_field="title"
-                    default="[]"
+                    default="[3]"
 					showon="pushka_cancel:1"
 				>
 				</field>
@@ -206,13 +210,13 @@
 					name="btn_cancel_statuses"
 					type="sql"
 					multiple="true"
-					label="[[%1:]],JSHOP_PUSHKA_VISIBLECANCEL" 
+					label="[[%1:]],JSHOP_PUSHKA_VISIBLECANCEL"
 					query="SELECT status_code code, CONCAT( `name_en-GB`,' /',`name_ru-RU`) title  FROM `#__jshopping_order_status` ORDER BY status_id; "
 					key_field="code"
 					value_field="title"
 					layout="joomla.form.field.list-fancy-select"
                     default="[&quot;O&quot;]"
-					showon="pushka_cancel:1" 
+					showon="pushka_cancel:1"
 					class="advancedSelect"
 				>
 				</field>

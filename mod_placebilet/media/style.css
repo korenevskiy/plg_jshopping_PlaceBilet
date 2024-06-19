@@ -35,7 +35,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 }
 .mod-placebilet.placebilet > message{
 	grid-area: controlsScan;
-	background-color: lightgray;
+	background-color: #ddd9;
+	background-color: #0009;
+	backdrop-filter: blur(60px);
+	
     position: relative;
     z-index: 4;
 	z-index: 2;
@@ -43,16 +46,42 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 	border: 1px solid graytext;
 	cursor: pointer;
 }
+html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message{
+	background-color: #0009;
+	background-color: #000e;
+	color: white;
+}
 .mod-placebilet.placebilet > message h3{
 	text-align: center;
 	font-size: x-large;
-	color: var(--template-bg-dark-60);
-    text-shadow: 0px 1px 1px black, 0px -2px 2px white;
+	/*color: var(--template-bg-dark-60);*/
+	text-shadow: 0px 1px 1px black, 0px -2px 2px white;
+}
+
+html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message h3{
+	text-shadow: none;
+}
+.mod-placebilet.placebilet > message h5.number{
+	display: block;
+  position: absolute;
+  right: 10px;
+  top: 0;
+	color: white;
+  text-shadow: 0 1px 3px black;
+	/*text-shadow: 0px 1px 1px black, 0px -2px 2px white;*/
+}
+.mod-placebilet.placebilet > message h5.number big{
+	font-size: xxx-large;
+  line-height: 32px;
 }
 .mod-placebilet.placebilet > message .place_name_info{
 	font-size: large;
 	font-size: medium;
     text-shadow: 0px 1px 1px grey, 0px -1px 1px white;
+}
+
+html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message .place_name_info{
+	text-shadow: none;
 }
 .mod-placebilet.placebilet > message h4{
 	text-align: center;
@@ -144,7 +173,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 }
 .mod-placebilet.placebilet .controls.camera{
 	display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr;
+	display: flex;
 }
 .mod-placebilet.placebilet .controls.action{
 	flex-wrap: wrap;
@@ -160,10 +190,18 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 	
 }
 
+.mod-placebilet.placebilet .controls .form-select{
+	flex: 1 50%;
+}
+.mod-placebilet.placebilet .controls .btn{
+	 
+	flex: 1 50%;
+}
+
 .mod-placebilet.placebilet .btn{
 	text-shadow: 0 0 5px black;
 	transition: 0.5s;
-	z-index: 1;
+	z-index: 1; 
 }
 .mod-placebilet.placebilet .action .btn{
 	box-shadow: 0 0 0 0.25rem rgb(54 78 109 / 0%);
@@ -182,10 +220,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 	max-height: calc(100vh - 250px);
 	max-height: calc(100vh - 320px);
 	max-height: calc(100svh - 320px);
+	max-height: calc(100svh - 320px);
 	
 	min-height: calc(100px);
 }
-
+.mod-placebilet.placebilet .controls .btn.btnFullscreen {
+	flex: 0;
+}
 .mod-placebilet.placebilet .fa{
 	text-shadow: none;
 }
@@ -198,6 +239,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 .mod-placebilet.placebilet .video{
 	border: 1px solid gray;
 	border-radius: 4px;
+	max-height: 65vh;
 }
 .qrcode-text-btn {
     background: url(qr_icon.svg) 50% 50% no-repeat;

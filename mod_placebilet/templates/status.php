@@ -41,6 +41,9 @@ $place_prodVal_id;
 $place_name;
 $place_price;
 $count_places;
+$place_index;
+$place_count;
+$place_number;
 $index;
 $place_go;
 $product_id;
@@ -62,6 +65,11 @@ if(isset($int[1]) && $int[1] == 0){
 	
 </h3> 
 <!--<hr>-->
+<h5 class='number'>
+	<big><?= $place_number ?></big>
+	<small><?= $place_count?></small>
+</h5>
+<!--<hr>-->
 <h4 class="product">
 	<span class="date"><?= $date_event ?></span>
 	<!--<br>-->
@@ -76,6 +84,21 @@ if(isset($int[1]) && $int[1] == 0){
 </div>
 
 <?php return; ?>
+
++ Добавить категорию: Льготный, детский, взрослый
+- Убрать индекс билета, 
++ Добавить до какого числа действует билет.
+		+ Добавить ФИО
++ Адрес
++ Минцифры организация придумала 
++ ID Заказа
+
+
+
+
+
+
+
 
 
 "error":true,
@@ -96,11 +119,3 @@ if(isset($int[1]) && $int[1] == 0){
 
 
 
-
-+ Добавить категорию: Льготный, детский, взрослый
-- Убрать индекс билета, 
-+ Добавить до какого числа действует билет.
-		+ Добавить ФИО
-+ Адрес
-+ Минцифры организация придумала 
-+ ID Заказа

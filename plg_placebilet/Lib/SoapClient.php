@@ -713,7 +713,7 @@ class SoapClientZriteli //extends SoapClient
         if(is_null(static::$Client))
             return array();
         
-        if(PlaceBiletHelper::JRequest()->getInt('deb')==1)
+        if(PlaceBiletHelper::JInput()->getInt('deb')==1)
             toLog('',  "\$xmlData $RepertoireId $EventDateTime ".static::$ErrorId."-ERROR:".static::$Error,  '', TRUE);
        // return array();
         

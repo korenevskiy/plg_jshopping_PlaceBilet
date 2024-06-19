@@ -50,7 +50,7 @@ class JshoppingControllerEmpty extends JshoppingControllerBase{//JControllerLega
 //        
 //        var_dump($this->get('redirect'));
 //        var_dump($this->task);
-//        var_dump(PlaceBiletHelper::JRequest()->getCmd('task'));    
+//        var_dump(PlaceBiletHelper::JInput()->getCmd('task'));    
 //        
 //        echo "</pre>"; 
     }
