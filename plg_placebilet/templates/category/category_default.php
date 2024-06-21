@@ -52,14 +52,14 @@ $templates = [];
 
 					<?php 
 					$rows = [];
-					foreach ($this->rows as $product){
+					foreach ($this->rows as &$product){
 						if(isset($product->category_ids) && is_array($product->category_ids) && in_array($category->category_id, $product->category_ids)){
 							$rows[] = &$product;
 						}
 					}
 	
 					if($rows){
-			
+						
 						$templates = [];
 						$templates[] = JPATH_ROOT.'/templates/'. JFactory::getApplication()->getTemplate().'/html/com_jshopping';
 						$templates[] = JPATH_PLUGINS.'/jshopping/placebilet/templates';
@@ -67,8 +67,6 @@ $templates = [];
 						$templates[] = realpath(dirname(__FILE__)."/../");
 					}
 					
-		
-		
 					if($rows && $file = JPath::find($templates, 'category/list_products.php')){
 						include($file);
 						$afterRowsRender = false;
@@ -96,6 +94,6 @@ $templates = [];
 	
 	if($afterRowsRender && $file = JPath::find($templates, 'list_products.php'))
 		include($file);
-	
+		
 	?>
 </div>
