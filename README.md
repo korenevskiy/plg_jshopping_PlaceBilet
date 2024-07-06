@@ -17,7 +17,9 @@ Link for payment plugin SberBank.
 [https://korenevskiy.github.io/plg_jshopping_PlaceBilet/rbs_payment_joomla_jshopping_1.3.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/rbs_payment_joomla_jshopping_1.3.zip)
 
 Link for payment plugin YooMoney, YooKassa from Яндекс.
+
 [YooMoney YooKassa plagin Yandex](https://github.com/yoomoney/cms-joomshopping)
+
 [YooMoney YooKassa plagin Yandex.ZIP](https://github.com/yoomoney/cms-joomshopping/blob/master/yoomoney-cms-joomshopping.zip?raw=true)
 
 
