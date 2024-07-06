@@ -18,9 +18,8 @@ Link for payment plugin SberBank.
 
 Link for payment plugin YooMoney, YooKassa from Яндекс.
 
-[YooMoney YooKassa plagin Yandex](https://github.com/yoomoney/cms-joomshopping)
-
-[YooMoney YooKassa plagin Yandex.ZIP](https://github.com/yoomoney/cms-joomshopping/blob/master/yoomoney-cms-joomshopping.zip?raw=true)
+[YooMoney YooKassa plagin Yandex](https://github.com/yoomoney/cms-joomshopping) or 
+[//github.com/yoomoney/cms-joomshopping/blob/master/yoomoney-cms-joomshopping.zip?raw=true.ZIP](https://github.com/yoomoney/cms-joomshopping/blob/master/yoomoney-cms-joomshopping.zip?raw=true)
 
 
  
