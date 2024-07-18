@@ -3,26 +3,31 @@
 
 Link for online installation Plugin and Module:
 
-Plugin* Require: [https://korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_5.0.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_5.0.zip)
+Plugin* Require: [//korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_5.0.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_5.0.zip)
 
-Module* Require: [https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_5.0.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_5.0.zip)
+Module* Require: [//korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_5.0.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_5.0.zip)
 
 Link for online installation Component * Require:
 
-[https://korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping-5.4.2.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping-5.4.2.zip)
+[//korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping-5.4.2.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping-5.4.2.zip)
 
 Link for payment plugin SberBank.
 
 [Payment plugin SberBank](https://securepayments.sberbank.ru/wiki/doku.php/integration:cms:joomla:start) or 
-[https://korenevskiy.github.io/plg_jshopping_PlaceBilet/rbs_payment_joomla_jshopping_1.3.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/rbs_payment_joomla_jshopping_1.3.zip)
+[//korenevskiy.github.io/plg_jshopping_PlaceBilet/rbs_payment_joomla_jshopping_1.3.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/rbs_payment_joomla_jshopping_1.3.zip)
+
+
+Link for payment plugin YooMoney, YooKassa from Яндекс.
+
+[Payment plugin YooKassa](https://yookassa.ru/docs/support/payments/onboarding/integration/cms-module/joomshopping) or 
+[//korenevskiy.github.io/plg_jshopping_PlaceBilet/yoomoney-cms-joomla5-joomshopping_1.2.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/yoomoney-cms-joomla5-joomshopping_1.2.zip)
+
+[YooMoney YooKassa plagin Yandex](https://github.com/yoomoney/cms-joomshopping) or 
+[//github.com/yoomoney/cms-joomshopping/blob/master/yoomoney-cms-joomshopping.zip?raw=true.ZIP](https://github.com/yoomoney/cms-joomshopping/blob/master/yoomoney-cms-joomshopping.zip?raw=true)
+
+
  
 ![Exhibition of paintings - En - j3placebilet](https://user-images.githubusercontent.com/6898474/145529212-06d132d5-c701-434c-880e-be2486bfd927.png)
-
-
-
-
-
-
 
 
 
