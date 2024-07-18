@@ -4189,7 +4189,7 @@ toPrint($categories,'$categories:'.$pr_id, TRUE,'message',true);
 		
 		$r = PlaceBiletHelper::deletePlaces($order_id);
 		
-toPrint($order_id,'$order_id '.($r?'True':'False'),0,'message',true);
+//toPrint($order_id,'$order_id '.($r?'True':'False'),0,'message',true);
 //		toLog($order_id, '$order_id '.($r?'True':'False'),'finish.txt','',true);
 		
 		return;

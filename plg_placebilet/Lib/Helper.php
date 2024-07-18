@@ -278,9 +278,11 @@ class PlacebiletHelper{
 	 * @param string|array $id
 	 */
     public static function PlacesProdValueDeleteId($product_attr_id2) {
-		$where = " = $product_attr_id2 ";
+		$where = '';
 		if(is_array($product_attr_id2))
 			$where = " IN (". implode (',', $product_attr_id2) .')';
+		else
+			$where = " = $product_attr_id2 ";
 		
 		$query = "
 DELETE FROM #__jshopping_products_attr2 
