@@ -29,7 +29,7 @@ Link for payment plugin YooMoney, YooKassa from Яндекс.
  
 ![Exhibition of paintings - En - j3placebilet](https://user-images.githubusercontent.com/6898474/145529212-06d132d5-c701-434c-880e-be2486bfd927.png)
 
-![img-2024-07-18-19-11-56](https://github.com/user-attachments/assets/7e563f34-e3be-48e0-9aba-8f60bd218466)
+ ![img-2024-07-18-19-11-56](https://github.com/user-attachments/assets/94acfe72-e45d-44b0-b8f2-7d470f9fd461)
 
 
 # Demo Archive Site - Download here ZIP with Jomla 3.x archive! 
