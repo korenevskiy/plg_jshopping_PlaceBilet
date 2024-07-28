@@ -363,48 +363,9 @@ $t = "JText";
  </div> 
  </div> 
 </div>
+ 
+<input type="submit" class="btn btn-success button btn-buy" value="<?php print JText::_('JSHOP_ADD_TO_CART')?>" onclick="jQuery('#to').val('cart');" >
 
-<script>
-//const placeSelectCount = function() {
-//	document.getElementById('outputCountPlaces').innerHTML = document.querySelectorAll('input.checkboxplace:checked').length;
-//};
-//document.querySelectorAll('input.checkboxplace').forEach(checkbox => checkbox.addEventListener("click", placeSelectCount));//,label.placebutton
-//document.addEventListener("DOMContentLoaded", placeSelectCount);
-</script>
-
-<script>
-//let placesSelectText = function () {
-//	document.getElementById('outputSelectFields').innerHTML = '';
-//	
-//	document.querySelectorAll('input.checkboxplace:checked').forEach(function(checkbox){
-//		document.getElementById('outputSelectFields').innerHTML += checkbox.title + '<br>';
-//	});
-//};
-//document.querySelectorAll('input.checkboxplace').forEach(checkbox => checkbox.addEventListener("click", placesSelectText));
-</script>
-<script>
-//let placesSelectSumm = function(){
-//	let cur_name = document.querySelector('.jshop_places').dataset.currencyName;
-//	let sum = 0; 
-//	document.getElementById('outputPriceAll').innerHTML = sum + ' ' + cur_name;
-//	
-//	document.querySelectorAll('input.checkboxplace:checked').forEach(function(checkbox){
-//		sum += parseFloat(checkbox.dataset.price);
-//		
-//		document.getElementById('outputPriceAll').innerHTML = sum + ' ' + cur_name;
-//	});
-//};
-//document.querySelectorAll('input.checkboxplace').forEach(checkbox => checkbox.addEventListener("click", placesSelectSumm));
-
-</script> 
-<script>
-	
-	
-	
-</script>
-<script>
-
-</script>
 
 <?php
 }//end calculator

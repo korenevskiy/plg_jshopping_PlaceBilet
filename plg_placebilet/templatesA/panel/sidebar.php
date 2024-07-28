@@ -16,6 +16,11 @@ use \Joomla\CMS\Uri\Uri as JUri;
 //    echo "<pre>Имя stock: ";
 //    var_dump($this->config->stock);
 //    echo "</pre>"; 
+echo '';
+
+if(JFactory::$application->input->getCmd('subaction','')=='get_log_messages')
+	return;
+
 
 // <editor-fold defaultstate="collapsed" desc="Скрипт">
 if (empty($script)) {
@@ -266,11 +271,11 @@ $base = JUri::base();
     <ul style="">
         <li style="height: 20px;">😃<?= JText::_('Hi!') ?> <span class="smiley-2 large-icon"></span></li> 
     <?php foreach ($this->menu as $type => $item):
-        echo "<li>";    
+        echo "<li>";
         echo "<a href=\"$item[1]\" title=\"$item[0]\">";
         echo "<img src=\"{$item[2]}\" title=\"$item[0]\">";
         echo "<label class=\"title x$sidebar\"  style=\"display: $sidebarDisplay;\" >$item[0]</label>";
-        echo "</a></li>";    
+        echo "</a></li>";
     endforeach;
     ?>
     </ul>

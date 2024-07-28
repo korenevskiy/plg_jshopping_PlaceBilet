@@ -40,9 +40,14 @@ $templates = [];
 					<?php } ?>
                     <div class = "sblock2">
                         <div class="category_name">
-                            <a class="product_link" href="<?php print $category->category_link?>">
-                                <?php print $category->name?>
-                            </a>
+                            <span class="product_link" href="<?php print $category->category_link?>">
+                                <?php
+                                // Create a DateTime object from the string
+								//$dateTime = new DateTime($category->category_add_date??'');
+								// Format the DateTime object to get only the date part
+								//$dateOnly = $dateTime->format('Y-m-d');
+                                print $category->name ;// .' <span class="cat-date">'.$dateOnly.'</span>'; ?>
+                            </span>
                         </div>
                         <p class="category_short_description">
                             <?php print $category->short_description?>

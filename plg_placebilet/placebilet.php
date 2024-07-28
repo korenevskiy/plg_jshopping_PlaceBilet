@@ -2998,7 +2998,7 @@ WHERE order_item_id = $order_item_id;
         $product->unlimited = TRUE;
         
         
-        $product->product_price = 0;
+//        $product->product_price = 0;
         $product->product_price2 = 0;
         
         $product->product_is_add_price  = FALSE;
@@ -3012,6 +3012,10 @@ WHERE order_item_id = $order_item_id;
                 $jshopConfig->admin_show_weight = FALSE;
                 $jshopConfig->stock = TRUE;
                 $jshopConfig->admin_show_product_bay_price = FALSE;
+				
+				$jshopConfig->disable_admin['product_old_price'] = true;
+//				$jshopConfig->product_old_price = false;
+				
 //        toPrint($product,'$product');
 //        toPrint($product->product_price,'$product->product_price');
         

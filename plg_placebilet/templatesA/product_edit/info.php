@@ -165,7 +165,7 @@ defined('_JEXEC') or die();
          <?php echo JText::_('JSHOP_PRODUCT_PRICE')?>*
        </td>
        <td test>
-       	 <input type="text" name="product_price" class="form-control" id="product_price" value="<?php echo $row->product_price?>" <?php if (!$this->withouttax){?> onkeyup="jshopAdmin.updatePrice2(<?php print $jshopConfig->display_price_admin;?>)" <?php }?>  readonly="readonly" /> <?php echo $this->lists['currency'];?>
+       	 <input type="text" name="product_price" class="form-control" id="product_price" value="<?php echo $row->product_price?>" <?php if (!$this->withouttax){?> onkeyup="jshopAdmin.updatePrice2(<?php print $jshopConfig->display_price_admin;?>)" <?php }?>  _readonly="readonly" /> <?php echo $this->lists['currency'];?>
        </td>
     </tr>
     <?php if (!$this->withouttax){?>
