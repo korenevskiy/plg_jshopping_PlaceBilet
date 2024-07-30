@@ -1,4 +1,4 @@
-<?php
+<?php defined('_JEXEC') or die();
  /** ----------------------------------------------------------------------
  * plg_placebilet - Plugin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
@@ -39,7 +39,7 @@ if(file_exists(JPATH_ROOT . '/libraries/vendor/voku/portable-utf8/src/voku/helpe
 
 
 // No direct access allowed to this file
-defined( '_JEXEC' ) or die();
+
 
 // NeatBeans 8.2
 // http://wiki.netbeans.org/NewAndNoteworthyNB82#PHP_7_Support

@@ -1,4 +1,4 @@
-<?php
+<?php defined('_JEXEC') or die();
  /** ----------------------------------------------------------------------
  * plg_PlaceBilet - Plugin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
@@ -17,7 +17,7 @@ use \Joomla\CMS\Factory as JFactory;
 use \Joomla\CMS\Document\HtmlDocument as JDocument;
 use \Joomla\CMS\Language\Text as JText;
 
-defined('_JEXEC') or die();
+
 
 
 //if(class_exists('PlaceBiletHelper'))

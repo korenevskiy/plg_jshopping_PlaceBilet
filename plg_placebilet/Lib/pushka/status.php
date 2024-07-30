@@ -1,4 +1,4 @@
-<?php
+<?php namespace Joomla\Module\Placebilet\Administrator\BD;
  /** ----------------------------------------------------------------------
  * plg_PlaceBilet - Plugin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
@@ -14,8 +14,10 @@
  * -------------------------------------------------------------------------
  **/
 
-namespace Joomla\Module\Placebilet\Administrator\BD;
- 
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') or die;
+// phpcs:enable PSR1.Files.SideEffects
+
 /**
  * Объект статуса билета 
  */

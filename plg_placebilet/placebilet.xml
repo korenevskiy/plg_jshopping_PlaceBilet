@@ -48,8 +48,8 @@
 		<menu link="option=com_modules&amp;filter.module=mod_jshopping_categories" img="components/com_lendr/assets/images/lendr_icon.png">JSHOP_PLACE_BILET_ITEMMENU_MODULEMARKET_LABEL</menu>
 	</administration>
     
-	<media folder='folderout' destination='foldersrc'>
-	</media>
+<!--	<media folder='folderout' destination='foldersrc'>
+	</media>-->
 	<files>
 		<filename>script.php</filename>
 		<filename plugin="placebilet">placebilet.php</filename>

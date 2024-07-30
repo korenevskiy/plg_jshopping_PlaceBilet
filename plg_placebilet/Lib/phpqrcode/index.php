@@ -1,4 +1,4 @@
-<?php    
+<?php  \defined('_JEXEC') or die;
 return;
 // Тестовая проверка работы генератора QR
 /*

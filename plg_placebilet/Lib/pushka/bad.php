@@ -1,4 +1,4 @@
-<?php
+<?php namespace API\Kultura\Pushka;
  /** ----------------------------------------------------------------------
  * plg_PlaceBilet - Plugin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
@@ -15,7 +15,11 @@
  **/
 
  
-namespace API\Kultura\Pushka;
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') or die;
+// phpcs:enable PSR1.Files.SideEffects
+
+
 
 require_once __DIR__ . '/data.php';
 

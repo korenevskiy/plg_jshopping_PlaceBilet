@@ -1,4 +1,4 @@
-<?php
+<?php namespace Joomla\Component\Jshopping\Administrator\Controller;
  /** ----------------------------------------------------------------------
  * plg_PlaceBilet - Plugin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
@@ -12,12 +12,16 @@
  * Technical Support:  Forum - //vk.com/placebilet
  * -------------------------------------------------------------------------
  **/
-namespace Joomla\Component\Jshopping\Administrator\Controller;
+
 use Joomla\CMS\MVC\Controller\BaseController;
 
 
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') or die;
+// phpcs:enable PSR1.Files.SideEffects
+
 jimport('joomla.application.component.controller');
-defined( '_JEXEC' ) or die();
+
 
 class DisplayModController extends BaseController{
 

@@ -1,4 +1,4 @@
-<?php
+<?php namespace Joomla\Module\Placebilet\Administrator;
  /** ----------------------------------------------------------------------
  * plg_PlaceBilet - Plugin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
@@ -14,7 +14,10 @@
  * -------------------------------------------------------------------------
  **/
 
-namespace Joomla\Module\Placebilet\Administrator;
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') or die;
+// phpcs:enable PSR1.Files.SideEffects
+
 
 use Joomla\CMS\Date\Date as JDate;
 use Joomla\CMS\Factory as JFactory;

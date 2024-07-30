@@ -1,4 +1,4 @@
-<?php
+<?php \defined('_JEXEC') or die;
 /*
  * PHP QR Code encoder
  *
