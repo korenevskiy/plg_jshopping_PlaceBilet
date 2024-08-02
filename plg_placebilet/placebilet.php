@@ -722,7 +722,7 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
 	 * @param type $filters
 	 * @param type $obj
 	 */
-	function onBeforeExeQueryGetProductList($typeName, &$query, &$filters, &$obj){
+	function onBeforeExeQueryGetProductList($typeName, &$query, &$filters, &$obj = NULL){
 		
 		
 		
