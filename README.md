@@ -9,7 +9,7 @@ Module* Require: [//korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBile
 
 Link for online installation Component * Require:
 
-[//korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping-5.4.2.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping-5.4.2.zip)
+[//korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping-5.5.0.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping-5.5.0.zip)
 
 
 Developer Support:
