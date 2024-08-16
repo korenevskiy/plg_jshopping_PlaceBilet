@@ -5,7 +5,7 @@ Link for online installation Plugin and Module:
 
 Plugin* Require: [//korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_5.1.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_5.1.zip)
 
-Module* Require: [//korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_5.0.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_5.0.zip)
+Module* Require: [//korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_5.1.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_5.1.zip)
 
 Link for online installation Component * Require:
 
