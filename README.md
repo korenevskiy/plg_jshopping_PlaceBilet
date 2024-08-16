@@ -11,6 +11,13 @@ Link for online installation Component * Require:
 
 [//korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping-5.4.2.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping-5.4.2.zip)
 
+
+Developer Support:
+
+[//t.me/+KpD1a9hFXF9iNDRi](https://t.me/+KpD1a9hFXF9iNDRi)
+[http://t.me/placebilet](http://t.me/placebilet)
+
+
 Link for payment plugin SberBank.
 
 [Payment plugin SberBank](https://securepayments.sberbank.ru/wiki/doku.php/integration:cms:joomla:start) or 
@@ -24,6 +31,7 @@ Link for payment plugin YooMoney, YooKassa from Яндекс.
 
 [YooMoney YooKassa plagin Yandex](https://github.com/yoomoney/cms-joomshopping) or 
 [//github.com/yoomoney/cms-joomshopping/blob/master/yoomoney-cms-joomshopping.zip?raw=true.ZIP](https://github.com/yoomoney/cms-joomshopping/blob/master/yoomoney-cms-joomshopping.zip?raw=true)
+
 
 
  
