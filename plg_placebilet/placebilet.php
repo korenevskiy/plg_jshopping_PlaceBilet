@@ -5093,9 +5093,11 @@ toPrint($categories,'$categories:'.$pr_id, TRUE,'message',true);
 	public static function languageMinificationRaw(){
 		
 		
-		$lang = JFactory::getApplication()->getLanguage();
+//		$lang = JFactory::getApplication()->getLanguage();
 		
-		$dir = getcwd();
+		$default_path = __DIR__;
+		
+//		$dir = getcwd();
 		
 		$dir = __DIR__;
 		
@@ -5103,21 +5105,46 @@ toPrint($categories,'$categories:'.$pr_id, TRUE,'message',true);
 			$dir = dirname($dir);
 		}
 
-		$dir .= '/language';
+		$dir .= '/language/*';
 		
-		$files = Joomla\Filesystem\Folder::files($dir, "raw.ini", true, true);
+//		$files = Joomla\Filesystem\Folder::files($dir, "raw.ini", true, true);
 		
-		foreach ($files as $file){
-			$text = file_get_contents($file);
-			$text = str_replace("\n[", "[{<!>}][", $text);
-			$text = str_replace("]\n", "][{<!>}]", $text);
-			$text = str_replace("\";\n", "\";[{<!>}]", $text);
-			$text = str_replace("\"\n", "\"[{<!>}]", $text);
-			$text = str_replace("\n", '', $text);
-			$text = str_replace('[{<!>}]', PHP_EOL, $text);
-			$file = str_replace(".raw.ini", '.ini', $file);
-			$f = file_put_contents($file, $text);
+//		$dirs = scandir($dir,  SCANDIR_SORT_NONE);
+//		$dirs = glob($dir . '/*');
+//		$dirs = array_filter(glob('*'), 'is_dir');
+		
+		$files = [];
+		
+		foreach (array_filter(glob($dir), 'is_dir') as &$dir){
+			foreach (glob($dir.'/*.raw.ini') as $file){
+				$text = file_get_contents($file);
+				$countLines = count(explode("\n", $text));
+				$text = str_replace("\n[", "[{<!>}][", $text);			//	\n[		-
+				$text = str_replace("]\n", "][{<!>}]", $text);			//	]\n		-
+				$text = str_replace("]\r", "][{<!>}]", $text);			//	]\r		-
+				$text = str_replace("\";\r\n", "\";[{<!>}]", $text);	//	";\r\n	-
+				$text = str_replace("\";\n", "\";[{<!>}]", $text);		//	";\n	-
+				$text = str_replace("\";\r", "\";[{<!>}]", $text);		//	";\r	-
+				
+				$text = str_replace("\"\r\n", "\"[{<!>}]", $text);		//	"\r\n	-
+				$text = str_replace("\"\n", "\"[{<!>}]", $text);		//	"\n		-
+				$text = str_replace("\"\r", "\"[{<!>}]", $text);		//	"\r		-
+				
+				$text = str_replace("\r\n", '', $text);					//	\r\n	-
+				$text = str_replace("\n", '', $text);					//	\n		-
+				$text = str_replace("\r", '', $text);					//	\r		-
+				$text = str_replace('[{<!>}]', PHP_EOL, $text);			
+				$file = str_replace('.raw.ini', '.ini', $file);
+				$f = file_put_contents($file, $text);
+				$file = str_replace(__DIR__ . '/../../../../../', '.ini', $file);
+				
+				
+				$countLines2 = count(explode("\n", $text));
+//				$files[] = str_replace($default_path, '', $file) ." -- count:$countLines , newCount:$countLines2";
+				$files[str_replace($default_path, '', $file)] = " -- count:$countLines , newCount:$countLines2";
+			}
 		}
+		return $files;
 	}
 	
 	/**
@@ -5269,7 +5296,36 @@ Object.keys(adminForm.show_delivery_time_checkout).forEach(function(key, index) 
 	}
 
 	// </editor-fold>
+	
+	
+	/**
+	 * 
+	 * Метод должен вызыватся при сохранении Расширения в Админке
+	 * Но для этого надо подписать плагин к диспетчеру. где нибудь в начале этого файла
+	 * JPluginHelper::importPlugin('extension');
+	 * 
+	 * Save Extension for Save seting plugin
+	 * @param string $context
+	 * @param object $pluginTable
+	 * @param bool $isNew
+	 * @param array $data
+	 * @return bool
+	 */
+	public function onExtensionBeforeSave($context, $pluginTable, $isNew = false, $data = null){
+		if($context != 'com_plugins.plugin')
+			return true;
+		
+		if(JFactory::getApplication()->getConfig()->get('debug'))
+			static::languageMinificationRaw();
+		
 
+		
+//toPrint();
+//toPrint($context, '$context',0, 'message',true);
+
+		return true;
+	}
+	
 } 
 
 

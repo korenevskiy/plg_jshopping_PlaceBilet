@@ -11,18 +11,33 @@
  * Technical Support:  Forum - //vk.com/placebilet
  * -------------------------------------------------------------------------
  **/ 
-//defined('_JEXEC') or die;
-
+defined('_JEXEC') or die;
+return;
 
 
 
 if(! class_exists('\Joomla\CMS\Factory')){
 	$files = &HelperMinification::languageMinificationRaw();
+	
+	
+	header('Content-Type: application/json; charset=utf-8');
+	echo json_encode($files, JSON_PRETTY_PRINT);
+	
+	
 //	echo "Start minification!<br>";
 //	echo '<br>Count:' . count($files);
 //	echo '<pre>'.print_r($files,true).'</pre>';
-	header('Content-Type: application/json; charset=utf-8');
-	echo json_encode($files, JSON_PRETTY_PRINT);
+	
+//	echo "<br><br>";
+	
+//	echo __DIR__ . '/' . array_key_first($files);//$files[0];
+//	echo "<br>";
+//	echo "<br>";
+	
+//	echo "<pre>";
+//	echo str_replace("\n", "<br>", htmlspecialchars(file_get_contents(__DIR__ . array_key_first($files))));
+//	echo "</pre>";
+	
 }
 
 
@@ -79,7 +94,8 @@ class HelperMinification{
 				
 				
 				$countLines2 = count(explode("\n", $text));
-				$files[] = str_replace($default_path, '', $file) ." -- count:$countLines , newCount:$countLines2";
+//				$files[] = str_replace($default_path, '', $file) ." -- count:$countLines , newCount:$countLines2";
+				$files[str_replace($default_path, '', $file)] = " -- count:$countLines , newCount:$countLines2";
 			}
 		}
 		return $files;

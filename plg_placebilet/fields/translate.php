@@ -58,7 +58,6 @@ class JFormFieldTranslate extends JFormField  {
 		
 		if(JFactory::getApplication()->getConfig()->get('debug'))
 			static::languageMinificationRaw();
-		
  
 		$this->element = $element;
 
@@ -142,10 +141,11 @@ class JFormFieldTranslate extends JFormField  {
 	
 	public static function languageMinificationRaw(){
 		
+//		$lang = JFactory::getApplication()->getLanguage();
 		
-		$lang = JFactory::getApplication()->getLanguage();
+		$default_path = __DIR__;
 		
-		$dir = getcwd();
+//		$dir = getcwd();
 		
 		$dir = __DIR__;
 		
@@ -153,20 +153,45 @@ class JFormFieldTranslate extends JFormField  {
 			$dir = dirname($dir);
 		}
 
-		$dir .= '/language';
+		$dir .= '/language/*';
 		
-		$files = Joomla\Filesystem\Folder::files($dir, "raw.ini", true, true);
+//		$files = Joomla\Filesystem\Folder::files($dir, "raw.ini", true, true);
 		
-		foreach ($files as $file){
-			$text = file_get_contents($file);
-			$text = str_replace("\n[", "[{<!>}][", $text);
-			$text = str_replace("]\n", "][{<!>}]", $text);
-			$text = str_replace("\";\n", "\";[{<!>}]", $text);
-			$text = str_replace("\"\n", "\"[{<!>}]", $text);
-			$text = str_replace("\n", '', $text);
-			$text = str_replace('[{<!>}]', PHP_EOL, $text);
-			$file = str_replace(".raw.ini", '.ini', $file);
-			$f = file_put_contents($file, $text);
+//		$dirs = scandir($dir,  SCANDIR_SORT_NONE);
+//		$dirs = glob($dir . '/*');
+//		$dirs = array_filter(glob('*'), 'is_dir');
+		
+		$files = [];
+		
+		foreach (array_filter(glob($dir), 'is_dir') as &$dir){
+			foreach (glob($dir.'/*.raw.ini') as $file){
+				$text = file_get_contents($file);
+				$countLines = count(explode("\n", $text));
+				$text = str_replace("\n[", "[{<!>}][", $text);			//	\n[		-
+				$text = str_replace("]\n", "][{<!>}]", $text);			//	]\n		-
+				$text = str_replace("]\r", "][{<!>}]", $text);			//	]\r		-
+				$text = str_replace("\";\r\n", "\";[{<!>}]", $text);	//	";\r\n	-
+				$text = str_replace("\";\n", "\";[{<!>}]", $text);		//	";\n	-
+				$text = str_replace("\";\r", "\";[{<!>}]", $text);		//	";\r	-
+				
+				$text = str_replace("\"\r\n", "\"[{<!>}]", $text);		//	"\r\n	-
+				$text = str_replace("\"\n", "\"[{<!>}]", $text);		//	"\n		-
+				$text = str_replace("\"\r", "\"[{<!>}]", $text);		//	"\r		-
+				
+				$text = str_replace("\r\n", '', $text);					//	\r\n	-
+				$text = str_replace("\n", '', $text);					//	\n		-
+				$text = str_replace("\r", '', $text);					//	\r		-
+				$text = str_replace('[{<!>}]', PHP_EOL, $text);			
+				$file = str_replace('.raw.ini', '.ini', $file);
+				$f = file_put_contents($file, $text);
+				$file = str_replace(__DIR__ . '/../../../../../', '.ini', $file);
+				
+				
+				$countLines2 = count(explode("\n", $text));
+//				$files[] = str_replace($default_path, '', $file) ." -- count:$countLines , newCount:$countLines2";
+				$files[str_replace($default_path, '', $file)] = " -- count:$countLines , newCount:$countLines2";
+			}
 		}
+		return $files;
 	}
 }

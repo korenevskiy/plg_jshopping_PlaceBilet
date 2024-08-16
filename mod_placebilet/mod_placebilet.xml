@@ -3,14 +3,13 @@
 	<name>mod_placebilet</name>
 	<author>Joomla! Project</author>
 	<creationDate>2023-07-18</creationDate>
-	<modificationDate>2023-07-18</modificationDate>
-	<modificationsDate>2023-07-18,2024-06-19</modificationsDate>
-	<modificationDate>2024-06-19</modificationDate>
+	<modificationsDate>2023-07-18,2024-06-19,2024-08-16</modificationsDate>
+	<modificationDate>2024-08-16</modificationDate>
 	<copyright>Copyright (C) Explorer-Office</copyright>
 	<license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
 	<authorEmail>korenevskiys@ya.ru</authorEmail>
 	<authorUrl>http://explorer-office.ru/download</authorUrl>
-	<version>5.0.0</version>
+	<version>5.0.1</version>
 	<description>MOD_PLACEBILET_XML_DESCRIPTION</description>
 
 	<!--<customContent />-->
