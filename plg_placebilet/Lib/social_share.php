@@ -75,8 +75,8 @@ class JSocial_Share{
         }
 //        $cat_id = FALSE;
 //        JUri::base();
-        $link = ($cat_id)?(JUri::root().SEFLink("index.php?option=com_jshopping&controller=category&task=view&category_id=$cat_id")):JURI::current();
-        $link = ($cat_id)?(JUri::root().SEFLink("index.php?option=com_jshopping&controller=product&task=view&category_id=$cat_id&product_id=$product_id", 1)):JURI::current();
+        $link = ($cat_id)?(\JUri::root().\JSHelper::SEFLink("index.php?option=com_jshopping&controller=category&task=view&category_id=$cat_id")):JURI::current();
+        $link = ($cat_id)?(\JUri::root().\JSHelper::SEFLink("index.php?option=com_jshopping&controller=product&task=view&category_id=$cat_id&product_id=$product_id", 1)):JURI::current();
 //        toPrint($link,'$link');
         $url = &$link;
 //        $date = JFactory::getDate($date_event)-> format(DATE_FORMAT_FILTER_DATE);

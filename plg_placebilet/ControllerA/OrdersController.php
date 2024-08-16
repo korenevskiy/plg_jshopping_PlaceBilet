@@ -120,7 +120,7 @@ class OrdersModController extends OrdersController{
 //    function DeletePlacesEdit(){
 //        $this->DeletePlaces(NULL);
 //        
-//        $order_id = \PlaceBiletHelper::JInput()->getInt("order_id");
+//        $order_id = \PlaceBiletHelper::JInput("order_id") ;
 //        $text = JText::_('JSHOP_ORDER_DELETE_PLACES_1'). $order_number.JText::_('JSHOP_ORDER_DELETE_PLACES_2')." <!--<br/> Удалено ".$db->getAffectedRows()."--><br/>";//.$query;
 //        $this->setRedirect("index.php?option=com_jshopping&controller=orders&task=edit&order_id=".$order_id, $text);
 //        
@@ -140,7 +140,7 @@ class OrdersModController extends OrdersController{
 //        $limit = $mainframe->getUserStateFromRequest( $context.'limit', 'limit', $mainframe->getCfg('list_limit'), 'int' );
 //        $limitstart = $mainframe->getUserStateFromRequest( $context.'limitstart', 'limitstart', 0, 'int' );
 //        $id_vendor_cuser = getIdVendorForCUser();
-//        $client_id = \PlaceBiletHelper::JInput()->getInt('client_id',0);
+//        $client_id = \PlaceBiletHelper::JInput('client_id',0) ;
 //        
 //        $status_id = $mainframe->getUserStateFromRequest( $context.'status_id', 'status_id', 0 );
 //        $year = $mainframe->getUserStateFromRequest( $context.'year', 'year', 0 );
@@ -262,7 +262,7 @@ class OrdersModController extends OrdersController{
 //    }
 //    
 //    function show(){
-//        $order_id = \PlaceBiletHelper::JInput()->getInt("order_id");
+//        $order_id = \PlaceBiletHelper::JInput("order_id") ;
 //        $jshopConfig = JSFactory::getConfig();
 //		
 //        $orders = JSFactory::getModel("orders");
@@ -310,7 +310,7 @@ class OrdersModController extends OrdersController{
 //        $dispatcher = \JFactory::getApplication();
 //        $dispatcher->triggerEvent('onBeforeDisplayOrderAdmin', array(&$order, &$order_items, &$order_history));
 //        
-//        $print = \PlaceBiletHelper::JInput()->getInt("print");
+//        $print = \PlaceBiletHelper::JInput("print") );
 //        
 //        $view = $this->getView("orders", 'html');
 //        $view->setLayout("show");
@@ -341,7 +341,7 @@ class OrdersModController extends OrdersController{
 //    }
 //    
 //    function update_one_status(){
-//        $this->_updateStatus(\PlaceBiletHelper::JInput()->get('order_id'),\PlaceBiletHelper::JInput()->get('order_status'),\PlaceBiletHelper::JInput()->get('status_id'),\PlaceBiletHelper::JInput()->get('notify',0),\PlaceBiletHelper::JInput()->get('comments',''),\PlaceBiletHelper::JInput()->get('include',''),1);
+//        $this->_updateStatus(\PlaceBiletHelper::JInput('order_id') ,\PlaceBiletHelper::JInput('order_status') ,\PlaceBiletHelper::JInput('status_id') ,\PlaceBiletHelper::JInput()->get('notify',0),\PlaceBiletHelper::JInput()->get('comments',''),\PlaceBiletHelper::JInput()->get('include',''),1);
 //    }
 //    
 //    function update_status(){
@@ -349,7 +349,7 @@ class OrdersModController extends OrdersController{
 //    }    
 //    
 //    function _updateStatus($order_id, $status, $status_id, $notify, $comments, $include, $view_order){
-//        $client_id = \PlaceBiletHelper::JInput()->getInt('client_id', 0);
+//        $client_id = \PlaceBiletHelper::JInput('client_id', 0) ;
 //		$sendmessage = $notify;
 //		
 //		$model = JSFactory::getModel('orderChangeStatus', 'jshop');
@@ -370,7 +370,7 @@ class OrdersModController extends OrdersController{
 //		$dispatcher = \JFactory::getApplication();
 //		$jshopConfig = JSFactory::getConfig();
 //		
-//        $order_id = \PlaceBiletHelper::JInput()->getInt("order_id");
+//        $order_id = \PlaceBiletHelper::JInput("order_id") ;
 //        $order = JSFactory::getTable('order', 'jshop');
 //        $order->load($order_id);
 //        $order->order_created = 1;
@@ -389,8 +389,8 @@ class OrdersModController extends OrdersController{
 //    }
 //
 //    function remove(){
-//        $client_id = \PlaceBiletHelper::JInput()->getInt('client_id',0);
-//        $cid = (array)\PlaceBiletHelper::JInput()->get("cid");
+//        $client_id = \PlaceBiletHelper::JInput('client_id',0);
+//        $cid = (array)\PlaceBiletHelper::JInput("cid") ;
 //        $dispatcher = \JFactory::getApplication();        
 //        $dispatcher->triggerEvent('onBeforeRemoveOrder', array(&$cid));
 //        
@@ -407,8 +407,8 @@ class OrdersModController extends OrdersController{
 //    
 //    function edit(){
 //        $mainframe = JFactory::getApplication();
-//        $order_id = \PlaceBiletHelper::JInput()->get("order_id");
-//        $client_id = \PlaceBiletHelper::JInput()->getInt('client_id',0);
+//        $order_id = \PlaceBiletHelper::JInput("order_id") ;
+//        $client_id = \PlaceBiletHelper::JInput('client_id',) ;
 //        $lang = JSFactory::getLang();
 //        $db = JFactory::getDBO();
 //        $jshopConfig = JSFactory::getConfig();
@@ -520,7 +520,7 @@ class OrdersModController extends OrdersController{
 //        $db = JFactory::getDBO();
 //        $jshopConfig = JSFactory::getConfig();
 //        $post = \PlaceBiletHelper::JInput()->get('post');
-//        $client_id = \PlaceBiletHelper::JInput()->getInt('client_id',0);        
+//        $client_id = \PlaceBiletHelper::JInput('client_id',0) ;        
 //        $file_generete_pdf_order = $jshopConfig->file_generete_pdf_order;
 //        
 //        $dispatcher = \JFactory::getApplication();
@@ -602,7 +602,7 @@ class OrdersModController extends OrdersController{
 //    }
 //    
 //    function stat_file_download_clear(){        
-//        $order_id = \PlaceBiletHelper::JInput()->getInt("order_id");
+//        $order_id = \PlaceBiletHelper::JInput("order_id");
 //        $order = JSFactory::getTable('order', 'jshop');
 //        $order->load($order_id);
 //        $order->file_stat_downloads = '';
@@ -611,7 +611,7 @@ class OrdersModController extends OrdersController{
 //    }
 //    
 //    function send(){
-//        $order_id = \PlaceBiletHelper::JInput()->getInt("order_id");
+//        $order_id = \PlaceBiletHelper::JInput("order_id") ;
 //        $order = JSFactory::getTable('order', 'jshop');
 //        $order->load($order_id);
 //        JSFactory::loadLanguageFile($order->getLang());        
@@ -622,7 +622,7 @@ class OrdersModController extends OrdersController{
 //    }
 //    
 //    function transactions(){
-//        $order_id = \PlaceBiletHelper::JInput()->getInt("order_id");
+//        $order_id = \PlaceBiletHelper::JInput("order_id") ;
 //        $jshopConfig = JSFactory::getConfig();
 //        
 //        $orders = JSFactory::getModel("orders");
@@ -649,7 +649,7 @@ class OrdersModController extends OrdersController{
 //    }
 //    
 //    function cancel(){
-//        $client_id = \PlaceBiletHelper::JInput()->getInt('client_id',0);
+//        $client_id = \PlaceBiletHelper::JInput('client_id',0) ;
 //        $this->setRedirect("index.php?option=com_jshopping&controller=orders&client_id=".$client_id);
 //    }
 //    

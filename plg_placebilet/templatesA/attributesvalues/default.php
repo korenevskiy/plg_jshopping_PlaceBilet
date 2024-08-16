@@ -75,7 +75,7 @@ $saveOrder = $this->filter_order_Dir == "asc" && $this->filter_order=="value_ord
 				<dt><?php echo JText::_('JSHOP_ADD_RANGE'); ?></dt>
 				<dd  class="adminform">
 					<input type="text" value="1-" name="PlacesRangeAdd"> 
-                <button onclick="Joomla.submitbutton('AddsRange')" class="btn " style="margin-bottom: 9px;"><span class="icon-save-new"></span> <?php echo JText::_('JSHOP_ADD') ?></button><label></label>
+                <button onclick="Joomla.submitbutton('AddsRange')" class="btn " style="margin-bottom: 9px;"><span class="icon-save-new"></span> <?php echo JText::_('JSHOP_ADD') ?></button>
                 <br>
 				<i>
                     <?php echo JText::_('JSHOP_ADD_RANGE_DESC') ?>  
@@ -85,9 +85,15 @@ $saveOrder = $this->filter_order_Dir == "asc" && $this->filter_order=="value_ord
 				<dt><hr><?php echo JText::_('JSHOP_ADD_STRING') ?></dt>
 				
 				<dd  class="adminform">
-                <input type="text"	name="PlacesStringAdd"> 
-                <button onclick="Joomla.submitbutton('AddString')" class="btn " style="margin-bottom: 9px;"><span class="icon-save-new"></span> <?php  echo JText::_('JSHOP_ADD') ?></button><label></label>
-                <br>
+				<?php 
+//toPrint($this->languages,'',0,'pre',true);
+				$count = count($this->languages);
+				foreach($this->languages as $lang){?>
+					<input type="text" name="PlacesStringAdd[<?=$lang->language?>]">
+					<?= $count > 1 ? $lang->name .' /'.$lang->language . ' ' . ($lang->publish?'👁':'✕').'<br>' : ''?>
+				<?php } ?>
+				<button onclick="Joomla.submitbutton('AddString')" class="btn " style="margin-bottom: 9px;"><span class="icon-save-new"></span> <?php  echo JText::_('JSHOP_ADD') ?></button><br>
+                
 				<i>
                     <?php echo  JText::_('JSHOP_ADD_STRING_DESC') ?>  
                 </i>
@@ -101,7 +107,7 @@ $saveOrder = $this->filter_order_Dir == "asc" && $this->filter_order=="value_ord
 				<dd  class="adminform">
                 <input type="number"	name="PlacesCountNumAdd"> 
                 <input type="text"	name="PlacesCountStrAdd">
-                <button onclick="Joomla.submitbutton('AddCount')" class="btn " style="margin-bottom: 9px;"><span class="icon-save-new"></span> <?php  echo JText::_('JSHOP_ADD') ?></button><label></label>
+                <button onclick="Joomla.submitbutton('AddCount')" class="btn " style="margin-bottom: 9px;"><span class="icon-save-new"></span> <?php  echo JText::_('JSHOP_ADD') ?></button> 
                 <br>
 				<i>
                     <?php echo  JText::_('JSHOP_ADD_COUNT_DESC') ?>  
@@ -114,7 +120,7 @@ $saveOrder = $this->filter_order_Dir == "asc" && $this->filter_order=="value_ord
 				
 				<dd  class="adminform">
                 <input type="text" name="PlacesRangeRemove">
-                <button onclick="Joomla.submitbutton('RemoveRange')" class="btn " style="margin-bottom: 9px;"><span class="icon-remove"></span> <?php  echo JText::_('JSHOP_REMOVE') ?></button><label></label>
+                <button onclick="Joomla.submitbutton('RemoveRange')" class="btn " style="margin-bottom: 9px;"><span class="icon-remove"></span> <?php  echo JText::_('JSHOP_REMOVE') ?></button> 
                 <br>
 				<i>
                     <?php echo  JText::_('JSHOP_REMOVE_RANGE_DESC') ?>  
@@ -138,7 +144,7 @@ $saveOrder = $this->filter_order_Dir == "asc" && $this->filter_order=="value_ord
                     if(count($this->tuples) && count($this->itemsStr)){    echo '</optgroup>';} 
                     ?>
                 </select>
-                <button onclick="Joomla.submitbutton('RemoveString')" class="btn " style="margin-bottom: 9px;"><span class="icon-remove"></span> <?php  echo JText::_('JSHOP_REMOVE') ?></button><label></label>
+                <button onclick="Joomla.submitbutton('RemoveString')" class="btn " style="margin-bottom: 9px;"><span class="icon-remove"></span> <?php  echo JText::_('JSHOP_REMOVE') ?></button> 
                 <br>
 				<i>
                     <?php  echo JText::_('JSHOP_REMOVE_STRING_DESC') ?>

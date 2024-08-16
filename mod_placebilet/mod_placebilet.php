@@ -29,7 +29,20 @@ use Joomla\CMS\Factory as JFactory;
 //    $module->content = HTMLHelper::_('content.prepare', $module->content, '', 'mod_custom.content');
 //}
 
+
 //require_once JPATH_ROOT . '/functions.php';
+
+JFactory::getLanguage()->load('mod_placebilet', __DIR__);
+JFactory::getApplication()->getLanguage()->load('mod_placebilet', __DIR__);
+
+//$paths = JFactory::getApplication()->getLanguage()->getPaths('mod_placebilet');
+
+
+//toPrint();
+//$paths = JFactory::getApplication()->getLanguage()->getPaths('mod_placebilet');
+//toPrint($paths,'$paths',0,'message',true);
+//$paths = JFactory::getLanguage()->getPaths('mod_placebilet');
+//toPrint($paths,'$paths',0,'message',true);
 
 
 //require_once '_src/Helper/PlacebiletHelper.php';

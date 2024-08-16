@@ -8,7 +8,7 @@
 */
 defined('_JEXEC') or die('Restricted access');
 
-$start=intval(\PlaceBiletHelper::JInput()->getInt("start")/$this->limit)+1;
+$start=intval(\PlaceBiletHelper::JInput("start") /$this->limit)+1;
 print $this->tmp_html_start ?? '';
 foreach($this->rows as $row){ ?>      
 <div class="block_related" id="serched_product_<?php print $row->product_id;?>">

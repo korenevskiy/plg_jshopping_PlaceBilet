@@ -208,7 +208,7 @@ class Zriteli{
 
     public static function Instance(JRegistry $paramsPlugin, $ErrorView = FALSE){//JRegistry JObject
         
-        //static::$debug_off  = (PlaceBiletHelper::JInput()->getInt('deb', 0))? TRUE : FALSE;
+        //static::$debug_off  = (PlaceBiletHelper::JInput('deb', 0) )? TRUE : FALSE;
         static::$debug_off = (new JInput())->getInt('deb',0);
 
 //        toLog(static::$UpdateRepertoiries,'static::$UpdateRepertoiries (Instance():1)');

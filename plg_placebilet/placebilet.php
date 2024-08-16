@@ -13,18 +13,15 @@
  **/ 
 
 
+
 if(file_exists(JPATH_ROOT . '/functions.php'))
 	require_once JPATH_ROOT . '/functions.php';
 
 if(function_exists('toPrint') == false){
-	function toPrint($text = ''){
-		
-	}
+	function toPrint($text = ''){}
 }
 if(function_exists('toLog') == false){
-	function toLog($text = ''){
-		
-	}
+	function toLog($text = ''){}
 }
  
 if(file_exists(JPATH_ROOT . '/libraries/fof40/Utils/helpers.php')){
@@ -157,7 +154,7 @@ class plgJshoppingPlacebilet extends JPlugin
         define('PlaceBiletPathView', dirname(__FILE__));
 		
 		JLoader::registerAlias('JRegistry','\\Reg', '5.0');
-		$this->params = new Reg($this->params); // $this->params->toObject();
+		$this->params = new \Reg($this->params); // $this->params->toObject();
 		
 		//$this->params->organization_id;
 		$this->params->pushka_url = '';
@@ -772,7 +769,8 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
      **/
     function onBeforeLoadProductList(){
 //        if($this->params->Zriteli_repertoire_download_enabled)
-        Zriteli::LoadAllProducts(); 
+		if(class_exists('Zriteli'))
+			Zriteli::LoadAllProducts(); 
     }
     /**
      * Конструктор котроллера списка товаров
@@ -950,7 +948,8 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
 //        toPrint($category_id,'$category_id',0);
 //        toPrint($back_value,'$back_value',0);
         try {
-            Zriteli::LoadAllPiecesFromProducts(NULL, $product_id); //расскоментировать. 
+            if(class_exists('Zriteli'))
+				Zriteli::LoadAllPiecesFromProducts(NULL, $product_id); //расскоментировать. 
         } catch (Exception $exc) { 
             toLog($exc->getTraceAsString(),'Zriteli::LoadAllPiecesFromProducts()');
             //toPrint($exc->getTraceAsString(),'!!! ОШИБКА !!! ... ,plgJshoppingPlaceBilet::onBeforeDisplayProduct() => Zriteli::LoadAllPiecesFromProducts(): ') ;
@@ -1071,10 +1070,10 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
      */
     function onAfterLoadCategory($category, &$user){
         if (!$category->category_id || $category->category_publish==0 || !in_array($category->access, $user->getAuthorisedViewLevels())){
-            //$link = JUri::root().SEFLink("index.php?option=com_jshopping&controller=category&task=view&category_id=$category_id");
-            //$link = JUri::root().SEFLink("index.php?option=com_jshopping&controller=product&task=view&category_id=$category_id&product_id=$product->product_id", 1);
-            $link = JUri::root().SEFLink("index.php?option=com_jshopping&controller=category", 1);
-            $link = JUri::root().SEFLink("index.php?option=com_jshopping", 1);
+            //$link = JUri::root().\JSHelper::SEFLink("index.php?option=com_jshopping&controller=category&task=view&category_id=$category_id");
+            //$link = JUri::root().\JSHelper::SEFLink("index.php?option=com_jshopping&controller=product&task=view&category_id=$category_id&product_id=$product->product_id", 1);
+            $link = JUri::root().\JSHelper::SEFLink("index.php?option=com_jshopping&controller=category", 1);
+            $link = JUri::root().\JSHelper::SEFLink("index.php?option=com_jshopping", 1);
             $app = JFactory::getApplication();
             //$app->enqueueMessage(JText::_('JINVALID_TOKEN_NOTICE'), 'warning');
             $app->redirect($link);      
@@ -1105,8 +1104,8 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
         
         if ($category->category_publish==0 || $product->product_publish==0 || !in_array($category_id, $listcategory)){// || !in_array($product->access, $this->usershop->getAuthorisedViewLevels())
             
-        $link = JUri::root().SEFLink("index.php?option=com_jshopping&controller=category&task=view&category_id=$category_id");
-        //$link = JUri::root().SEFLink("index.php?option=com_jshopping&controller=product&task=view&category_id=$category_id&product_id=$product->product_id", 1);
+        $link = JUri::root().\JSHelper::SEFLink("index.php?option=com_jshopping&controller=category&task=view&category_id=$category_id");
+        //$link = JUri::root().\JSHelper::SEFLink("index.php?option=com_jshopping&controller=product&task=view&category_id=$category_id&product_id=$product->product_id", 1);
         
           
             $app = JFactory::getApplication();
@@ -1694,11 +1693,11 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
             unset($query);
         }
         else{
-            //JRoute::_( SEFLink($cart->getUrlList(),0,1) );
+            //JRoute::_( \JSHelper::SEFLink($cart->getUrlList(),0,1) );
             $category_id = $this->JInput()->getInt('category_id', 1);
             $product_id = $this->JInput()->getInt('product_id', 1);
             
-            JRoute::_(SEFLink('index.php?option=com_jshopping&controller=product&task=view&category_id='.$category_id.'&product_id='.$product_id,1,1));
+            JRoute::_(\JSHelper::SEFLink('index.php?option=com_jshopping&controller=product&task=view&category_id='.$category_id.'&product_id='.$product_id,1,1));
         }
         
     $summ_price = FALSE;
@@ -1795,7 +1794,7 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
         
 //        $placesSerialize = json_encode($places); 
         if(!count($places)){
-            JRoute::_(SEFLink('index.php?option=com_jshopping&controller=product&task=view&category_id='.$category_id.'&product_id='.$product_id,1,1));
+            JRoute::_(\JSHelper::SEFLink('index.php?option=com_jshopping&controller=product&task=view&category_id='.$category_id.'&product_id='.$product_id,1,1));
             return;
         }
 		
@@ -1842,10 +1841,10 @@ GROUP BY prod.product_id  ORDER BY prod.date_event ASC ; */
             unset($query);
         }
         else{
-            //JRoute::_( SEFLink($cart->getUrlList(),0,1) );
+            //JRoute::_( \JSHelper::SEFLink($cart->getUrlList(),0,1) );
             $category_id = $this->JInput()->getInt('category_id', 1);
             $product_id = $this->JInput()->getInt('product_id', 1);
-            JRoute::_(SEFLink('index.php?option=com_jshopping&controller=product&task=view&category_id='.$category_id.'&product_id='.$product_id,1,1));
+            JRoute::_(\JSHelper::SEFLink('index.php?option=com_jshopping&controller=product&task=view&category_id='.$category_id.'&product_id='.$product_id,1,1));
         }
                    
 // if(PlaceBiletDev)JFactory::getApplication()->enqueueMessage(  "\$placesDB: ".print_r($places,TRUE));                    
@@ -2810,7 +2809,7 @@ WHERE order_item_id = $order_item_id;
         //$post
 //        if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("POST: <pre>".print_r($post, TRUE)."</pre>");
                 
-        //JRoute::_(SEFLink('index.php?option=com_jshopping&controller=product&task=view&category_id='.$category_id.'&product_id='.$product_id,1,1));
+        //JRoute::_(\JSHelper::SEFLink('index.php?option=com_jshopping&controller=product&task=view&category_id='.$category_id.'&product_id='.$product_id,1,1));
     }
     
     /**
@@ -2895,7 +2894,7 @@ WHERE order_item_id = $order_item_id;
         
 //        if(PlaceBiletAdminDev)JFactory::getApplication()->enqueueMessage("POST: <pre>".print_r($post, TRUE)."</pre>");
         
-        //JRoute::_(SEFLink('index.php?option=com_jshopping&controller=product&task=view&category_id='.$category_id.'&product_id='.$product_id,1,1));
+        //JRoute::_(\JSHelper::SEFLink('index.php?option=com_jshopping&controller=product&task=view&category_id='.$category_id.'&product_id='.$product_id,1,1));
     }    
     /**
      * 
@@ -4614,7 +4613,10 @@ toPrint($categories,'$categories:'.$pr_id, TRUE,'message',true);
         JFactory::getLanguage()->load('com_plugins',JPATH_ADMINISTRATOR);
         //C:\Downloads\OpenServer\OSPanel\domains\localhost\joomla\administrator\language\ru-RU\ru-RU.com_admin.ini
         
-        $menu['products'] = array(JText::_('JSHOP_PANEL_SHOWING'), 'index.php?option=com_jshopping&controller=products&category_id=0', 'jshop_products_b.png', 1);
+//toPrint( );
+//echo "5555555";
+        $menu['products']	= [JText::_('JSHOP_PANEL_SHOWING'), 'index.php?option=com_jshopping&controller=products&category_id=0', 'jshop_products_b.png', 1];
+//		$menu['test']		= [JText::_('Test WOrk'), 'index.php?option=com_jshopping&controller=products&category_id=0', 'jshop_products_b.png', 1];
         
         $menu_add = [];
         $menu_add['attributes'] = [JText::_('JSHOP_PANEL_ROWS'), 'index.php?option=com_jshopping&controller=attributes', 'jshop_attributes_b.png', 1];
@@ -4628,7 +4630,21 @@ toPrint($categories,'$categories:'.$pr_id, TRUE,'message',true);
         
         $menu_add['plugins'] = [ JText::_('COM_PLUGINS_PLUGIN').' PlaceBilet', 'index.php?option=com_plugins&view=plugins&filter[folder]=jshopping', 'jshop_general_b.png', 1];
 		$menu_add['statistics'] = [ JText::_('JSHOP_PLACE_BILET_STATISTICS'), 'index.php?option=com_jshopping&controller=statistics', 'jshop_stats_b.png', 1];
+		
+		$tagLang = \Joomla\CMS\Factory::getLanguage()->getTag();
+		$fileInstruction = __DIR__ . "/language/$tagLang/instruction.html";
+		if(file_exists($fileInstruction) && filesize($fileInstruction))
+			$menu_add['instruction'] = [ JText::_('JSHOP_PANEL_INSTRUCTION'), 'index.php?option=com_jshopping&controller=instruction', 'mail.png', 1];
+		
+		
+//		$tagLang = \Joomla\CMS\Factory::getLanguage()->getTag();
+//		$fileInstruction = __DIR__ . "/language/$tagLang/instruction.html";
+//		if(file_exists($fileInstruction) && filesize($fileInstruction))
+//			$menu['instruction'] = [ JText::_('JSHOP_PANEL_INSTRUCTION'), 'index.php?option=com_jshopping&controller=instruction', $images.'mail.png', 1];
+		
         array_splice($menu, -1, 0, $menu_add);
+//toPrint($menu_add,'$menu',0,'message',true);
+//toPrint($menu_add,'$menu',0,'message',true);
     }
     /**
      * Боковая левая панель-Меню Админки
@@ -4657,6 +4673,8 @@ toPrint($categories,'$categories:'.$pr_id, TRUE,'message',true);
         $s = '/';// DIRECTORY_SEPARATOR;
         $images = JUri::root().'/administrator/components/com_jshopping/images/';
 //        $images = JUri::root()."plugins{$s}jshopping{$s}PlaceBilet{$s}media{$s}images{$s}";
+//toPrint();		
+//toPrint($menu,'$menu',0,'message',true);
         
         foreach ($menu as $type => &$item ){
             $item['type'] = $type;
@@ -4667,23 +4685,39 @@ toPrint($categories,'$categories:'.$pr_id, TRUE,'message',true);
 //        $this->template_name = $this->getApplication()->getTemplate(); // 
 		$plugin_id = JFactory::getDBO()->setQuery("SELECT extension_id FROM #__extensions WHERE type = 'plugin' AND element='placebilet'; ")->loadResult(); 
         
+		
+        $menu['categories'] = array(\JText::_('JSHOP_MENU_CATEGORIES'), 'index.php?option=com_jshopping&controller=categories&catid=0', $images.'jshop_categories_b.png', 1);
+//		$menu['products'] = ['Проверка', 'index.php?option=com_jshopping&controller=products&category_id=0', $images.'jshop_products_b.png', 1, 'type'=>'testing'];
+
+		
         $menu['products'] = array(JText::_('JSHOP_PANEL_SHOWING'), 'index.php?option=com_jshopping&controller=products&category_id=0', $images.'jshop_products_b.png', 1,'type'=>'products');
-        $menu['other'] = array(__('JSHOP_MENU_OTHER'), 'index.php?option=com_jshopping&controller=other', $images.'jshop_options_b.png', 1,'type'=>'other');
-        $menu['config'] = array(__('JSHOP_MENU_CONFIG') , 'index.php?option=com_jshopping&controller=config', $images.'jshop_configuration_b.png', 1,'type'=>'config' );
+        $menu['other'] = array(JText::_('JSHOP_MENU_OTHER'), 'index.php?option=com_jshopping&controller=other', $images.'jshop_options_b.png', 1,'type'=>'other');
+        $menu['config'] = array(JText::_('JSHOP_MENU_CONFIG') , 'index.php?option=com_jshopping&controller=config', $images.'jshop_configuration_b.png', 1,'type'=>'config' );
 //        $menu['plugin'] = array(__('JPLUGIN') , 'index.php?option=com_plugins&task=plugin.edit&extension_id='.$plugin_id, $images.'jshop_general_b.png', 1,'type'=>'plugin' );
     
         $menu_add = [];
+		
         $menu_add['attributes'] = [JText::_('JSHOP_PANEL_ROWS'), 'index.php?option=com_jshopping&controller=attributes', $images.'jshop_attributes_b.png', 1,'type'=>'attributes'];
         //$menu_add['productfields'] = [JText::_('JSHOP_PANEL_SHOWING_EXTRA_FIELDS'), 'index.php?option=com_jshopping&controller=productfields', 'jshop_charac_b.png', $jshopConfig->admin_show_product_extra_field];
         $menu_add['groups'] = [JText::_('JSHOP_PANEL_GROPUS'), 'index.php?option=com_jshopping&controller=attributesgroups', $images.'jshop_mein_page_b.png', 1,'type'=>'groups'];
+        $menu_add['orders'] = array( \JText::_('JSHOP_MENU_ORDERS'), 'index.php?option=com_jshopping&controller=orders', $images.'jshop_orders_b.png', 1);
+		
+        $menu_add['users'] = array(\JText::_('JSHOP_MENU_CLIENTS'), 'index.php?option=com_jshopping&controller=users', $images.'jshop_users_b.png', 1);
         array_splice($menu, 2, 0, $menu_add);
         $menu_add = ['jshopping' => [ JText::_('JSHOP_OC_CART_BACK_TO_SHOP_HOME'), 'index.php?option=com_jshopping', JUri::root()."plugins{$s}jshopping{$s}placebilet{$s}media{$s}images{$s}shop.png", 1,'type'=>'jshopping']];
         array_splice($menu, 0, 0, $menu_add);
 		
 		$menu_add = ['statistics' => [JText::_('JSHOP_PLACE_BILET_STATISTICS'), 'index.php?option=com_jshopping&controller=statistics', $images.'jshop_stats_b.png', 1]];
-        array_splice($menu, -1, 0, $menu_add);
+        array_splice($menu, -2, 0, $menu_add);
+//toPrint($menu_add,'$menu',0,'message',true);
+		
+		$tagLang = \Joomla\CMS\Factory::getLanguage()->getTag();
+		$fileInstruction = __DIR__ . "/language/$tagLang/instruction.html";
+		if(file_exists($fileInstruction) && filesize($fileInstruction))
+			$menu['instruction'] = [ JText::_('JSHOP_PANEL_INSTRUCTION'), 'index.php?option=com_jshopping&controller=instruction', $images.'mail.png', 1];
+		
         
-//        echo "Hello!";
+//		echo "Hello!";
         jimport('cms.view.legacy');
         jimport('legacy.view.legacy');
         
@@ -5238,23 +5272,7 @@ Object.keys(adminForm.show_delivery_time_checkout).forEach(function(key, index) 
 
 } 
 
-//1	26		32
-//1	51		32
-//1	126		180
-//2	6		60
-//			____
-//			304
-//
-//
-//1	В постель	45
-//1	Голая		100
-//			____
-//			145
-//
-//			
-//			 
-//			_________
-//			449
+
 // 
 //http://naelke.su/checkout/step5
 //

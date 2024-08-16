@@ -60,6 +60,13 @@ use \Joomla\CMS\Language\Text as JText;
             align-self: flex-start;
             justify-self: flex-start;
         }
+		#cpanel div.icon a{
+		  color: unset;
+		  /*color: rgba(var(--link-color-rgb), var(--link-opacity, 1));*/
+		}
+		#cpanel div.icon a:hover{
+		  color: rgba(var(--link-color-rgb), var(--link-opacity, 1));
+		}
     </style>
     <div  class="panelhome" style=" ">
  

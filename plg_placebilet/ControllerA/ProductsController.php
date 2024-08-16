@@ -194,12 +194,12 @@ class ProductsModController extends ProductsController{
 //        $dispatcher = \JFactory::getApplication();
 //        $dispatcher->triggerEvent('onLoadEditProduct', array());
 //        $id_vendor_cuser = getIdVendorForCUser();
-//        $category_id = \PlaceBiletHelper::JInput()->getInt('category_id');
+//        $category_id = \PlaceBiletHelper::JInput('category_id') ;
 //        
 //        $tmpl_extra_fields = null;
 //        
-//        $product_id = \PlaceBiletHelper::JInput()->getInt('product_id');
-//        $product_attr_id = \PlaceBiletHelper::JInput()->getInt('product_attr_id');        
+//        $product_id = \PlaceBiletHelper::JInput('product_id') ;
+//        $product_attr_id = \PlaceBiletHelper::JInput('product_attr_id') ;        
 //        
 //        //parent product
 //        if ($product_attr_id){
@@ -586,7 +586,7 @@ class ProductsModController extends ProductsController{
             die();
         }
         
-        //$product_id = \PlaceBiletHelper::JInput()->getInt('product_id');
+        //$product_id = \PlaceBiletHelper::JInput('product_id') ;
         $product_id = $product->product_id;
         
 //        toPrint($product_id,'$product_id !!!!!!!',0,'message');
@@ -612,7 +612,7 @@ class ProductsModController extends ProductsController{
 		 * Сохранение значений атрибутов(цен для мест) в базу для Админки.
 		 * PlaceBiletHelper::saveAttributesPlace($product, $product_id, $post)
 		 */
-        $count_row = \PlaceBiletHelper::saveAttributesPlace($product, $product_id, $post);// Изменено добавлено строка
+        $count_row = (int)\PlaceBiletHelper::saveAttributesPlace($product, $product_id, $post);// Изменено добавлено строка
         
         
         if(PlaceBiletAdminDev){
@@ -627,15 +627,19 @@ class ProductsModController extends ProductsController{
             JFactory::getApplication()->enqueueMessage("<a href='/administrator/index.php?option=com_jshopping&controller=products&task=edit&product_id=$product_id'>$name</a>"); 
         }
 		
-		
+//toPrint();
+//toPrint($count_row,'$count_row',0,'message',true);
+//toPrint(JText::_('JSHOP_PLACE_ADDED'),'JSHOP_PRODUCT_SAVED',0,'message',true);
 		
         if ($this->getTask()=='apply'){
             $this->setRedirect("index.php?option=com_jshopping&controller=products&task=edit&product_id=".$product->product_id, 
-				\JText::_('JSHOP_PRODUCT_SAVED').JText::sprintf('JSHOP_PLACE_ADDED',$count_row));
+					 \JText::_('JSHOP_PRODUCT_SAVED')
+					.\JText::printf('JSHOP_PLACE_ADDED',$count_row)
+					);
         }elseif ($this->getTask()=='save2new') {
             $this->setRedirect($this->getUrlEditItem());
         }else{
-            $this->setRedirect("index.php?option=com_jshopping&controller=products", 
+            $this->setRedirect("index.php?option=com_jshopping&controller=products",
 					\JText::_('JSHOP_PRODUCT_SAVED').JText::sprintf('JSHOP_PLACE_ADDED',$count_row));
         }
 		

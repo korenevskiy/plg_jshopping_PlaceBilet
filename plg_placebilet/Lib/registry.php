@@ -44,7 +44,9 @@
 
 //JLoader::register('JRegistry', 'Reg',true);
 
+
 if(empty(class_exists('Reg'))){
+
 /**
  * Joomla Platform Factory class.
  *

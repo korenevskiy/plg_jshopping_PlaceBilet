@@ -4,7 +4,9 @@
  * and open the template in the editor.
  */
 
-let readyBilet = function(){
+
+document.addEventListener("DOMContentLoaded", function (){
+/*
 //	let fields = document.querySelectorAll('.nextFocus');
 //	for(let fld of fields){
 //		fld.addEventListener("keypress", function(event) {// keypress, keyup, keydown
@@ -16,8 +18,8 @@ let readyBilet = function(){
 //			}
 //		});
 //	}
-};
-document.addEventListener("DOMContentLoaded", readyBilet); 
+ */
+}); 
 
 //return;
 
@@ -135,7 +137,7 @@ jQuery(function () {
  */
 document.addEventListener("DOMContentLoaded", function(){
 	
-	if(document.querySelector('.jshop_places') == null)
+	if(document.querySelector('.jshop_places') === null)
 		return;
 
 	const outputCountPlaces	= document.querySelectorAll('.outputCountPlaces');//.innerHTML = document.querySelectorAll('input.checkboxplace:checked').length;

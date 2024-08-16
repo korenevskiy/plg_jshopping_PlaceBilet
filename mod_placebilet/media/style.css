@@ -168,13 +168,14 @@ html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message .place_name_inf
 .mod-placebilet.placebilet .controls{
 	display: flex;
 	gap: 10px;
-    justify-content: space-between;
+	justify-content: space-between;
 	margin-bottom: 8px;
 }
 .mod-placebilet.placebilet .controls.camera{
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
 	display: flex;
+	flex-wrap: wrap;
 }
 .mod-placebilet.placebilet .controls.action{
 	flex-wrap: wrap;

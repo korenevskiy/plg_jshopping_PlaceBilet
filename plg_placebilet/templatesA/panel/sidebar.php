@@ -265,16 +265,15 @@ $base = JUri::base();
 ?>
 <!--<div style="_position: static; width: 60px; ">-->
 <div xid="_j-sidebar-container" id="j-sidebar-container2" class="span2 sidebar-left <?= $sidebar?>">
-    
+   
    <!-- <a href="<?= '#'//JUri::getInstance()->toString() // "?&sidebar=".$sidebar ?>"
        onclick="//jQuery('.sidebar-left li .title').toggle(400);breack;" class="btn fide"><?=$sidebarButton?></a> -->
     <ul style="">
-        <li style="height: 20px;">😃<?= JText::_('Hi!') ?> <span class="smiley-2 large-icon"></span></li> 
+        <!--<li style="height: 20px;">😃<?= JText::_('Hi!') ?> <span class="smiley-2 large-icon"></span></li>--> 
     <?php foreach ($this->menu as $type => $item):
-        echo "<li>";
-        echo "<a href=\"$item[1]\" title=\"$item[0]\">";
-        echo "<img src=\"{$item[2]}\" title=\"$item[0]\">";
-        echo "<label class=\"title x$sidebar\"  style=\"display: $sidebarDisplay;\" >$item[0]</label>";
+        echo "<li><a href='$item[1]' title='$item[0]'>";
+        echo "<img src='{$item[2]}' alt='$item[0]'>";
+        echo "<label class='title x$sidebar'  style='display: $sidebarDisplay;' >$item[0]</label>";
         echo "</a></li>";
     endforeach;
     ?>

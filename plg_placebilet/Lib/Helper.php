@@ -342,34 +342,53 @@ WHERE $where av.value_ordering IS NULL;";
         return $query;
     } 
 
-    public static function PlacesAttrValueStringAdd($attr_id, $value){
+	/**
+	 * 
+	 * @param int $attr_id
+	 * @param array|string $placeName
+	 * @return string
+	 */
+    public static function PlacesAttrValueStringAdd($attr_id, $placeName){
          
-         
+//toPrint($placeName,'$placeName',true,'message',true);
+		$placeName = (array)$placeName;
+//toPrint($placeName,'$placeName',true,'message',true);
         
         $nameLang = JSFactory::getLang()->get("name");
         $db = JFactory::getDBO();
+		
+		
+		//	[{id,language=en-GB,name=English,publish=1,ordering=0,lang=en},...]
+		$languages = JSFactory::getModel("languages")->getAllLanguages(0);
+		
+//		$languagesList	= array_column($languages, 'language');
+		$languagesNames	= array_map(fn($lng) => '`'.'name_'.$lng->language.'`', $languages);
+		$placeName = array_pad ($placeName, count($languages),  $placeName[0] );
+		$languagesValues= array_map(fn($val) => '"'.$db->escape($val).'"', $placeName);
         
-        $query = "INSERT INTO `#__jshopping_attr_values` (attr_id, value_ordering, image, `$nameLang`) VALUES ";
-        $query .= "(".$db->escape($attr_id).", 0, '','".$db->escape($value)."' ); ";
+        $query = "INSERT INTO `#__jshopping_attr_values` (attr_id, value_ordering, image, ". implode(',', $languagesNames).") VALUES ";
+        $query .= "($attr_id, 0, '',". implode(',', $languagesValues)." ); ";
         
-         
+//toPrint($query,'$query',true,'message',true);
         
         //INSERT INTO #__jshopping_attr_values (attr_id,value_ordering,image,`name_en-GB`,`name_ru-RU`)
         //VALUES
         //(9631, 0, '','',2 ),
         //(9631, 0, '','',23 )
         
-	$db->setQuery($query);
-	$db->execute();
+		$db->setQuery($query);
+		$db->execute();
         return $query;
     }
 
     public static function PlacesAttrValueCountAdd($attr_id, $placeCountName){
 		
-        $nameLang = JSFactory::getLang()->get("name");
+//        $nameLang = JSFactory::getLang()->get("name");
+		//	[{id,language=en-GB,name=English,publish=1,ordering=0,lang=en},...]
+		$languages = JSFactory::getModel("languages")->getAllLanguages(0);
         $db = JFactory::getDBO();
         
-        $query = "INSERT INTO `#__jshopping_attr_values` (attr_id, value_ordering, image, `$nameLang`) VALUES ";
+        $query = "INSERT INTO `#__jshopping_attr_values` (attr_id, value_ordering, image, ". implode(',', $languagesNames).") VALUES ";
         $query .= "(".$db->escape($attr_id).", 0, '','".$db->escape($value)."' ); ";
         
         //INSERT INTO #__jshopping_attr_values (attr_id,value_ordering,image,`name_en-GB`,`name_ru-RU`)
@@ -383,35 +402,44 @@ WHERE $where av.value_ordering IS NULL;";
     }
     
     public static function PlacesAttrValueArrayAdd($attr_id, $arr_values){
-        $isArray = is_array($arr_values);
-        if($isArray && count($arr_values)==1){
-            //$arr_values = $arr_values[0];
-            $isArray = FALSE;
-        }
+		$isArray = is_array($arr_values);
+		if($isArray && count($arr_values)==1){
+			//$arr_values = $arr_values[0];
+			$isArray = FALSE;
+		}
         
-        if($isArray && count($arr_values)==0){
-            return '';
-        }
+		if($isArray && count($arr_values)==0){
+			return '';
+		}
+		
+		//	[{id,language=en-GB,name=English,publish=1,ordering=0,lang=en},...]
+		$languages = JSFactory::getModel("languages")->getAllLanguages(0);
+		
+//		$languagesList	= array_column($languages, 'language');
+		$languagesNames	= array_map(fn($lng) => '`'.'name_'.$lng->language.'`', $languages);
+//		$languagesValues= array_map(fn($val) => '"'.$db->escape($val).'"', $value);
+		$languagesCount	= count($languages);
+		
         
-        $nameLang = JSFactory::getLang()->get("name");
-        $db = JFactory::getDBO();
+//		$nameLang = JSFactory::getLang()->get("name");
+		$db = JFactory::getDBO();
         
-        $query = "INSERT INTO `#__jshopping_attr_values` (attr_id, value_ordering, image, `$nameLang`) VALUES ";
+		$query = "INSERT INTO `#__jshopping_attr_values` (attr_id, value_ordering, image, ". implode(',', $languagesNames).") VALUES ";
         
-        foreach ($arr_values as $value){
-            $query .= "(".$db->escape($attr_id).", 0, '','".$db->escape($value)."' ),";
-        }
+		foreach ($arr_values as $value){
+			$query .= "($attr_id, 0, '',". implode(',', array_fill(0, $languagesCount, $value))." ),";
+		}
         
-        $query = substr($query,0,-1)."; ";
+		$query = substr($query,0,-1)."; ";
         
-        //INSERT INTO #__jshopping_attr_values (attr_id,value_ordering,image,`name_en-GB`,`name_ru-RU`)
-        //VALUES
-        //(9631, 0, '','',2 ),
-        //(9631, 0, '','',23 )
+		//INSERT INTO #__jshopping_attr_values (attr_id,value_ordering,image,`name_en-GB`,`name_ru-RU`)
+		//VALUES
+		//(9631, 0, '','',2 ),
+		//(9631, 0, '','',23 )
         
-	$db->setQuery($query);
-	$db->execute();
-        return $query;
+		$db->setQuery($query);
+		$db->execute();
+		return $query;
     }
     
     public static function PlacesAttrValueArrayRemove($attr_id, $arr_values){
@@ -639,7 +667,7 @@ WHERE $where av.value_ordering IS NULL;";
         
         extract(\JSHelper::js_add_trigger(get_defined_vars(), "after"));    
         
-        return $count_row;//$query;
+        return (int)$count_row;//$query;
         
         //https://www.ticketland.ru/cirki/cirk-nikulina-na-cvetnom-bulvare/bravo/
     }
@@ -648,7 +676,7 @@ WHERE $where av.value_ordering IS NULL;";
         $places = JFactory::getApplication()->input->getHtml('jshop_place_id');
 //        $places = \Joomla\CMS\Factory::getApplication()->input->getHtml('jshop_place_id');
 //			$app = Factory::getApplication();
-//        $places = PlaceBiletHelper::JInput()->get('jshop_place_id');
+//        $places = PlaceBiletHelper::JInput('jshop_place_id') ;
         if (!is_array($places)) 
             $places = (array)$places;
         foreach($places as $k=>$v){
@@ -1002,12 +1030,65 @@ WHERE $where av.value_ordering IS NULL;";
 //            toPrint($products,'$products');
     }
     
-    
-    public static function JInput(){
+    /**
+	 * 
+	 * @param string $name Name parameter url request
+	 * @return object | string
+	 */
+    public static function JInput( $name = null, $default = ''){
         //J Request::get();
         $input = JFactory::getApplication()->input;//->getHtml('jshop_place_id');
 //        $places = \Joomla\CMS\Factory::getApplication()->input->getHtml('jshop_place_id');
-        return $input;
+		if($name === null)
+			return $input;
+		
+		switch($name){
+			case 'attr_id': 
+			case 'category_id': 
+			case 'deb': 
+			case 'product_id': 
+			case 'order_id': 
+			case 'client_id': 
+			case 'PlacesCountNumAdd':
+			case 'print':
+				
+//			case 'order_status':
+//			case 'status_id':
+//			case 'notify':
+//			case 'comments':
+//			case 'include':  
+				return $input->getInt($name,$default);
+				break;
+				
+			case 'search': 
+			case 'PlacesRangeAdd': 
+				
+			case 'PlacesRangeRemove': 
+			case 'PlacesStringRemove': 
+			case 'PlacesCountStrAdd': 
+				return $input->getString($name,$default);
+				break;
+				
+			case 'task': 
+			case 'Places': 
+				return $input->getCmd($name,$default);
+				break;
+				
+			case 'jshop_place_id': 
+				return $input->getHtml($name,$default);
+				break;
+				
+			case 'cid': 
+				return (array)$input->get($name,$default); // (array)
+				break;
+
+			case 'PlacesStringAdd': 
+				return (array)$input->getArray(["PlacesStringAdd"=>'STRING'])['PlacesStringAdd'] ?? [];
+				break;
+				
+			default:
+				return $input->get($name,$default);
+		}
     }
 	
 	

@@ -1,4 +1,4 @@
-<?php
+<?php  defined('_JEXEC') or die;
 
 /** ----------------------------------------------------------------------
  * plg_PlaceBilet - Plugin Joomshopping Component for CMS Joomla
@@ -12,8 +12,14 @@
  * Technical Support:  Forum - //vk.com/placebilet
  * -------------------------------------------------------------------------
  **/
-// Запрет прямого доступа.
-defined('_JEXEC') or die;
+
+if(! class_exists('\Joomla\CMS\Factory')){
+	echo "Start minification!<br>";
+	$files = &plgjshoppingPlaceBiletInstallerScript::languageMinificationRaw();
+	echo '<br>Count:' . count($files);
+	echo '<pre>'.print_r($files,true).'</pre>';
+}
+
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
 use Joomla\CMS\Factory as JFactory;
@@ -543,9 +549,11 @@ class plgjshoppingPlaceBiletInstallerScript {//PlgjshoppingPlaceBiletInstallerSc
 	public static function languageMinificationRaw(){
 		
 		
-		$lang = JFactory::getApplication()->getLanguage();
+//		$lang = JFactory::getApplication()->getLanguage();
 		
-		$dir = getcwd();
+		$default_path = __DIR__;
+		
+//		$dir = getcwd();
 		
 		$dir = __DIR__;
 		
@@ -553,21 +561,44 @@ class plgjshoppingPlaceBiletInstallerScript {//PlgjshoppingPlaceBiletInstallerSc
 			$dir = dirname($dir);
 		}
 
-		$dir .= '/language';
+		$dir .= '/language/*';
 		
-		$files = Joomla\Filesystem\Folder::files($dir, "raw.ini", true, true);
+//		$files = Joomla\Filesystem\Folder::files($dir, "raw.ini", true, true);
 		
-		foreach ($files as $file){
-			$text = file_get_contents($file);
-			$text = str_replace("\n[", "[{<!>}][", $text);
-			$text = str_replace("]\n", "][{<!>}]", $text);
-			$text = str_replace("\";\n", "\";[{<!>}]", $text);
-			$text = str_replace("\"\n", "\"[{<!>}]", $text);
-			$text = str_replace("\n", '', $text);
-			$text = str_replace('[{<!>}]', PHP_EOL, $text);
-			$file = str_replace(".raw.ini", '.ini', $file);
-			$f = file_put_contents($file, $text);
+//		$dirs = scandir($dir,  SCANDIR_SORT_NONE);
+//		$dirs = glob($dir . '/*');
+//		$dirs = array_filter(glob('*'), 'is_dir');
+		
+		$files = [];
+		
+		foreach (array_filter(glob($dir), 'is_dir') as &$dir){
+			foreach (glob($dir.'/*.raw.ini') as $file){
+				$text = file_get_contents($file);
+				$countLines = count(explode("\n", $text));
+				$text = str_replace("\n[", "[{<!>}][", $text);			//	\n[		-
+				$text = str_replace("]\n", "][{<!>}]", $text);			//	]\n		-
+				$text = str_replace("]\r", "][{<!>}]", $text);			//	]\r		-
+				$text = str_replace("\";\r\n", "\";[{<!>}]", $text);	//	";\r\n	-
+				$text = str_replace("\";\n", "\";[{<!>}]", $text);		//	";\n	-
+				$text = str_replace("\";\r", "\";[{<!>}]", $text);		//	";\r	-
+				
+				$text = str_replace("\"\r\n", "\"[{<!>}]", $text);		//	"\r\n	-
+				$text = str_replace("\"\n", "\"[{<!>}]", $text);		//	"\n		-
+				$text = str_replace("\"\r", "\"[{<!>}]", $text);		//	"\r		-
+				
+				$text = str_replace("\r\n", '', $text);
+				$text = str_replace("\n", '', $text);
+				$text = str_replace("\r", '', $text);
+				$text = str_replace('[{<!>}]', PHP_EOL, $text);
+				$file = str_replace('.raw.ini', '.ini', $file);
+				$f = file_put_contents($file, $text);
+				$file = str_replace(__DIR__ . '/../../../../../', '.ini', $file);
+				
+				$countLines2 = count(explode("\n", $text));
+				$files[] = str_replace($default_path, '', $file) ." -- count:$countLines , newCount:$countLines2";
+			}
 		}
+		return $files;
 	}
 
 	//ALTER TABLE `#__jshopping_users` ADD `FIO` TINYTEXT NULL AFTER `txt`; 

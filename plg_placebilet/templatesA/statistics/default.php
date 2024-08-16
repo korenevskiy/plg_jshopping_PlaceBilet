@@ -277,14 +277,23 @@ foreach($this->order_items as $_product_id => $order_item):
 		echo "<div class='buySum' title='$order_item->count_tickets_active $PCS'><span class='text-nowrap'>$order_item->summ_tickets_active</span></div>";
 		echo "</div>";
 		
+//toPrint($order_item->attributes,'$order_item->attributes ' ,0,'message',true);
+
 		foreach ($order_item->attributes as $attr_id => $attr){
 
+//echo "<pre>$attr_id   ".print_r('',true)."  </pre>";
 //toPrint($attr,'$attr '. $order_item->product_id .' -----'.$attr_id, 0,'message',true);
 //			$view->order_items[$item->product_id]->attributes[$attr_id][$go_status_code][$go_index] = $prices[$go_index] ?? 0;
 			echo "<div class='attr'>";
-			
+//if(empty($this->rowAttributes[$attr_id])){
+	
+//	toPrint($attr,'attr:'.$attr_id,0,'message',true);
+//}
+	
+	
+	
 			echo "<div class='id'></div>";
-			echo "<div class='name'>{$this->rowAttributes[$attr_id]->attr_name}</div>";
+			echo "<div class='name'>". ($this->rowAttributes[$attr_id]->attr_name ?? '')."</div>";
 //			$order_item->attr_tickets_active[$attr_id][$index][$item->order_item_id] = $prices[$index] ?? 0;
 			$attr_tickets_active_summa = array_sum(array_map(fn($costs)=>array_sum($costs??[]),$order_item->attr_tickets_active[$attr_id] ?? []));
 			$attr_tickets_active_count = array_sum(array_map(fn($costs)=>array_sum($costs??[]),$order_item->attr_tickets_active_counts[$attr_id] ?? []));

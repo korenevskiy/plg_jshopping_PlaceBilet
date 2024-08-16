@@ -113,7 +113,7 @@ if(TRUE && $count = count($product->product_categories)):
     echo "<a class='label'>$text:</a><br>";
     foreach ($product->product_categories as $cat_id => $category):
         //echo "<a href='/category/view/$category->category_id.html'>$category->name</a>";
-        echo " <a class='catid$cat_id' href='".SEFLink("index.php?option=com_jshopping&controller=category&task=view&category_id=$category->category_id")."'>$category->name</a><br>";
+        echo " <a class='catid$cat_id' href='".\JSHelper::SEFLink("index.php?option=com_jshopping&controller=category&task=view&category_id=$category->category_id")."'>$category->name</a><br>";
     endforeach;
     echo '</div>  ';
 endif;

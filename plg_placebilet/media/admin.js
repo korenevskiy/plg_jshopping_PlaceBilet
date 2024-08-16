@@ -1,7 +1,12 @@
 
         
          
-//Изменено Добавленно добавлен метод
+/**
+ * Изменено Добавленно добавлен метод
+ * @param {Number} id
+ * @param {HTMLElement} button
+ * @returns {Number}
+ */
 function addAttributValueInt(id, button){//id=attrib_id           console.log(jQuery("#attr_place_Int_tuple_tmp_9631  :selected").val());   
                   
 //                let attr_value_text = jQuery("button.buttons_"+id).val().trim();
@@ -12,11 +17,11 @@ function addAttributValueInt(id, button){//id=attrib_id           console.log(jQ
                 let value_id=attr_value_text.replace(new RegExp("-", "g"),'o').replace(new RegExp(" ", "g"),'_').replace(new RegExp(",", "g"),'_');//array(' ',';',',','-'),array('_','d','d','i')
     
                 jQuery('.spoller_chk_tbl.spoller_'+id).prop('checked', true);
-//                var existcheck = jQuery('#attr_place_Int_'+id+'_'+value_id).val();
-//                if (existcheck){
-//                    alert(jshopAdmin.lang_place_exist);
-//                    return 0;
-//                }     
+//				var existcheck = jQuery('#attr_place_Int_'+id+'_'+value_id).val();
+//				if (existcheck){
+//					alert(jshopAdmin.lang_place_exist);
+//					return 0;
+//				}
                 if (value_id=="0" || value_id==""){ 
                     alert(jshopAdmin.lang_error_place);
                     return 0;
@@ -27,11 +32,11 @@ function addAttributValueInt(id, button){//id=attrib_id           console.log(jQ
                 hidden2 = "<input type='hidden' name='attrib_place_value_id[]' value='"+value_id+"'>";//attrib_place_Int_value_id
                 hidden3 = "<input type='hidden' name='attrib_place_type[]' value='Int'>";//attrib_place_Int_value_id
                 html += "<td class='col-auto'>" + places + hidden + hidden2 + hidden3 + "</td>";
-                html += "<td class='col-auto text-center'><input type='text' name='attrib_place_price_mod[]' value='+' class='small2 text-center' readonly disabled></td>";//attrib_place_Int_price_mod
+                html += "<td class='col-auto text-center'><input type='text' name='attrib_place_price_mod[]' value='+' class='small2 text-center' readonly _disabled></td>";//attrib_place_Int_price_mod
                 html += "<td class='col-auto'><input type='text' name='attrib_place_price[]' value='0' class='inputbox form-control  form-control-sm small3 text-end'></td>";//attrib_place_Int_price
 //console.log(jshopAdmin.jstriggers);
                 html += jshopAdmin.jstriggers.addAttributValue2Html;
-                html +=" <td class='col-auto text-center'><a class='btn btn-micro btn-sm small3 text-center' href='#' onclick=\"jQuery('#attr_place_row_" + id + "_" + value_id + "').remove();event.preventDefault();return false;\"><i class=\"icon-delete\"></i></a></td>";
+                html +=" <td class='col-auto text-center'><a class='btn btn-micro btn-sm small3 text-center' href='#' onclick='jQuery('#attr_place_row_" + id + "_" + value_id + "').remove();event.preventDefault();return false;'><i class='icon-delete'></i></a></td>";
                 html += "</tr>";    
                 jQuery("#list_attr_value_place_"+id).append(html);
                     jQuery.each(jshopAdmin.jstriggers.addAttributValue2Events, function(key, handler){

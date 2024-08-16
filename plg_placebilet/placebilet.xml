@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="5" type="plugin" method="upgrade" overwrite="true" group="jshopping">
+<extension version="5.0.1" type="plugin" method="upgrade" overwrite="true" group="jshopping">
 	<!-- https://docs.joomla.org/Manifest_files -->
 	<name>Bilet Movie-Theater Tickets for JoomShopping</name>
 	<license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
 	<author>Korenevskiy Sergei Borisovich</author>
 	<creationDate>2018-06-01</creationDate>
-	<modificationDate>2023-07-18</modificationDate>
-	<modificationsDate>2023-07-18,2024-06-19</modificationsDate>
+	<modificationDate>2024-08-16</modificationDate>
+	<modificationsDate>2023-07-18,2024-06-19,2024-08-16</modificationsDate>
 	<copyright>Copyright (C) Explorer-Office</copyright>
 	<authorEmail>korenevskiys@ya.ru</authorEmail>
 	<authorUrl>http://explorer-office.ru/download</authorUrl>
-	<version>5.0.0</version>
+	<version>5.0.1</version>
 	<description>&lt;span  class="badge badge-info" &gt;[[%1:]]:[[%2:]] / [[%3:]]:[[%4:]]&lt;/span&gt;&lt;br>[[%5:]]&lt;br>[[%6:]][[%7:]],JVERSION,
-		5.0.0,JDate,2024-06-19,JSHOP_PLACE_BILET_INFO_D,JSHOP_PLACE_BILET_DEMO,JSHOP_PLACE_BILET_DESCRIPTION</description>
+		5.0.1,JDate,2024-08-16,JSHOP_PLACE_BILET_INFO_D,JSHOP_PLACE_BILET_DEMO,JSHOP_PLACE_BILET_DESCRIPTION</description>
     
 	<install>
 		<sql> 
@@ -394,7 +394,7 @@
 				<field name="show_calculator_in_productshow" 
 					   type="radio" 
 					   class="btn-group btn-group-yesno" 
-					   label="Show calculator product for customer"  
+					   label="JSHOP_PLACE_BILET_SHOWCALCULATOR"  
 					   default="1">
 					<option value="1">JSHOW</option>
 					<option value="0">JHIDE</option>
@@ -404,7 +404,7 @@
 				<field name="show_places_BeforeAfterDescription" 
 					   type="radio" 
 					   class="btn-group btn-group-yesno" 
-					   label="Show places Before or After description"  
+					   label="JSHOP_PLACE_BILET_SHOW_PLACE_BEFORE_AFTER"  
 					   default="before">
 					<option value="before">JBEFORE</option>
 					<option value="after">JAFTER</option>
@@ -412,15 +412,15 @@
 				<field name="tagDateTimeWithYear" 
 					   type="radio" 
 					   class="btn-group btn-group-yesno" 
-					   label="DateTime tag with Year"  
+					   label="JSHOP_PLACE_BILET_DATETIMETAG_WITHYEAR"  
 					   default="0">
 					<option value="1">Show Year</option>
 					<option value="0">JHIDE</option>
-				</field> 
+				</field>
 				<field name="tagDateTimeWithLink" 
-					   type="radio" 
+					   type="radio"
 					   class="btn-group btn-group-yesno" 
-					   label="DateTime tag in product as Link"  
+					   label="JSHOP_PLACE_BILET_DATETIMETAG_WITHYEAR"
 					   default="0">
 					<option value="1">JLINK</option>
 					<option value="0">JTEXT</option>
