@@ -14,8 +14,7 @@ Link for online installation Component * Require:
 
 Developer Support:
 
-[//t.me/+KpD1a9hFXF9iNDRi](https://t.me/+KpD1a9hFXF9iNDRi)
-[http://t.me/placebilet](http://t.me/placebilet)
+[//t.me/placebilet](http://t.me/placebilet)
 
 
 Link for payment plugin SberBank.
