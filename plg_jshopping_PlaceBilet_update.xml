@@ -17,7 +17,7 @@
         </downloads>
         <php_minimum>7.4</php_minimum>
         <maintainer>Korenevskiy Sergei Borisovich</maintainer>
-        <maintainerurl>https://t.me/+KpD1a9hFXF9iNDRi</maintainerurl>
+		<maintainerurl>https://t.me/placebilet</maintainerurl>
         <targetplatform name="joomla" version="5.*" />
     </update>
 </updates>
