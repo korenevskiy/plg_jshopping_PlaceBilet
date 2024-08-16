@@ -37,6 +37,8 @@ Link for payment plugin YooMoney, YooKassa from Яндекс.
 ![Exhibition of paintings - En - j3placebilet](https://user-images.githubusercontent.com/6898474/145529212-06d132d5-c701-434c-880e-be2486bfd927.png)
 
  ![img-2024-07-18-19-11-56](https://github.com/user-attachments/assets/94acfe72-e45d-44b0-b8f2-7d470f9fd461)
+![Firefox_Screenshot_2024-08-16T19-44-56 119Z](https://github.com/user-attachments/assets/c3d3fa8a-caf3-485e-a709-da1a6cb182d2)
+
 
 
 # Demo Archive Site - Download here ZIP with Jomla 3.x archive! 
@@ -45,7 +47,9 @@ https://cloud.mail.ru/public/toRx/3NEVmUPyS
 
 Mail in smartphone mode
 
-![Screenshot_20240815_002903_ru mail mailapp](https://github.com/user-attachments/assets/a1cb14bf-4830-4e82-ad02-a0f8c2aeadba)
+ Dark ![Screenshot_20240815_002903_ru mail mailapp](https://github.com/user-attachments/assets/a1cb14bf-4830-4e82-ad02-a0f8c2aeadba) 
+ 
+ Light ![Screenshot_20240817_012012_ru mail mailapp](https://github.com/user-attachments/assets/ab65a2c3-e03b-4522-80a5-d60ae4eea51b) 
 
 Mail in Light mode
 ![img-2024-08-17-00-03-27](https://github.com/user-attachments/assets/63a86397-cc23-422e-bcae-7aa746379d91)
