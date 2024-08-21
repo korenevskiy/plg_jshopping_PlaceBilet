@@ -14,12 +14,16 @@ this.id = id;
 this.debug = Boolean(Number(form.dataset.debug));
 
 //if(this.debug){
-	console.clear();
-	console.log('РедиЛоад() 6');
+//	console.clear();
+//	console.log('РедиЛоад() 6');
+//	console.log('form',form);
+//	console.log('form.t',form.t);
+//	console.log('token',token);
 //}
 
 const token = form.t ?? '';
 
+const language = form.lang ?? '';
 
 
 
@@ -422,6 +426,19 @@ console.log('CameraScan: ', QRcode);
 
 function ajaxGetStatus(QRcode, action = '') {
 
+
+	console.log('ajaxGetStatus', QRcode, token);
+
+//	let t = form ? form.t : '';
+	if(!token){
+		messageTag.innerHTML = Joomla.JText._('JSHOP_PUSHKA_ALERT_ERROR_SESSION');
+//		message.innerHTML = response;
+//		messageTag.style = 'display:block';
+		messageTag.style = '';
+		return;
+	}
+	
+	
 //	let t = form ? form.t : '';
 
 	let data = {
@@ -431,6 +448,7 @@ function ajaxGetStatus(QRcode, action = '') {
 			format: 'json', // json|debug
 			token: token,
 			action: action,
+			lang: language,
 			[token]: 1,
 	};
 //	data[t] = 1;
@@ -445,7 +463,7 @@ function ajaxGetStatus(QRcode, action = '') {
 				'Your-custom-header': 'custom-header-value',
 				'Content-Type': 'application/json'
 		},
-		url: `?option=com_ajax&module=placebilet&method=&format=json&id=${id}&token=${token}&${token}=1`, //index.php?option=mod_placebilet&view=example
+		url: `?option=com_ajax&module=placebilet&method=&format=json&id=${id}&lang=${language}&token=${token}&${token}=1`, //index.php?option=mod_placebilet&view=example
 		method: 'POST',
 		data: JSON.stringify(data),
 		onBefore: function (xhr){
@@ -456,8 +474,8 @@ function ajaxGetStatus(QRcode, action = '') {
 			if (response == '')
 				return;
 
-			if(!this.debug)
-				input_CodeQR.readOnly = true;
+//			if(!this.debug)
+//				input_CodeQR.readOnly = true;
 
 console.log('CameraScan DISABLE... ');
  
@@ -470,15 +488,46 @@ console.log('CameraScan DISABLE... ');
 //console.log('xhr',xhr);
 
 console.log('response',response);
-			let jsonResponse = JSON.parse(response);
-			let dataResponse = jsonResponse.data ?? {};
+		let jsonResponse = null;
+		let dataResponse = null;
+		
+		try {
+			jsonResponse = JSON.parse(response);
+			dataResponse = jsonResponse.data ?? {};
+		} catch (error) {
+			
+			messageTag.innerHTML = Joomla.JText._('JSHOP_PUSHKA_ALERT_ERROR_SESSION');
+			messageTag.style = '';
+			return false;
+		}
+		if (!jsonResponse || !dataResponse) {
+			
+			messageTag.innerHTML = Joomla.JText._('JSHOP_PUSHKA_ALERT_ERROR_SESSION');
+			messageTag.style = '';
+			return false;
+		}
+
+		if (!jsonResponse.data && jsonResponse.message) {
+			messageTag.innerHTML = jsonResponse.message;
+			messageTag.style = '';
+			return false;
+		}
+		if (!dataResponse.data && dataResponse.message) {
+			messageTag.innerHTML = dataResponse.message;
+			messageTag.style = '';
+			return false;
+		}
+
+
+			
 console.log('jsonResponse',jsonResponse);
 console.log('jsonResponse.data',jsonResponse.data);
 console.log('---------------------');
 
 			messageTag.innerHTML = dataResponse.content ?? '';
 //			message.innerHTML = response;
-			messageTag.style = 'display:block';
+//			messageTag.style = 'display:block';
+			messageTag.style = '';
 	
 			dataResponse.status_code;
 
@@ -549,7 +598,7 @@ function ajaxTestLinkUpdate(QRcode) {
 
 function clickMessage() {
 	messageTag.style = 'display:none;';
-	input_CodeQR.readOnly = false;
+//	input_CodeQR.readOnly = false;
 	console.log('CameraScan ENABLE. ');
 
 //	form.scanner.backgroundScan = true;

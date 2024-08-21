@@ -20,6 +20,8 @@ if(! class_exists('\Joomla\CMS\Factory')){
 	$files = &HelperMinification::languageMinificationRaw();
 	
 	
+	
+	
 	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($files, JSON_PRETTY_PRINT);
 	
@@ -41,19 +43,22 @@ if(! class_exists('\Joomla\CMS\Factory')){
 }
 
 
+
+
+
 class HelperMinification{
 
 
-	public static function languageMinificationRaw(){
+	public static function languageMinificationRaw($pathLanugageDir = ''){
 		
 		
 //		$lang = JFactory::getApplication()->getLanguage();
 		
-		$default_path = __DIR__;
+		$default_path = $pathLanugageDir ?: __DIR__;
 		
 //		$dir = getcwd();
 		
-		$dir = __DIR__;
+		$dir = $default_path;
 		
 		while(!file_exists($dir . '/language')){
 			$dir = dirname($dir);

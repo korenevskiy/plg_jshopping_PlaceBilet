@@ -65,8 +65,8 @@ JText::script('JSHOP_PUSHKA_ALERT_ERROR');
 ?>
 
 <div class="mod-placebilet placebilet mod<?= $id ?>">
-	<a id='aTagAjaxLinkTest<?= $id ?>' target='_blank' href='?&QRcode=js1.1111111111&option=com_ajax&module=placebilet&method=getStatus&id=<?= $id ?>&format=json&<?= $app->getFormToken() ?>=1'><?= $app->getFormToken() ?></a>
-	<form id="form_QR_<?= $id ?>" data-id="<?= $id ?>" data-beep="<?= $param->pushka_camera_beep ?? 'yes' ?>" 
+	<a id='aTagAjaxLinkTest<?= $id ?>' target='_blank' href='?&QRcode=js1.1111111111&option=com_ajax&module=placebilet&method=getStatus&id=<?= $id ?>&lang=<?=JFactory::getApplication()->getLanguage()->getTag()?>&format=json&<?= $app->getFormToken() ?>=1'><?= $app->getFormToken() ?></a>
+	<form id="form_QR_<?= $id ?>" data-id="<?= $id ?>" data-beep="<?= $param->pushka_camera_beep ?? 'yes' ?>"  data-lang="<?=JFactory::getApplication()->getLanguage()->getTag()?>"
 		  class='mod_placebiletFormQR'
 		  data-btn_Visit_Statuses='<?= json_encode($param->btn_visit_statuses ?? ['O']) ?>'
 		  data-btn_Refund_Statuses='<?= json_encode($param->btn_refund_statuses ?? ['O']) ?>'
@@ -167,10 +167,10 @@ JText::script('JSHOP_PUSHKA_ALERT_ERROR');
 
 
 <script type="text/javascript" data-module='<?= $id ?>'>
-// <!-- Без ID -->
+	document.getElementById("form_QR_<?= $id ?>").t="<?= JFactory::getApplication()->getFormToken() ?>";
+</script>
 
 
-</script> 
 <script type="text/javascript"  data-module='<?= $id ?>'>
 
 </script>

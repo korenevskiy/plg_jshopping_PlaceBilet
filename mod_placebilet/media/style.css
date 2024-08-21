@@ -35,9 +35,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 }
 .mod-placebilet.placebilet > message{
 	grid-area: controlsScan;
-	background-color: #ddd9;
+	/*background-color: #ddd9;*/
 	background-color: #0009;
+	/*background-color: var(--card-bg);*/
+	background-color: var(--body-bg-rgb);
+	background-color: rgba(var(--body-bg-rgb), 0.9);
 	backdrop-filter: blur(60px);
+	color: var(--body-color-rgb);
 	
     position: relative;
     z-index: 4;
@@ -45,6 +49,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 	border-radius: 10px;
 	border: 1px solid graytext;
 	cursor: pointer;
+	font-weight: bold;
+	
+	display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: larger;
+  flex-wrap: wrap;
+  justify-items: stretch;
+	justify-items: center;
+  text-align: center;
 }
 html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message{
 	background-color: #0009;
@@ -56,6 +70,7 @@ html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message{
 	font-size: x-large;
 	/*color: var(--template-bg-dark-60);*/
 	text-shadow: 0px 1px 1px black, 0px -2px 2px white;
+	flex: 1 auto;
 }
 
 html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message h3{
@@ -77,7 +92,7 @@ html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message h3{
 .mod-placebilet.placebilet > message .place_name_info{
 	font-size: large;
 	font-size: medium;
-    text-shadow: 0px 1px 1px grey, 0px -1px 1px white;
+  	text-shadow: 0px 1px 1px grey, 0px -1px 1px white;
 }
 
 html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message .place_name_info{
@@ -115,6 +130,7 @@ html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message .place_name_inf
     margin-right: 5px;
 	
 	box-shadow: 0px 2px 5px grey;
+	flex: 1 auto;
 }
 .mod-placebilet.placebilet > message .statusBilet > .status_name{ 
     border-radius: 5px;

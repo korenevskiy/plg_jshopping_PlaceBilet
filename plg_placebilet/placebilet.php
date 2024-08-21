@@ -5318,7 +5318,6 @@ Object.keys(adminForm.show_delivery_time_checkout).forEach(function(key, index) 
 		if(JFactory::getApplication()->getConfig()->get('debug'))
 			static::languageMinificationRaw();
 		
-
 		
 //toPrint();
 //toPrint($context, '$context',0, 'message',true);

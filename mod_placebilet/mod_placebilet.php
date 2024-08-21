@@ -54,6 +54,13 @@ $params->loadObject($module);
 
 Helper::$param = $params->toObject();
 
+
+Joomla\CMS\Language\Text::script('JSHOP_PUSHKA_ALERT_ERROR_SESSION');
+//Joomla\CMS\Language\Text::script('JSHOP_PUSHKA_ERROR_REQUEST');
+//Joomla\CMS\Language\Text::script('JSHOP_PUSHKA_ERROR_REQUEST_QR');
+//Joomla\CMS\Language\Text::script('JSHOP_PUSHKA_ERROR_PARAMS');
+//Joomla\CMS\Language\Text::script('JSHOP_PUSHKA_ERROR_EXIST_QR');
+
 //toPrint(Helper::$param, '$param',true,'message',true);
  
 // Replace 'images/' to '../images/' when using an image from /images in backend.

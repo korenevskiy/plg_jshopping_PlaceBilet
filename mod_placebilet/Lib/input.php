@@ -26,4 +26,5 @@ class InputObject{
 	public string $format = '';
 	public string $token = '';
 	public string $action = '';
+	public string $language = '';
 }

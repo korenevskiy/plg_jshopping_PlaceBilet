@@ -214,16 +214,39 @@ WHERE i.order_id = $orderID; ";
 //// JFactory::getDate('now',JFactory::getConfig()->offset)->toSql();
 //
 //return $html;
+//		$app = JFactory::getApplication();
+		
+//		$token = $app->getInput()->server->get('HTTP_X_CSRF_TOKEN', '', 'alnum');
+//		JFactory::getApplication()->enqueueMessage($token);
+		
+//toPrint($app->getInput()->server,'$app->getInput()->server',0,'pre',true);
+		
 
 //return '{"message":"'.JText::_('ERROR ACTION').'"}';
+//		$langTag = JFactory::getApplication()->getLanguage()->getTag();
+//		JFactory::getApplication()->enqueueMessage($langTag);
+		
+		$language = JFactory::getApplication()->getInput()->getString('lang',JFactory::getApplication()->getLanguage()->getTag());
 		
 		$input = static::getInputObject();
+		
+		
+//		$langTag = JFactory::getApplication()->getLanguage()->getTag();
+//		JFactory::getApplication()->enqueueMessage($langTag);
+		
+		JFactory::getApplication()->getLanguage()->load('mod_placebilet', __DIR__, $language, true);
+		
+//		return $language;
+		
 //		$html_prefix = $input->format == 'json' ? '' : "<html lang='ru-ru'>\n<meta charset='utf-8'>";
+		
+//		$langTag = JFactory::getApplication()->getLanguage()->getTag();
 		
 		if(empty($input)){
 			JFactory::getApplication()->getMessageQueue(true);
 			JFactory::getApplication()->enqueueMessage(JText::_('JSHOP_PUSHKA_ERROR_REQUEST'));
 			JFactory::getApplication()->enqueueMessage('Error Request - Please Reload Page');
+//			JFactory::getApplication()->enqueueMessage(1);
 			JText::script('Error Request - Please Reload Page');
 			JFactory::getApplication()->input->set('ignoreMessages', false, 'bool');
 			return null;
@@ -231,10 +254,13 @@ WHERE i.order_id = $orderID; ";
 //			return '{"message":"'.JText::_('JSHOP_PUSHKA_ERROR_REQUEST').'","messages":["Error Request - Please Reload Page"]}';//, "data": {"content":"'.JText::_('JSHOP_PUSHKA_ERROR_REQUEST').'"}
 		}
 		
+		JFactory::getApplication()->getLanguage()->load('mod_placebilet', __DIR__, ($input->language ?: null), true);
+		
 		if(empty($input->QRcode)){
 			JFactory::getApplication()->getMessageQueue(true);
 			JFactory::getApplication()->enqueueMessage(JText::_('JSHOP_PUSHKA_ERROR_REQUEST_QR'));
 			JFactory::getApplication()->enqueueMessage('Error QR - Please Reload Page');
+//			JFactory::getApplication()->enqueueMessage(2);
 			JText::script('Error QR - Please Reload Page');
 			JFactory::getApplication()->input->set('ignoreMessages', false, 'bool');
 			
@@ -251,6 +277,7 @@ WHERE i.order_id = $orderID; ";
 			JFactory::getApplication()->getMessageQueue(true);
 			JFactory::getApplication()->enqueueMessage(JText::_('JSHOP_PUSHKA_ERROR_PARAMS'));
 			JFactory::getApplication()->enqueueMessage('Error Params - Please Reload Page');
+//			JFactory::getApplication()->enqueueMessage(3);
 			JText::script('Error Params - Please Reload Page');
 			JFactory::getApplication()->input->set('ignoreMessages', false, 'bool');
 			if($input->format == 'json')
@@ -272,6 +299,7 @@ static::$debugMessage .= ' status_title267:'. ($statusBD->status_title??'');
 			JFactory::getApplication()->getMessageQueue(true);
 			JFactory::getApplication()->enqueueMessage(JText::_('JSHOP_PUSHKA_ERROR_EXIST_QR'));
 			JFactory::getApplication()->enqueueMessage('Error QR - This QR Not Exist');
+//			JFactory::getApplication()->enqueueMessage(4);
 			JText::script('Error QR - This QR Not Exist');
 			JFactory::getApplication()->input->set('ignoreMessages', false, 'bool');
 			
@@ -850,17 +878,18 @@ public static function dirSize($path): int {
 	 */
 	public static function getInputObject(): ?InputObject {
 		
-		$app = JFactory::getApplication();
+//		$app = JFactory::getApplication();
 		$input = JFactory::getApplication()->getInput();
 		
-		$clientId = $app->getClientId();
+		$clientId = JFactory::getApplication()->getClientId();
 		
 //		$session = JFactory::getApplication()->getSession();
 		
+		
 		$id = $input->getInt('id', 0);
 		$method  = static::$debug ? 'get' : 'post';
-		
-		if(empty($clientId) || empty($id) || empty($app->checkToken($method))){//$app->getFormToken()
+		//JFactory::getApplication()->checkToken($method)
+		if(empty($clientId) || empty($id) || empty(\Joomla\CMS\Session\Session::checkToken($method))){//$app->getFormToken()
 			return null;
 		}
 		
@@ -878,13 +907,13 @@ public static function dirSize($path): int {
 		$object->token		= (string)$input->getCmd('token', '');
 		$object->action		= (string)$input->getWord('action', '');
 		$object->action		= ucfirst($object->action);
+		$object->language	= (string)$input->getString('lang', '');
 		
 		$data = JFactory::getApplication()->input->json->getArray();
 		foreach ($data as $var => $value){
 			if(isset($object->$var))
 				$object->$var = $value;
 //file_put_contents(__DIR__ . '/logHelper.txt', "$var => $value \n", FILE_APPEND);
-			
 		}
 		
 //		$object->clientId = $clientId;
