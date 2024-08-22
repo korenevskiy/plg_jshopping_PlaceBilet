@@ -78,20 +78,20 @@
 	</params>    
 	<languages folder="language">
 		<!-- <language tag="ru-RU">ru-RU.plg_jshopping_placebilet.ini</language>  -->
-		<language tag="ru-RU">ru-RU/plg_jshopping_placebilet.ini</language>
-		<language tag="en-GB">en-GB/plg_jshopping_placebilet.ini</language>
-		<language tag="fr-FR">fr-FR/plg_jshopping_placebilet.ini</language>
-		<language tag="de-DE">de-DE/plg_jshopping_placebilet.ini</language>
-		<language tag="es-ES">es-ES/plg_jshopping_placebilet.ini</language>
-		<language tag="pt-PT">pt-PT/plg_jshopping_placebilet.ini</language>
-		<language tag="it-IT">it-IT/plg_jshopping_placebilet.ini</language>
-		<language tag="zh-CN">zh-CN/plg_jshopping_placebilet.ini</language>
-		<language tag="ja-JP">ja-JP/plg_jshopping_placebilet.ini</language>
-		<language tag="ko-KR">ko-KR/plg_jshopping_placebilet.ini</language>
-		<language tag="uk-UA">uk-UA/plg_jshopping_placebilet.ini</language>
-		<language tag="be-BY">be-BY/plg_jshopping_placebilet.ini</language>
-		<language tag="pl-PL">pl-PL/plg_jshopping_placebilet.ini</language>
-		<language tag="tr-TR">tr-TR/plg_jshopping_placebilet.ini</language>
+		<language tag="ru-RU">plg_jshopping_placebilet.ini</language>
+		<language tag="en-GB">plg_jshopping_placebilet.ini</language>
+		<!--<language tag="fr-FR">plg_jshopping_placebilet.ini</language>-->
+		<!--<language tag="de-DE">plg_jshopping_placebilet.ini</language>-->
+		<!--<language tag="es-ES">plg_jshopping_placebilet.ini</language>-->
+		<!--<language tag="pt-PT">plg_jshopping_placebilet.ini</language>-->
+		<!--<language tag="it-IT">plg_jshopping_placebilet.ini</language>-->
+		<!--<language tag="zh-CN">plg_jshopping_placebilet.ini</language>-->
+		<!--<language tag="ja-JP">plg_jshopping_placebilet.ini</language>-->
+		<!--<language tag="ko-KR">plg_jshopping_placebilet.ini</language>-->
+		<!--<language tag="uk-UA">plg_jshopping_placebilet.ini</language>-->
+		<!--<language tag="be-BY">plg_jshopping_placebilet.ini</language>-->
+		<!--<language tag="pl-PL">plg_jshopping_placebilet.ini</language>-->
+		<!--<language tag="tr-TR">plg_jshopping_placebilet.ini</language>-->
 	</languages>
     
 	<config>

@@ -1,6 +1,6 @@
-<?php
+<?php defined('_JEXEC') or die;
  /** ----------------------------------------------------------------------
- * plg_PlaceBilet - Plugin Joomshopping Component for CMS Joomla
+ * mod_PlaceBilet - Module for plagin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
  * author    Sergei Borisovich Korenevskiy
  * @copyright (C) 2019 //explorer-office.ru. All Rights Reserved. 

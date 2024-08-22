@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension type="package" version="1.6" method="upgrade">
- <name>plagin,module "Bilet Movie - Tickets Theater</name>
+ <name>"Bilet Movie - Sale QR Tickets Theater</name>
  <author>Korenevskiy Sergei Borisovich</author>
  <creationDate>August 2024</creationDate>
  <packagename>PlaceBilet</packagename>
+ <license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
  <version>1.0.0</version>
  <url>http://t.me/placebilet</url>
  <packager>"Bilet Movie" - Tickets Theater</packager>
  <packagerurl>https://github.com/korenevskiy/plg_jshopping_PlaceBilet/</packagerurl>
- <description>"Bilet Movie-Theater" tickets - Plugin sales tickets and bilets for cinemas and theaters for JoomShopping Plugin for JoomShopping-Joomla ticket sales for cinemas, theaters, circuses, museums. parties, courses, lessons, trainings, couching.</description>
- <!--<update>https://github.com/korenevskiy/plg_jshopping_PlaceBilet/pkg_PlaceBilet_tickets_update.xml</update>-->
+ <description>"Bilet Movie-Theater" Sale tickets with QR code in tickets and Scanner QR for Smartphone and PC- Plugin sales tickets and bilets for cinemas and theaters for JoomShopping Plugin for JoomShopping-Joomla ticket sales for cinemas, theaters, circuses, museums. parties, courses, lessons, trainings, couching.</description>
+ <update>https://korenevskiy.github.io/korenevskiy/plg_jshopping_PlaceBilet/plg_jshopping_PlaceBilet_update.xml</update>
  <!--<scriptfile>pkg_script.php</scriptfile>-->
  <files _folder="packages">
    <file type="module" id="placebilet" client="administrator">mod_PlaceBilet_tickets_5.1.zip</file>

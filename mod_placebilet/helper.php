@@ -1,4 +1,4 @@
-<?php
+<?php defined('_JEXEC') or die;
  /** ----------------------------------------------------------------------
  * plg_placebilet - Plugin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
