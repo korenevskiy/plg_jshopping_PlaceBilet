@@ -24,7 +24,7 @@ return;
 //defined('_JEXEC') or die;
 $site_folder = "";
 $is_local = $_SERVER['HOME']?:false;//Типа $is_local и $user_run взаимоисключаемы.
-$user_run = isset($_SERVER['HTTP_USER_AGENT']);
+$user_run = $debug = isset($_SERVER['HTTP_USER_AGENT']);
  
 $script = explode('/', $_SERVER['SCRIPT_FILENAME']);
 $site_folder = $script[array_search($_SERVER['LOGNAME'],$script)+1]?:'';
@@ -33,11 +33,7 @@ $site_folder = $script[array_search($_SERVER['LOGNAME'],$script)+1]?:'';
 //$site_folder = $site_folder[0];
 
 $show=0;
-if($user_run){
-    //$show = isset($_GET['deb']) && $_GET['deb']=='3228' && $debug;
-    $_GET['deb']='3228';
-    $debug = TRUE;
-}
+
 
 //    echo '<br>$user_run:'.$user_run;
 //    echo '<br>$debug:'.$debug;

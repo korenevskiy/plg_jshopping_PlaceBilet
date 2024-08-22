@@ -4997,7 +4997,7 @@ toPrint($categories,'$categories:'.$pr_id, TRUE,'message',true);
 
 
 
-//        //(\Joomla\CMS\Factory::getLanguage()->getTransliterator()->transliterate($post["product_image_$k"]['name'])
+//		(\Joomla\CMS\Factory::getLanguage()->getTransliterator()->transliterate($post["product_image_$k"]['name'])
 
         foreach (array_fill(0, 10, 0) as $k => $value) {
             if ($_FILES["product_image_$k"]['name']) {

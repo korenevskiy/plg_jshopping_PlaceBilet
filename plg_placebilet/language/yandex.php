@@ -12,6 +12,7 @@
  * -------------------------------------------------------------------------
  **/ 
 defined('_JEXEC') or die;
+return;
 
 defined('DS') || define('DS', DIRECTORY_SEPARATOR);
 $s = DS;

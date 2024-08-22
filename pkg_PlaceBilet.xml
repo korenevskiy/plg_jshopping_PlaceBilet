@@ -10,7 +10,11 @@
  <packager>"Bilet Movie" - Tickets Theater</packager>
  <packagerurl>https://github.com/korenevskiy/plg_jshopping_PlaceBilet/</packagerurl>
  <description>"Bilet Movie-Theater" Sale tickets with QR code in tickets and Scanner QR for Smartphone and PC- Plugin sales tickets and bilets for cinemas and theaters for JoomShopping Plugin for JoomShopping-Joomla ticket sales for cinemas, theaters, circuses, museums. parties, courses, lessons, trainings, couching.</description>
- <update>https://korenevskiy.github.io/korenevskiy/plg_jshopping_PlaceBilet/plg_jshopping_PlaceBilet_update.xml</update>
+ <update>https://korenevskiy.github.io/korenevskiy/plg_jshopping_PlaceBilet/pkg_PlaceBilet_tickets_update.xml</update>
+ <updateservers>
+	<server type="extension" priority="1" name="&lt;b&gt;&quot;Bilet Movie-Theater&quot; tickets FREE&lt;/b&gt;">https://korenevskiy.github.io/plg_jshopping_PlaceBilet/pkg_PlaceBilet_tickets_update.xml</server>
+	<server type="extension" priority="2" name="&lt;b&gt;&quot;Bilet Movie-Theater&quot; tickets FREE&lt;/b&gt;">https://explorer-office.ru/files/pkg_PlaceBilet_tickets_update.xml</server>
+ </updateservers>
  <!--<scriptfile>pkg_script.php</scriptfile>-->
  <files _folder="packages">
    <file type="module" id="placebilet" client="administrator">mod_PlaceBilet_tickets_5.1.zip</file>
