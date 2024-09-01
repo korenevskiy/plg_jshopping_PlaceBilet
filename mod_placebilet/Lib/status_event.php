@@ -1,4 +1,4 @@
-<?php defined('_JEXEC') or die;
+<?php namespace Joomla\Module\Placebilet\Administrator;
  /** ----------------------------------------------------------------------
  * plg_PlaceBilet - Plugin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
@@ -14,7 +14,7 @@
  * -------------------------------------------------------------------------
  **/
 
-namespace Joomla\Module\Placebilet\Administrator;
+defined('_JEXEC') or die;
 
 use Joomla\CMS\Date\Date as JDate;
 use Joomla\CMS\Factory as JFactory;

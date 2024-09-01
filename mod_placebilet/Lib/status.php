@@ -1,4 +1,4 @@
-<?php defined('_JEXEC') or die;
+<?php namespace Joomla\Module\Placebilet\Administrator\BD;
  /** ----------------------------------------------------------------------
  * plg_PlaceBilet - Plugin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
@@ -14,7 +14,7 @@
  * -------------------------------------------------------------------------
  **/
 
-namespace Joomla\Module\Placebilet\Administrator\BD;
+defined('_JEXEC') or die;
  
 /**
  * Объект статуса билета 

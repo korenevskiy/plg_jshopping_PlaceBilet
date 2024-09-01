@@ -964,21 +964,7 @@ public static function dirSize($path): int {
 	}
 	
 	
-    /**
-     * Get the redirect URI after login.
-     *
-     * @return  string
-     */
-    public static function getReturnUri(): string {
-        $uri    = Uri::getInstance();
-        $return = 'index.php' . $uri->toString(array('query'));
 
-        if ($return != 'index.php?option=com_login') {
-            return base64_encode($return);
-        } else {
-            return base64_encode('index.php');
-        }
-    }
 	
 	/**
 	 * Генерация QR 

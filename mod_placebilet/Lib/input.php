@@ -1,4 +1,4 @@
-<?php defined('_JEXEC') or die;
+<?php namespace Joomla\Module\Placebilet\Administrator\Input;
  /** ----------------------------------------------------------------------
  * mod_PlaceBilet - Module for plagin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
@@ -13,8 +13,8 @@
  * Technical Support:  Forum - //vk.com/placebilet
  * -------------------------------------------------------------------------
  **/
- 
-namespace Joomla\Module\Placebilet\Administrator\Input;
+defined('_JEXEC') or die;
+
 
 //TicketData
 class InputObject{

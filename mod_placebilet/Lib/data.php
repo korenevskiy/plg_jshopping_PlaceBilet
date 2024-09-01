@@ -1,4 +1,4 @@
-<?php defined('_JEXEC') or die;
+<?php namespace API\Kultura\Pushka;
  /** ----------------------------------------------------------------------
  * plg_PlaceBilet - Plugin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
@@ -14,7 +14,7 @@
  * -------------------------------------------------------------------------
  **/
 
-namespace API\Kultura\Pushka;
+defined('_JEXEC') or die;
 
 //TicketData
 class PushkaData implements \JsonSerializable {
