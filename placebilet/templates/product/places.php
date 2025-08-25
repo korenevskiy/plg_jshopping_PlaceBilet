@@ -357,18 +357,18 @@ $t = "JText";
  <div class='price-place-calculator'> 
  <div> 
  <div class='billet-detail_input'> 
- <span class='font_detail'><?= $t::_('JSHOP_SELECTED_BILETS')?></span> 
+ <span class='font_detail'><?= JText::_('JSHOP_SELECTED_BILETS')?></span> 
  <span id='outputCountPlaces' class="outputCountPlaces">0</span> 
- <button alt='<?= $t::_('JSHOP_CLEAR_FIELD_BILETS')?>' title='<?= $t::_('JSHOP_CLEAR_FIELD_BILETS')?>'  aria-label='<?= $t::_('JSHOP_CLEAR_FIELD_BILETS')?>' 
+ <button alt='<?= JText::_('JSHOP_CLEAR_FIELD_BILETS')?>' title='<?= JText::_('JSHOP_CLEAR_FIELD_BILETS')?>'  aria-label='<?= $t::_('JSHOP_CLEAR_FIELD_BILETS')?>' 
 		 type='button' value='X' class='button btn btn-danger btnClear' id='btnClear_<?=$product->product_id?>'>X</button>
  </div> 
  </div> 
  <div class='places_detail'>
-	<span class='places_lbl'><?= $t::_('JSHOP_PLACES')?></span>
-	<span id='outputSelectFields' class='outputSelectFields'><?= $t::_('JSHOP_NO_SELECTED')?></span>
+	<span class='places_lbl'><?= JText::_('JSHOP_PLACES')?></span>
+	<span id='outputSelectFields' class='outputSelectFields'><?= JText::_('JSHOP_NO_SELECTED')?></span>
 </div> 
  <div class='summ_detail'> 
-	<span class=''><?= $t::_('JSHOP_ALL_PRICES')?></span>
+	<span class=''><?= JText::_('JSHOP_ALL_PRICES')?></span>
 	<span id='outputPriceAll' class='outputPriceAll'>0</span>
 	<span class='cur_name'><?= $cur_name?></span>
  </div> 

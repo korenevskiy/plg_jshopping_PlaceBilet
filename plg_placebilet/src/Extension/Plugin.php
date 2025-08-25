@@ -555,6 +555,12 @@ class Plugin extends JPlugin  implements DispatcherAwareInterface  , SubscriberI
 		
         if (file_exists(PlaceBiletPath.'/Controller/'.$controllername.'.php'))
             require_once(PlaceBiletPath.'/Controller/'.$controllername.'.php' );
+	
+		
+//		$this->loadLanguage();
+		
+		$this->getApplication()->getLanguage()->load('plg_jshopping_placebilet', JPATH_ADMINISTRATOR);
+//		$this->getApplication()->getLanguage()->load('plg_jshopping_placebilet', $this->pluginPath);
 		
       return;// установлено в связи отсутсвии необходиомсти переопределения контроллеров.
 	  
@@ -566,10 +572,6 @@ class Plugin extends JPlugin  implements DispatcherAwareInterface  , SubscriberI
 //toPrint(NULL,'',0,'',false);
 		
 		
-//		$this->loadLanguage();
-		
-		$this->getApplication()->getLanguage()->load('plg_jshopping_placebilet', JPATH_ADMINISTRATOR);
-//		$this->getApplication()->getLanguage()->load('plg_jshopping_placebilet', $this->pluginPath);
 //\Joomla\CMS\Factory::$application->enqueueMessage("<pre>".print_r($this->pluginPath,true)."</pre>");
 		
 //        toPrint($controllername, '$controllername');
@@ -2989,11 +2991,13 @@ WHERE order_item_id = $order_item_id;
 	
 	
 	function onBeforeSendOrderEmailClient(Event $event){//&$mailer, &$order, &$manuallysend, &$pdfsend, &$vendor, &$vendors_send_message, &$vendor_send_order
+		
+//		$mailer = \JFactory::getMailer();
+		/** @var \Joomla\CMS\Mail\Mail $mailer */
 		$mailer		= $event->getArgument(0);
 		$order		= $event->getArgument(1);
 		$bodyTickets = '';
 		
-		/** @var \Joomla\CMS\Mail\Mail $mailer */
 		
 //<style>
 //.inner-wrapper-sticky {
@@ -3183,18 +3187,31 @@ ORDER BY av.value_ordering;
 					$data['placeIndex']		= $i;
 
 
- 
+
+					
+					
 					$imagePath = $pathTemp . '/del_' . (time()  + 100 ) . '_' . md5($QRcode) . uniqid() . '.png';
-					QRcode::png($QRcode, $imagePath, QR_ECLEVEL_L, 4, 3);
-					$imageMimeData = mime_content_type($imagePath);
+					
+					QRcode::png($QRcode, $imagePath, QR_ECLEVEL_L, 4, 2);
+					
+//					$imageMimeData = mime_content_type($imagePath);
 	//				$imageData = base64_encode(file_get_contents($imagePath));
 	//				$data['QRsrc']			= 'data: ' . $imageMimeData . ';base64,' . $imageData;
 	//				unlink($imagePath);
-					$imageName = $place_name . ' ' . $QRcode;
-
-					$data['imageAlias']		= md5($QRcode);
-					$mailer->AddEmbeddedImage($imagePath, $data['imageAlias'], $imageName.'.png', 'base64', $imageMimeData);
+//					$imageName = $place_name . '_' . $QRcode;
+//					$data['imageAlias']		= md5($QRcode);
+//					$mailer->AddEmbeddedImage($imagePath, $data['imageAlias'], $place_name . '_' . $QRcode.'.png', 'base64', $imageMimeData);
 					
+					
+					
+					$data['imageAlias']		= md5($QRcode);
+					ob_start();
+					QRcode::png($QRcode, NULL, QR_ECLEVEL_L, 5, 2);
+					$base64					= ob_get_clean();
+//					$base64					= base64_encode( ob_get_clean() );
+					
+//					$prod['imageAlias']	= 'data:image/png;base64,' . base64_encode( ob_get_clean() );
+					$mailer->addStringEmbeddedImage($base64, $data['imageAlias'], $place_name . '_' . $QRcode.'.png', 'base64', 'image/png');
 
 					$data['siteName']		= $siteName;
 					$data['siteUrl']		= $siteUrl;
@@ -3312,6 +3329,8 @@ ORDER BY av.value_ordering;
 		if(empty($order_id))
 			return;
 		
+		
+		include_once $this->pluginPath.'/src/Lib/phpqrcode/qrlib.php';
 		
 //		$timezone = 'GMT';
 //		$timezone = 'UTC';
@@ -3460,17 +3479,22 @@ ORDER BY a.attr_ordering , ag.ordering, /* */ av.`name_$lang`;
 				
 				foreach (range(1, $place->count) as $i){
 				
-					
+
 					$QRcode	= (string) PlaceBiletHelper::getQRcode($prod['order_item_id'], $index, $prod['count_places']);
 					
-					$imagePath = '/del_' . (time()  + 100 ) . '_' . md5($QRcode) . uniqid() . '.png';
-						
-					$prod['imageAlias']	= $siteUrl . '/tmp'. $imagePath;
+
+//					$imagePath = '/del_' . (time()  + 100 ) . '_' . md5($QRcode) . uniqid() . '.png';
+//					$prod['imageAlias']	= $siteUrl . '/tmp'. $imagePath;
+//					QRcode::png($QRcode, $pathTemp . $imagePath, QR_ECLEVEL_L, 5,2);
 					
-					$imagePath = $pathTemp . $imagePath;
 					
-					QRcode::png($QRcode, $imagePath, QR_ECLEVEL_L, 5,2);
-					$imageMimeData = mime_content_type($imagePath);
+					ob_start();
+					QRcode::png($QRcode, NULL, QR_ECLEVEL_L, 5, 2);
+					$prod['imageAlias']	= 'data:image/png;base64,' . base64_encode( ob_get_clean() );
+					
+					
+					
+//					$imageMimeData = mime_content_type($imagePath);
 	//				$imageData = base64_encode(file_get_contents($imagePath));
 	//				$prod['QRsrc']			= 'data: ' . $imageMimeData . ';base64,' . $imageData;
 	//				unlink($imagePath);

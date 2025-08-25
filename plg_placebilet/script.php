@@ -669,7 +669,3 @@ new class ($container->get(AdministratorApplication::class)) implements Installe
 };
 return;
 ?>
--- Добавить в контроллер Корзины при вызове метода удалить товар, чтобы редирект был без ошибки
-Сброс ItemID делать с проверкой на наличие пункта меню для корзины ,
-если пункт меню с корзиной есть, то выполнять НЕ надо
-JFactory::getApplication()->input->set('Itemid',0);

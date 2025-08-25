@@ -1,0 +1,15 @@
+#Deny, From All
+
+#RewriteRule ^(.*?\.zip)$ authMe.php?url=$1
+
+
+#<FilesMatch "*.zip">
+#    Deny from All
+#</FilesMatch>
+
+
+
+#<Files "*.zip">
+#    Order Allow,Deny
+#    Deny from All
+#</Files>

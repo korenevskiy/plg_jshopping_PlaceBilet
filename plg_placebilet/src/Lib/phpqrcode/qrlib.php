@@ -29,6 +29,7 @@
 	
 	// Required libs
 	
+
 	include $QR_BASEDIR."qrconst.php";
 	include $QR_BASEDIR."qrconfig.php";
 	include $QR_BASEDIR."qrtools.php";

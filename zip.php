@@ -13,8 +13,10 @@
  * Technical Support:  Forum - //vk.com/placebilet
  * -------------------------------------------------------------------------
  **/ 
-//defined('_JEXEC') or die;
-return;
+
+
+defined('_JEXEC') or die;	return;
+
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -36,7 +38,8 @@ $copyExtentions['plg_PlaceBilet_tickets'] = __DIR__ . '/plg_placebilet';
 $filesIgnore = [];
 $filesIgnore[] = 'ControllerA/StatisticsController.php';
 
-//echo json_encode($verExtentions, JSON_PRETTY_PRINT);return;
+//echo json_encode($pathExtentions, JSON_PRETTY_PRINT);
+//return;
 
 //$renameFolder = [];
 //$renameFolder['mod_PlaceBilet_tickets_5.1'] = __DIR__;
@@ -77,7 +80,7 @@ $zipPackage->addFile($pathPackage . "/$packageName.xml", "$packageName.xml");
 /**
  * Список файлов для отображения результата в ответе
  */
-$files = [];
+$files = ['__________________'.date('Y-m-d H:i:s', time()).'__________________'];
 $files[] = "/$packageName.zip";
 $files[] = "/$packageName.xml";
 
