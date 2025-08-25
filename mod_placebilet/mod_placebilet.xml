@@ -1,35 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="module" client="administrator" method="upgrade">
-	<name>mod_placebilet</name>
+<extension type="module" client="administrator" __method="install" method="upgrade" >
+	<name>placebilet</name>
 	<author>Joomla! Project</author>
 	<creationDate>2023-07-18</creationDate>
 	<modificationsDate>2023-07-18,2024-06-19,2024-08-16</modificationsDate>
-	<modificationDate>2024-08-16</modificationDate>
-	<copyright>Copyright (C) Explorer-Office</copyright>
+	<modificationDate>2025-08-16</modificationDate>
+	<copyright>Copyright Explorer-Office©</copyright>
 	<license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
 	<authorEmail>korenevskiys@ya.ru</authorEmail>
 	<authorUrl>http://explorer-office.ru/download</authorUrl>
 	<maintainerurl>https://t.me/placebilet</maintainerurl>
-	<version>5.1</version>
+	<version>5.3</version>
+	<namespace path="src">Joomla\Module\Placebilet</namespace>
 	<description>MOD_PLACEBILET_XML_DESCRIPTION</description>
 
 	<!--<customContent />-->
-
-	<updateservers>
-		<server type="extension" priority="1" name="&lt;b&gt;&quot;Bilet Movie-Theater&quot; tickets PRO&lt;/b&gt;">https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_placebilet_update.xml</server>
-		<server type="extension" priority="1" name="&lt;b&gt;&quot;Bilet Movie-Theater&quot; tickets PRO&lt;/b&gt;">http://explorer-office.ru/files/mod_placebilet_update.xml</server>
-	</updateservers>     
 	<files>
-		<filename module="mod_placebilet">mod_placebilet.php</filename>
-		<filename>helper.php</filename>
-		<filename>mod_placebilet.xml</filename>
-		<folder>field</folder>
+		
 		<folder>Lib</folder>
 		<folder>language</folder>
 		<folder>media</folder>
+		<folder module="mod_placebilet">services</folder>
+		<folder>src</folder>
 		<folder>templates</folder>
 		<folder>tmpl</folder>
+		
+		
+		
+		
+		<filename>mod_placebilet.xml</filename>
+		<!--<filename module="mod_placebilet">mod_placebilet.php</filename>-->
+		<!--<filename>helper.php</filename>-->
 	</files>
+	
+	<updateservers>
+		<server type="extension" priority="1" name="&lt;b&gt;&quot;Bilet Movie-Theater&quot; tickets PRO&lt;/b&gt;">https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_placebilet_update.xml</server>
+		<server type="extension" priority="1" name="&lt;b&gt;&quot;Bilet Movie-Theater&quot; tickets PRO&lt;/b&gt;">http://explorer-office.ru/files/mod_placebilet_update.xml</server>
+	</updateservers>
+	
 	<languages>
 		<language tag="en-GB">language/en-GB/mod_placebilet.ini</language>
 		<language tag="en-GB">language/en-GB/mod_placebilet.sys.ini</language>
@@ -41,11 +49,18 @@
 		<fields name="params">
 			
 			
-			<fieldset   name="basic"  label="JSHOP_PUSHKA">   
-                	
-				<field name="translate" type="translate" />
+			<fieldset name="basic" label="JSHOP_PUSHKA">
 				
-				<field name="pushka_mode" type="radio" class=" btn-group btn-group-yesno" label="JSHOP_PUSHKA"  default="0">
+				<field name="version" type="version" addfieldprefix="Joomla\Module\Placebilet\Administrator\Fields" />
+<!--				<field
+					name="context"
+					type="text"
+					label="MOD_QUICKICON_GROUP_LABEL"
+					description="MOD_QUICKICON_GROUP_DESC"
+					default="mod_quickicon"
+				/>-->
+				
+				<field name="pushka_mode" type="radio" class="btn-group btn-group-yesno" label="JSHOP_PUSHKA"  default="0">
 					<option value="0">JDISABLED</option>
 					<option value="uat">[[%1:]],JSHOP_PUSHKA_TEST</option>
 					<option value="prod">[[%1:]],JSHOP_PUSHKA_PROD</option>
@@ -114,7 +129,7 @@
 					<option value="1">OPTION_ALLOW</option>
 					<option value="0">OPTION_DISALLOW</option>
 				</field>
-				<field name="button_name_visit" type="text" 
+				<field name="button_name_visit" type="text" filter="raw" format="raw"
 					label="JSHOP_PUSHKA_BTN_NAME_VISIT"  default="JSHOP_PUSHKA_BTN_DEFAULT_VISIT" translate_default="true" 
 					showon="pushka_visit:1" /> 
 				<field
@@ -153,6 +168,7 @@
 					<option value="0">OPTION_DISALLOW</option>
 				</field>
 				<field name="button_name_refund" type="text" label="JSHOP_PUSHKA_BTN_NAME_REFUND"  default="JSHOP_PUSHKA_BTN_DEFAULT_REFUND" translate_default="true" 
+					filter="raw" format="raw"
 					showon="pushka_refund:1" /> 
 				<field
 					name="pushka_refund_status"
@@ -310,6 +326,12 @@
 
 			<fieldset name="options">
 				
+				<field name="links_show" type="radio" class=" btn-group btn-group-yesno" 
+					   label="JSHOP_PUSHKA_LINKS_SHOW"
+					   default="1">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
 				
 				<field name="pushka_showstatus_fields" type="list"
 						label="JSHOP_PUSHKA_STATUSSHOW_FIELDS"
@@ -350,6 +372,7 @@
 				<option value="transport_no">jshop_pushka_statusshow_transport_no</option> 
 				<option value="track_stop">jshop_pushka_statusshow_track_stop</option>
 			</field>
+				<field name="translate" type="translate" addfieldprefix="Joomla\Module\Placebilet\Administrator\Fields" />
 			</fieldset>
 			
 

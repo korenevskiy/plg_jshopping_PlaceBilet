@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension type="package" method="upgrade">
+ <!--<name>"Bilet Movie - Sale QR Tickets Theater</name>-->
+ <!--<name>com_banners			plagin,module "Bilet Movie - Tickets Theater</name>-->
+ <name>pkg_PlaceBilet</name>
+ <author>Korenevskiy Sergei Borisovich</author>
+ <authorUrl>https://explorer-office.ru/index.php/download</authorUrl>  
+ <authorEmail>info@explorer-office.ru</authorEmail> 
+ <creationDate>2025-08-16</creationDate>
+ <copyright>©</copyright>
+ <!--<packagename>PlaceBilet</packagename>-->
+ <packager>"Bilet Movie" - Tickets Theater</packager>
+ <packagerurl>https://github.com/korenevskiy/plg_jshopping_PlaceBilet/</packagerurl>
+ <license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
+ <version>5.3.0</version>
+ <url>https://explorer-office.ru/index.php/download</url>
+ <description><![CDATA["Bilet Movie-Theater" Sale tickets with QR code in tickets and Scanner QR for Smartphone and PC - Plugin sales tickets and bilets for cinemas and theaters for JoomShopping Plugin for JoomShopping-Joomla ticket sales for cinemas, theaters, circuses, museums. parties, courses, lessons, trainings, couching.]]></description>
+ <!--<update>https://korenevskiy.github.io/korenevskiy/plg_jshopping_PlaceBilet/plg_jshopping_PlaceBilet_update.xml</update>-->
+ <!--<update>https://github.com/korenevskiy/plg_jshopping_PlaceBilet/pkg_PlaceBilet_tickets_update.xml</update>-->
+ <!--<scriptfile>pkg_script.php</scriptfile>-->
+ 
+ <!--<schemas><schemapath type="mysql">sql/updates/mysql</schemapath></schemas>-->
+ <files _folder="packages">
+	<file type="module" id="placebilet" client="administrator">mod_PlaceBilet_tickets_5.3.zip</file>
+	<file type="plugin" id="placebilet" group="jshopping">plg_PlaceBilet_tickets_5.3.zip</file>
+	
+	<!--<file type="component" id="com_helloworld" >com_helloworld.zip</file>-->
+	<!--<file type="template" id="placebilet" client="site">tpl_helloworld.zip</file>-->
+	<!--<file type="library" id="placebilet">lib_helloworld.zip</file>-->
+	<!--<file type="file"	id="placebilet">lib_helloworld.zip</file>-->
+ </files>
+ 
+<!-- <languages folder="language">
+	<language tag="en-GB">en-GB/en-GB.pkg_example.sys.ini</language>
+	<language tag="ru-RU">ru-RU/ru-RU.pkg_example.sys.ini</language>
+ </languages>-->
+<!-- <updateservers>
+	<server type="collection" priority="1" name="Accredited Joomla! Translations">
+                        https://update.joomla.org/language/translationlist_3.xml
+	</server>
+ </updateservers>-->
+</extension>

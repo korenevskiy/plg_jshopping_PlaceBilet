@@ -1,92 +1,433 @@
 <?php  defined('_JEXEC') or die;
 
-/** ----------------------------------------------------------------------
+
+use Joomla\CMS\Application\AdministratorApplication;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Installer\InstallerAdapter;
+use Joomla\CMS\Installer\InstallerScriptInterface;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Version;
+use Joomla\Database\DatabaseDriver;
+use Joomla\DI\Container;
+use Joomla\DI\ServiceProviderInterface;
+use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\Filesystem\File as JFile;
+use Joomla\CMS\Installer\InstallerAdapter;
+use Joomla\CMS\Installer\InstallerAdapter as JAdapterInstance;
+use Joomla\CMS\Version as JVersion;
+use Joomla\CMS\Language\Text as JText;
+
+/** -----------------------------------------------------------------------
  * plg_PlaceBilet - Plugin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
  * author    Sergei Borisovich Korenevskiy
  * @copyright (C) 2019 //explorer-office.ru. All Rights Reserved. 
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  * @package plg_PlaceBilet
- * Websites: //explorer-office.ru/download/joomla/category/view/1
- * Technical Support:  Forum - //fb.com/groups/multimodulefb.com/groups/placebilet/
- * Technical Support:  Forum - //vk.com/placebilet
+ * Websites: //explorer-office.ru/download/
+ * Technical Support:  Telegram - //t.me/placebilet
+ * Technical Support:  Forum	- //vk.com/placebilet
+ * Technical Support:  Github	- https://github.com/korenevskiy/plg_jshopping_PlaceBilet
+ * Technical Support:  Max		- https://max.ru/join/l2YuX1enTVg2iJ6gkLlaYUvZ3JKwDFek5UXtq5FipLA
  * -------------------------------------------------------------------------
  **/
 
-if(! class_exists('\Joomla\CMS\Factory')){
-	echo "Start minification!<br>";
-	$files = &plgjshoppingPlaceBiletInstallerScript::languageMinificationRaw();
-	echo '<br>Count:' . count($files);
-	echo '<pre>'.print_r($files,true).'</pre>';
-}
 
-defined('DS') or define('DS', DIRECTORY_SEPARATOR);
-
-use Joomla\CMS\Factory as JFactory;
-use Joomla\CMS\Filesystem\File as JFile;
-use Joomla\CMS\Installer\InstallerAdapter;
-use Joomla\CMS\Version as JVersion;
-use Joomla\CMS\Language\Text as JText;
 
 $file_func = JPATH_ROOT . '/functions.php';
 if (file_exists($file_func))
 	require_once $file_func;
 
-//JLoader::registerAlias('JAdapterInstance', '\\Joomla\\CMS\\Adapter\\AdapterInstance', '5.0');
-//echo "<pre>{JVersion::MAJOR_VERSION}</pre>";
-//toPrint(JVersion::MAJOR_VERSION,'Install $this',0,'message', true);
-//JFactory::getApplication()->enqueueMessage(JVersion::MAJOR_VERSION); //->dump()
 
-if (JVersion::MAJOR_VERSION == 4) {
-//	class_alias( 'JAdapterInstance','\Joomla\CMS\Installer\InstallerAdapter');
-	JLoader::registerAlias('JAdapterInstance', '\\Joomla\\CMS\\Installer\\InstallerAdapter', '5.0');
-}
-if (JVersion::MAJOR_VERSION == 3) {
-//	JLoader::register('ContentHelperRoute', JPATH_ROOT . '/components/com_content/helpers/route.php');
-//	JAdapterInstance
+return new class () implements ServiceProviderInterface {
 
-	class_alias('InstallerAdapter', '\Joomla\CMS\Installer\InstallerAdapter');
-//	JLoader::registerAlias('InstallerAdapter',                  '\\Joomla\\CMS\\Adapter\\AdapterInstance', '5.0');
-//  JLoader::registerAlias('JAdapterInstance',                  '\\Joomla\\CMS\\Adapter\\AdapterInstance', '5.0');
-	JLoader::registerAlias('InstallerAdapter', '\\Joomla\\CMS\\Installer\\InstallerAdapter', '5.0');
-	JLoader::registerAlias('JAdapterInstance', '\\Joomla\\CMS\\Adapter\\AdapterInstance', '5.0');
-}
-
-//        $this->isJ4 = JVersion::MAJOR_VERSION > 3; 
-//defined('DS') or define('DS', '\\');
+    public function register(Container $container)
+    {    
+		$container->set(InstallerScriptInterface::class,
 /**
  * Файл-скрипт для плагина PlaceBilet.
  */
-class plgjshoppingPlaceBiletInstallerScript {//PlgjshoppingPlaceBiletInstallerScript //PlgjshoppingPlaceBiletInstallerScript //PlgjshoppingPlaceBiletInstallerScript
-//    com_jshoppingInstallerScript
-//    plg_jshoppinglaceBiletInstallerScript
-//    plg_jshopping_laceBiletInstallerScript
-//    function __construct($obj) {
-//        
-//        toPrint(array_keys($obj),'thisAdapter');
-//    }
+new class ($container->get(AdministratorApplication::class)) implements InstallerScriptInterface { // class PlgJshoppingPlacebiletInstallerScript
 
-	private $InstallerAdapter = null;
-
-	public function __construct($adapter = null, $parent = null) {// 3 JAdapterInstance  4 Joomla\CMS\Installer\InstallerAdapter 
-//toPrint($parent,'Install $parent');
-//JFactory::getApplication()->enqueueMessage(JVersion::MAJOR_VERSION.' ConstructorInstaller');
-		$this->InstallerAdapter = $adapter;
-		$lang = JFactory::getLanguage()->getTag();
-		$lang = substr($lang, 0, 2); // reset(explode ('-', $lang));
-		$this->isRU = in_array($lang, ['ru', 'uk', 'be', 'kz', 'by', 'ab', 'be', 'be']);
-	}
 
 	private $isRU = false;
+	
+			
+	/**
+	 * The application object
+	 *
+	 * @var  AdministratorApplication
+	 *
+	 * @since  2.0.0
+	 */
+	protected AdministratorApplication $app;
 
+	/**
+	 * The Database object.
+	 *
+	 * @var   DatabaseDriver
+	 *
+	 * @since  2.0.0
+	 */
+	protected DatabaseDriver $db;
+
+	/**
+					 * Minimum PHP version required to install the extension.
+					 *
+					 * @var  string
+					 *
+					 * @since  2.0.0
+					 */
+	protected string $minimumPhp = '7.4';
+
+	/**
+	 * Minimum Joomla version required to install the extension.
+	 *
+	 * @var  string
+	 *
+	 * @since  2.0.0
+	 */
+	protected string $minimumJoomla = '4.2';
+
+	/**
+	 * Constructor.
+	 *
+	 * @param   AdministratorApplication  $app  The application object.
+	 * @param   InstallerAdapter  $adapter  The adapter calling this method
+	 *
+	 * @since 2.0.0
+	 */
+	public function __construct(AdministratorApplication $app = null, $adapter = null) {// 3 JAdapterInstance  4 Joomla\CMS\Installer\InstallerAdapter 
+//toPrint($adapter,'Install $adapter');
+//JFactory::getApplication()->enqueueMessage(JVersion::MAJOR_VERSION.' ConstructorInstaller');
+		$this->app = $app;
+		$lang = $app->getLanguage()->getTag();
+		$lang = substr($lang, 0, 2); // reset(explode ('-', $lang));
+		$this->db  = Factory::getContainer()->get('DatabaseDriver');
+		$this->isRU = in_array($lang, ['ru', 'uk', 'be', 'kz', 'by', 'ab', 'be', 'be']);
+	}
+ 
+				
+	/**
+	 * Вызов installation  - 4,3
+	 * Function called after the extension is installed.
+	 *
+	 * @param   InstallerAdapter  $adapter  The adapter calling this method
+	 *
+	 * @return  boolean  True on success
+	 * @since   2.0.0
+	 */
+	public function install(InstallerAdapter $adapter = null) {//JAdapterInstance - 3, InstallerAdapter  - 4
+//		$this->db->setQuery('SET GLOBAL innodb_strict_mode=OFF;')->execute();
+//$params = $this->db->setQuery('
+//SELECT extension_id,element, params 
+//FROM #__extensions
+//WHERE element IN ( "PlaceBilet", "placebilet");')->loadObject();
+//JFactory::getApplication()->enqueueMessage(   '<pre>' . print_r($params, true) . '</pre>');
+//JFactory::getApplication()->enqueueMessage(JVersion::MAJOR_VERSION.' InstallInstaller');
+//toPrint($adapter,'Install $adapter');
+		if (!$this->existJShopping()) {
+			return FALSE;
+		}
+//		$this->enablePlugin($adapter);
+		
+		$query = "
+				UPDATE #__extensions e SET e.params= REPLACE(e.params, '3772199444', '4245918837') 
+				WHERE e.element = 'PlaceBilet' or e.element = 'placebilet'; ";
+		$this->db->setQuery($query)->execute();
+		
+		$prefix = $this->db->getPrefix();
+		
+		
+
+		$all_columns = [];
+
+		foreach ($this->queries_tbl_columns as $tbl => $query) {
+//			if(JFactory::getConfig()->get('debug') || JFactory::getConfig()->get('error_reporting') == 'maximum')
+//				JFactory::getApplication()->enqueueMessage(str_replace('#__', $prefix, $query));
+//			$columns = $this->db->setQuery($query)->loadObjectList('Field');
+//			$all_columns[$tbl] = array_column($columns, 'Field');
+			$all_columns[$tbl] = $this->db->setQuery($query)->loadAssocList('Field', 'Type');
+		}
+		
+		$srcNoImage = __DIR__.'/media/noimage.png';
+		
+		$catNoImage = JPATH_ROOT . '/components/com_jshopping/files/img_categories/noimage.png';
+		$prodNoImage = JPATH_ROOT . '/components/com_jshopping/files/img_products/noimage.png';
+		
+		\Joomla\Filesystem\File::copy($srcNoImage, $catNoImage);
+		\Joomla\Filesystem\File::copy($srcNoImage, $prodNoImage);
+		
+		$queries = [];
+
+		foreach ($this->new_tbl_columns as $tbl => $columns) {
+			if (empty($all_columns[$tbl])) {
+				$this->app->enqueueMessage('Not Intalled JoomShopping component. Please install the <b>JoomShopping</b> component first. <br>
+					Not Exist table: ' . str_replace('#__', $prefix, $tbl), Joomla\CMS\Application\CMSApplicationInterface::MSG_WARNING);
+				continue;
+			}
+
+			$cols = [];
+
+			foreach ($columns as $column => $query) {
+				// Модифицирование существующих колонок
+				if (isset($all_columns[$tbl][$column]) && isset($this->queries_tbl_mods[$tbl][$column])) {
+//JFactory::getApplication()->enqueueMessage("Exist: ".str_replace('#__', $prefix, $query));
+					$queries[] = $this->queries_tbl_mods[$tbl][$column];
+					$cols[] = $column;
+				}
+
+				// Добавление не существующих колонок
+				if (empty($all_columns[$tbl][$column])) {
+					$queries[] = $query;
+					$cols[] = $column;
+//JFactory::getApplication()->enqueueMessage("Add!: ".str_replace('#__', $prefix, $query));
+//JFactory::getApplication()->enqueueMessage("--------- [$tbl][$column]". '<pre>' . (isset($all_columns[$tbl][$column])?print_r($all_columns[$tbl][$column], true):'-/NoExist/-.') . '</pre>');
+				}
+			}
+
+			if ($cols && (JFactory::getConfig()->get('debug')))// || JFactory::getConfig()->get('error_reporting') == 'maximum')
+				$this->app->enqueueMessage('in table ' . str_replace('#__', $prefix, $tbl) . ' Add columns: ' . implode(',', $cols));
+		}
+
+//file_put_contents(JPATH_ROOT. '/XXXzzz.txt', print_r($queries, true) . "\n\n", FILE_APPEND);
+//JFactory::getApplication()->enqueueMessage(str_replace('#__', $prefix, implode('<br>',$queries)));
+//return;
+		foreach ($queries as $query) {
+//JFactory::getApplication()->enqueueMessage('Query:'.str_replace('#__', $prefix, $query));
+			$this->db->setQuery($query)->execute();
+		}
+
+
+
+		$this->db->setQuery("UPDATE #__jshopping_attr SET attr_type = 4 WHERE attr_type = 0;")->execute();
+
+//return;
+//static::toLog('ERROR ????????????????????????????????????? -- 0','','',TRUE);
+//        toPrint(array_keys($adapter),'thisAdapter');
+
+		static::moveControllers();
+
+		if ($redirect == false)
+			return true;
+//        JApplicationCms::getInstance()->enqueueMessage('Installed TheatrBilet plugin for JoomShopping <br> Welcome in Theatr Bilet!' , 'info');
+//static::toLog('ERROR ????????????????????????????????????? -- 1','','',TRUE);
+//            JApplicationCms::getInstance()->enqueueMessage('ERROR ????????????????????????????????????? -- 1' , 'info');
+//        //return;
+//        $file = 'install.sql';
+//
+//JApplicationCms::getInstance()->enqueueMessage('ERROR ????????????????????????????????????? -- 11' , 'info');return;
+//        static::executeScript($file);
+//        $adapter->getParent()->setRedirectURL('index.php?option=com_plugins&view=plugins&filter[folder]=jshopping'); 
+		if (JVersion::MAJOR_VERSION == 3) {
+			$adapter->getParent()->setRedirectURL('index.php?option=com_jshopping&controller=attributes');
+		} else {
+			$$adapter->getParent()->setRedirectURL('index.php?option=com_jshopping&controller=attributes');
+		}
+
+		header('Content-Type:  "text/html; charset=utf-8"');
+
+		return TRUE;
+	}
+
+	/**
+	 * Function called after the extension is updated.
+	 * Called on update
+	 *
+	 * @param   InstallerAdapter  $adapter  The adapter calling this method
+	 *
+	 * @return  boolean  True on success
+	 *
+	 * @since   2.0.0
+	 */
+	public function update(InstallerAdapter $adapter = null): bool {
+		//JFactory::getApplication()->enqueueMessage(JVersion::MAJOR_VERSION.' UpdateInstaller');
+//		$message = JText::_('JSHOP_PLACE_BILET_EXIST_JSHOPPING_INFO');
+//		JFactory::getApplication()->enqueueMessage($message);
+		$prefix = $this->db->getPrefix();
+//        $query = "
+//                UPDATE #__update_sites us, #__extensions e,#__update_sites_extensions se 
+//                SET us.location = REPLACE(us.location, 'PlaceBilet_update.', 'PlaceBilet_update_prox.') 
+//                WHERE e.element = 'PlaceBilet' AND se.extension_id = e.extension_id AND se.update_site_id = us.update_site_id; ";
+//		$this->db->setQuery($query)->execute();
+//		JFactory::getApplication()->enqueueMessage('Ok 0');
+
+
+		if (!$this->existJShopping()) {
+			return FALSE;
+		}
+
+		$this->install($adapter, false);
+//		return TRUE;
+
+
+		static::moveControllers();
+
+		return TRUE;
+	}
+
+	/**
+	 * Function called after the extension is uninstalled.
+	 * Вызов on uninstallation
+	 *
+	 * @param   InstallerAdapter  $adapter  The object responsible for running this script
+	 *
+	 * @return  boolean  True on success
+	 *
+	 * @since   2.0.0
+	 */
+	public function uninstall(InstallerAdapter $adapter = null): bool{ //JAdapterInstance - 3, InstallerAdapter  - 4
+				$prefix = $this->db->getPrefix();
+		$all_columns = [];
+
+		foreach ($this->queries_tbl_columns as $tbl => $query) {
+//JFactory::getApplication()->enqueueMessage(str_replace('#__', $prefix, $query));
+			$columns = $this->db->setQuery(str_replace('#__', $prefix, $query))->loadObjectList('Field');
+			$all_columns[$tbl] = array_column($columns, 'Field');
+		}
+
+
+
+
+		$queries = [];
+
+		foreach ($this->new_tbl_columns as $tbl => $columns) {
+
+			$cols = [];
+
+			foreach ($columns as $column => $query) {
+				if (isset($all_columns[$tbl]) && is_array($all_columns[$tbl]) && in_array($column, $all_columns[$tbl])) {
+					$queries[] = "ALTER TABLE #__jshopping_$tbl  DROP COLUMN $column ; ";
+					$cols[] = $column;
+				}
+			}
+
+			if ($cols && (JFactory::getConfig()->get('debug')))// || JFactory::getConfig()->get('error_reporting') == 'maximum'
+				JFactory::getApplication()->enqueueMessage('in table ' . str_replace('#__', $prefix, $tbl) . ' Delete columns: ' . implode(',', $cols));
+		}
+
+//file_put_contents(JPATH_ROOT. '/XXXzzz.txt', print_r($queries, true) . "\n\n", FILE_APPEND);
+
+		foreach ($queries as $query) {
+//JFactory::getApplication()->enqueueMessage(str_replace('#__', $prefix, $query));
+			$this->db->setQuery(str_replace('#__', $prefix, $query))->execute();
+		}
+
+		return TRUE;
+	}
+
+	/**
+	 * Function called before extension installation/update/removal procedure commences.
+	 *
+	 * @param   string            $type     The type of change (install|uninstall|discover_install|update)
+	 * @param   InstallerAdapter  $adapter  The adapter calling this method
+	 *
+	 * @return  boolean  True on success
+	 *
+	 * @since   2.0.0
+	 */
+	public function preflight(string $type, InstallerAdapter $adapter): bool {   //JAdapterInstance - 3, InstallerAdapter  - 4
+//JFactory::getApplication()->enqueueMessage(JVersion::MAJOR_VERSION.' PreFlightInstaller');
+		// Check compatible
+		if (!$this->checkCompatible()) {
+			return false;
+		}
+
+		return true;
+	}
+	
+	/**
+	 * Вызывается после любого типа действия 4,3: installation/update/removal
+	 * Function called after extension installation/update/removal procedure commences.
+	 *
+	 * @param   string            $type     The type of change (install or discover_install, update, uninstall)
+	 * @param   InstallerAdapter  $adapter  The object responsible for running this script
+	 *
+	 * @return  boolean  True on success
+	 *
+	 * @since   2.0.0
+	 */
+	public function postflight(string $type, InstallerAdapter $adapter): bool {
+		
+//		$this->db->setQuery('SET GLOBAL innodb_strict_mode=ON;')->execute();
+//JFactory::getApplication()->enqueueMessage(JVersion::MAJOR_VERSION.' PostFlightInstaller');
+		$type; // update, install
+//		$adapter->get('manifest')->version;
+//		$prefix = $this->db->getPrefix();
+		
+		
+
+		$query = "UPDATE `#__extensions` SET enabled = 1 WHERE element IN ('PlaceBilet','placebilet') AND folder = 'jshopping'; ";
+
+		if ($type == 'install')
+			$this->app->setQuery($query)->execute(); // loadResult();// loadObjectList('Field');
+//		JFactory::getApplication()->enqueueMessage("<pre>".print_r($type,true)."</pre>"); //->dump()
+		JFactory::getApplication()->enqueueMessage(JText::_('JSHOP_PLACE_BILET_DESC')); //->dump()
+		JFactory::getApplication()->enqueueMessage(JText::_('JSHOP_PLACE_BILET_INSTRUCTION')); //->dump()
+		
+		static::languageMinificationRaw();
+
+		return true;
+	}
+
+	/**
+	  * Enable plugin after installation.
+	  *
+	  * @param   InstallerAdapter  $adapter  Parent object calling object.
+	  *
+	  * @since  2.0.0
+	  */
+	 protected function enablePlugin(InstallerAdapter $adapter): void{
+	 	// Prepare plugin object
+		$plugin          = new \stdClass();
+		$plugin->type    = 'plugin';
+		$plugin->element = $adapter->getElement();
+		$plugin->folder  = (string)$adapter->getParent()->manifest->attributes()['group'];
+		$plugin->enabled = 1;
+
+		// Update record
+		$this->db->updateObject('#__extensions', $plugin, ['type', 'element', 'folder']);
+	}
+
+	/**
+	 * Method to check compatible.
+	 *
+	 * @throws  \Exception
+	 *
+	 * @return  bool True on success, False on failure.
+	 *
+	 * @since  1.0.0
+	 */
+	protected function checkCompatible(): bool
+	{
+		$app = Factory::getApplication();
+
+		// Check joomla version
+		if (!(new Version())->isCompatible($this->minimumJoomla)) {
+			$app->enqueueMessage(Text::sprintf('PLG_QUICKICON_RESETMEDIAVERSION_WRONG_JOOMLA', $this->minimumJoomla), 'error');
+
+			return false;
+		}
+
+		// Check PHP
+		if (!(version_compare(PHP_VERSION, $this->minimumPhp) >= 0)) {
+			$app->enqueueMessage(Text::sprintf('PLG_QUICKICON_RESETMEDIAVERSION_WRONG_PHP', $this->minimumPhp), 'error');
+
+			return false;
+		}
+
+		return true;
+	}
+
+	
 	private function existJShopping() {
-		$prefix = JFactory::getDbo()->getPrefix();
+		$prefix = $this->db->getPrefix();
 
 		$query = "SHOW TABLES   LIKE '{$prefix}jshopping_products'; ";
 
-		$existJshopping = JFactory::getDbo()->setQuery($query)->loadResult(); // loadObjectList('Field'); 
-//Factory::getDbo()->replacePrefix($sql);
-//Factory::getDbo()->getPrefix(); 
+		$existJshopping = $this->db->setQuery($query)->loadResult(); // loadObjectList('Field'); 
+//$this->db->replacePrefix($sql);
+//$this->db->getPrefix(); 
 //		JFactory::getApplication()->enqueueMessage("<pre>".$query."</pre>"); //->dump()
 //		JFactory::getApplication()->enqueueMessage("<pre>".print_r($existJshopping,true)."</pre>");
 //		JFactory::getApplication()->enqueueMessage("<pre>".($existJshopping?'Yes':'No')."</pre>");
@@ -115,316 +456,10 @@ class plgjshoppingPlaceBiletInstallerScript {//PlgjshoppingPlaceBiletInstallerSc
 
 		return FALSE;
 	}
-
-//    public static function toLog($obj)
-//    public static function toLog($obj)
-//    {
-//        $print = print_r($obj,TRUE). '\n\n';
-////        $s = DIRECTORY_SEPARATOR;
-//        $s = '\\';
-////        $s = DS;
-////        $path = JFactory::getConfig()->get('log_path');
-//        $path = "C:{$s}Downloads{$s}OpenServer{$s}OSPanel{$s}domains{$s}joomla2{$s}administrator{$s}logs{$s}";
-//        $path = __DIR__;
-//        $file='_log.txt';
-//        file_put_contents ($path.$s.$file, "\n$print  ", FILE_APPEND);
-
-	/**
-	 * Вызов installation  - 4,3
-	 *
-	 * @param   InstallerAdapter  $adapter  The object responsible for running this script
-	 *
-	 * @return  boolean  True on success
-	 */
-	public function install($parent = null, $redirect = true) {//JAdapterInstance - 3, InstallerAdapter  - 4
-//		JFactory::getDbo()->setQuery('SET GLOBAL innodb_strict_mode=OFF;')->execute();
-//$params = JFactory::getDbo()->setQuery('
-//SELECT extension_id,element, params 
-//FROM #__extensions
-//WHERE element IN ( "PlaceBilet", "placebilet");')->loadObject();
-//JFactory::getApplication()->enqueueMessage(   '<pre>' . print_r($params, true) . '</pre>');
-//JFactory::getApplication()->enqueueMessage(JVersion::MAJOR_VERSION.' InstallInstaller');
-//toPrint($parent,'Install $parent');
-		if (!$this->existJShopping()) {
-			return FALSE;
-		}
-		
-		$query = "
-				UPDATE #__extensions e SET e.params= REPLACE(e.params, '3772199444', '4245918837') 
-				WHERE e.element = 'PlaceBilet' or e.element = 'placebilet'; ";
-		JFactory::getDbo()->setQuery($query)->execute();
-		
-		$prefix = JFactory::getDbo()->getPrefix();
-		
-		
-
-		$all_columns = [];
-
-		foreach ($this->queries_tbl_columns as $tbl => $query) {
-//			if(JFactory::getConfig()->get('debug') || JFactory::getConfig()->get('error_reporting') == 'maximum')
-//				JFactory::getApplication()->enqueueMessage(str_replace('#__', $prefix, $query));
-//			$columns = JFactory::getDbo()->setQuery($query)->loadObjectList('Field');
-//			$all_columns[$tbl] = array_column($columns, 'Field');
-			$all_columns[$tbl] = JFactory::getDbo()->setQuery($query)->loadAssocList('Field', 'Type');
-		}
-		
-		$srcNoImage = __DIR__.'/media/noimage.png';
-		
-		$catNoImage = JPATH_ROOT . '/components/com_jshopping/files/img_categories/noimage.png';
-		$prodNoImage = JPATH_ROOT . '/components/com_jshopping/files/img_products/noimage.png';
-		
-		\Joomla\Filesystem\File::copy($srcNoImage, $catNoImage);
-		\Joomla\Filesystem\File::copy($srcNoImage, $prodNoImage);
-		
-		
-//JFactory::getApplication()->enqueueMessage('Show Columns: '. count($all_columns) . '<pre>' . print_r($all_columns, true) . '</pre>');
-//JFactory::getApplication()->enqueueMessage( count($debugs_columns) . '<pre>' . print_r($debugs_columns, true) . '</pre>');
-//$debugs_columns = JFactory::getDbo()->setQuery('SHOW COLUMNS FROM #__jshopping_orders;')->loadAssocList('Field', 'Type');
-//JFactory::getApplication()->enqueueMessage( count($debugs_columns) . '<pre>' . print_r($debugs_columns, true) . '</pre>');
-//		return;
-//JFactory::getApplication()->enqueueMessage(JVersion::MAJOR_VERSION );
-//		toPrint($all_columns,'$all_columns',0,'pre',true);
-//file_put_contents(JPATH_ROOT. '/XXXzzz.txt', "\n\n");
-//    }
-////toLog($all_columns,'','/XXXzzzLog.txt');
-//file_put_contents(JPATH_ROOT. '/XXXzzz.txt', print_r($all_columns,true). "\n\n",FILE_APPEND);
-//
-
-
-
-		$queries = [];
-
-		foreach ($this->new_tbl_columns as $tbl => $columns) {
-			if (empty($all_columns[$tbl])) {
-				JFactory::getApplication()->enqueueMessage('Not Intalled JoomShopping component. Please install the <b>JoomShopping</b> component first. <br>
-					Not Exist table: ' . str_replace('#__', $prefix, $tbl), Joomla\CMS\Application\CMSApplicationInterface::MSG_WARNING);
-				continue;
-			}
-
-			$cols = [];
-
-			foreach ($columns as $column => $query) {
-				// Модифицирование существующих колонок
-				if (isset($all_columns[$tbl][$column]) && isset($this->queries_tbl_mods[$tbl][$column])) {
-//JFactory::getApplication()->enqueueMessage("Exist: ".str_replace('#__', $prefix, $query));
-					$queries[] = $this->queries_tbl_mods[$tbl][$column];
-					$cols[] = $column;
-				}
-
-				// Добавление не существующих колонок
-				if (empty($all_columns[$tbl][$column])) {
-					$queries[] = $query;
-					$cols[] = $column;
-//JFactory::getApplication()->enqueueMessage("Add!: ".str_replace('#__', $prefix, $query));
-//JFactory::getApplication()->enqueueMessage("--------- [$tbl][$column]". '<pre>' . (isset($all_columns[$tbl][$column])?print_r($all_columns[$tbl][$column], true):'-/NoExist/-.') . '</pre>');
-				}
-			}
-
-			if ($cols && (JFactory::getConfig()->get('debug')))// || JFactory::getConfig()->get('error_reporting') == 'maximum')
-				JFactory::getApplication()->enqueueMessage('in table ' . str_replace('#__', $prefix, $tbl) . ' Add columns: ' . implode(',', $cols));
-		}
-
-//file_put_contents(JPATH_ROOT. '/XXXzzz.txt', print_r($queries, true) . "\n\n", FILE_APPEND);
-//JFactory::getApplication()->enqueueMessage(str_replace('#__', $prefix, implode('<br>',$queries)));
-//return;
-		foreach ($queries as $query) {
-//JFactory::getApplication()->enqueueMessage('Query:'.str_replace('#__', $prefix, $query));
-			JFactory::getDbo()->setQuery($query)->execute();
-		}
-
-
-
-		JFactory::getDbo()->setQuery("UPDATE #__jshopping_attr SET attr_admin_type = 4 WHERE attr_type = 0;")->execute();
-
-//return;
-//static::toLog('ERROR ????????????????????????????????????? -- 0','','',TRUE);
-//        toPrint(array_keys($parent),'thisAdapter');
-
-		static::moveControllers();
-
-		if ($redirect == false)
-			return true;
-//        JApplicationCms::getInstance()->enqueueMessage('Installed TheatrBilet plugin for JoomShopping <br> Welcome in Theatr Bilet!' , 'info');
-//static::toLog('ERROR ????????????????????????????????????? -- 1','','',TRUE);
-//            JApplicationCms::getInstance()->enqueueMessage('ERROR ????????????????????????????????????? -- 1' , 'info');
-//        //return;
-//        $file = 'install.sql';
-//
-//JApplicationCms::getInstance()->enqueueMessage('ERROR ????????????????????????????????????? -- 11' , 'info');return;
-//        static::executeScript($file);
-//        $parent->getParent()->setRedirectURL('index.php?option=com_plugins&view=plugins&filter[folder]=jshopping'); 
-		if (JVersion::MAJOR_VERSION == 3) {
-			$parent->getParent()->setRedirectURL('index.php?option=com_jshopping&controller=attributes');
-		} else {
-			$this->InstallerAdapter->getParent()->setRedirectURL('index.php?option=com_jshopping&controller=attributes');
-		}
-
-		header('Content-Type:  "text/html; charset=utf-8"');
-
-		return TRUE;
-	}
-
-//    	/**
-//	 * method to uninstall  
-//	 *
-//	 * @return void
-//	 */
-//    function uninstall($parent) 
-//	{
-////		echo '<p>' . JText::_('') . '</p>';
-//	}
-
-	/**
-	 * Called on update
-	 *
-	 * @param   InstallerAdapter  $adapter  The object responsible for running this script
-	 *
-	 * @return  boolean  True on success
-	 */
-	public function update($parent = null) { //JAdapterInstance  - 3, InstallerAdapter  - 4
-//JFactory::getApplication()->enqueueMessage(JVersion::MAJOR_VERSION.' UpdateInstaller');
-//		$message = JText::_('JSHOP_PLACE_BILET_EXIST_JSHOPPING_INFO');
-//		JFactory::getApplication()->enqueueMessage($message);
-		$prefix = JFactory::getDbo()->getPrefix();
-//        $query = "
-//                UPDATE #__update_sites us, #__extensions e,#__update_sites_extensions se 
-//                SET us.location = REPLACE(us.location, 'PlaceBilet_update.', 'PlaceBilet_update_prox.') 
-//                WHERE e.element = 'PlaceBilet' AND se.extension_id = e.extension_id AND se.update_site_id = us.update_site_id; ";
-//        JFactory::getDbo()->setQuery($query)->execute();
-//		JFactory::getApplication()->enqueueMessage('Ok 0');
-
-
-		if (!$this->existJShopping()) {
-			return FALSE;
-		}
-
-		$this->install($parent, false);
-//		return TRUE;
-
-
-		static::moveControllers();
-
-		return TRUE;
-//$debugs_columns = JFactory::getDbo()->setQuery('SHOW COLUMNS FROM #__jshopping_orders;')->loadAssocList('Field', 'Type');
-//JFactory::getApplication()->enqueueMessage( count($debugs_columns) . '<pre>' . print_r($debugs_columns, true) . '</pre>');
-// <editor-fold defaultstate="expanded" desc="Модификация типов колонок">
-		$all_columns = [];
-		//       $this->queries_tbl_columns - Show Columns
-		foreach ($this->queries_tbl_columns as $tbl => $query) {
-//			if(JFactory::getConfig()->get('debug') || JFactory::getConfig()->get('error_reporting') == 'maximum')
-//				JFactory::getApplication()->enqueueMessage(str_replace('#__', $prefix, $query));
-			$columns = JFactory::getDbo()->setQuery($query)->loadObjectList('Field');
-			$all_columns[$tbl] = array_column($columns, 'Field');
-		}
-//JFactory::getApplication()->enqueueMessage( count($all_columns) . '<pre>' . print_r($all_columns, true) . '</pre>');
-
-		/* Список не существующих полей */
-		$cols = [];
-		foreach ($this->new_tbl_columns as $tbl => $columns) {
-			if (empty($all_columns[$tbl])) {
-				JFactory::getApplication()->enqueueMessage('Not Intalled JoomShopping component. Please install the <b>JoomShopping</b> component first. <br>
-					Not Exist table: ' . str_replace('#__', $prefix, $tbl), Joomla\CMS\Application\CMSApplicationInterface::MSG_WARNING);
-				continue;
-			}
-			$cols[$tbl] = [];
-			foreach ($columns as $column => $_) {
-				// Поиск не существующих полей
-				if (empty(in_array($column, $all_columns[$tbl])))
-					$cols[$tbl][$column] = $column;
-				// Модификация типов полей
-				if (isset($this->queries_tbl_mods[$tbl][$column]) && (JFactory::getConfig()->get('debug') || JFactory::getConfig()->get('error_reporting') == 'maximum'))
-					JFactory::getDbo()->setQuery($this->queries_tbl_mods[$tbl][$column])->execute();
-			}
-
-			if ($cols[$tbl])//)
-				JFactory::getApplication()->enqueueMessage('in table ' . str_replace('#__', $prefix, $tbl) . ' Not Create columns: ' . implode(',', $cols[$tbl]), Joomla\CMS\Application\CMSApplicationInterface::MSG_WARNING);
-		}
-// </editor-fold>
-//		JFactory::getApplication()->enqueueMessage('Ok 1');
-//        $queries = [
-//			'orders' => 'SHOW COLUMNS FROM #__jshopping_orders;',
-//			'order_item' => 'SHOW COLUMNS FROM #__jshopping_order_item;',
-//			'attr' => 'SHOW COLUMNS FROM #__jshopping_attr;',
-//			'products' => 'SHOW COLUMNS FROM #__jshopping_products;',
-//			'categories' => 'SHOW COLUMNS FROM #__jshopping_categories;',
-//			'products_attr2' => 'SHOW COLUMNS FROM #__jshopping_products_attr2;',
-//		];
-//		$all_columns = [];
-//		
-//		foreach($queries as $tbl => $query){
-//			$all_columns[$tbl] = JFactory::getDbo()->setQuery($query)->loadObjectList('Field');
-//		}
-//		
-////		toPrint($all_columns,'$all_columns',0,'pre',true);
-//		
-////toLog('','','/XXXzzzLog.txt');
-//file_put_contents(JPATH_ROOT. '/XXXzzz.txt', "\n\n");
-//
-////toLog($all_columns,'','/XXXzzzLog.txt');
-//file_put_contents(JPATH_ROOT. '/XXXzzz.txt', print_r($all_columns,true). "\n\n",true);
-//		
-//		JFactory::getApplication()->enqueueMessage('Ok 2');
-//static::toLog('ERROR ????????????????????????????????????? -- XXXXXXXXXXXXXXXXXXXX','','',TRUE);
-//            $file = 'update.sql';
-//            static::executeScript($file); 
-//		echo '<p>' . JText::_('') . '</p>';
-//		JFactory::getApplication()->enqueueMessage('Ok 3');
-//            $query = "
-//                UPDATE #__update_sites us, #__extensions e,#__update_sites_extensions se 
-//                SET us.location = REPLACE(us.location, 'PlaceBilet_update.', 'PlaceBilet_update_prox.') 
-//                WHERE e.element = 'PlaceBilet' AND se.extension_id = e.extension_id AND se.update_site_id = us.update_site_id; ";
-//            JFactory::getDbo()->setQuery($query)->execute();
-//		JFactory::getApplication()->enqueueMessage('Ok 4');
-	}
-
-//	/**
-//	 * method to run before an install/update/uninstall method
-//	 *
-//	 * @return void
-//	 */
-//    function preflight($type, $parent) 
-//	{
-//		echo '<p>' . JText::_('') . '</p>';
-//	}
-// 
-//	/**
-//	 * method to run after an install/update/uninstall method
-//	 *
-//	 * @return void
-//	 */
-//    function postflight($type, $parent) 
-//	{
-//		echo '<p>' . JText::_('') . '</p>';
-//	}
-//    
-//    static function executeScript($file){
-//        $file = __DIR__ . DS . $file;
-//        
-//        if(!file_exists($file)){
-//static::toLog ('ERROR ????????????????????????????????????? -- 2');
-//            return FALSE;
-//        }
-//static::toLog('ERROR ????????????????????????????????????? -- 33 <br>'.$file , 'info');return;
-//        
-//        $script = file_get_contents($file);
-//        $scripts = explode(';', $script);
-//static::toLog ('ERROR ????????????????????????????????????? -- 4 <br>'.print_r($scripts,true));        
-//        
-////        foreach ($scripts  as $query)
-////            static::executeQuery($query);
-//        
-//    }
-//    static function executeQuery($query){
-//        try {
-//static::toLog('ERROR ????????????????????????????????????? -- 4 <br>'.$query , 'info');
-//            //JFactory::getApplication()->getDBO()->setQuery($query)->execute(); 
-//        } catch (Exception $exc) {
-//            echo $exc->getTraceAsString().'<br>'.$query;
-//        }
-//
-//    }
-
-
+	
+	
+	
+	
 	static function moveControllers() {
 		$s = DIRECTORY_SEPARATOR;
 
@@ -451,156 +486,10 @@ class plgjshoppingPlaceBiletInstallerScript {//PlgjshoppingPlaceBiletInstallerSc
 //        if(!$answS)toPrint($pathSite,'$pathSite');
 //        if(!$answA)toPrint($pathAdmin,'$pathAdmin');
 	}
-
-	/**
-	 * Вызывается после любого типа действия 4,3
-	 *
-	 * @param   string  $route  Which action is happening (install|uninstall|discover_install|update)
-	 * @param   InstallerAdapter  $adapter  The object responsible for running this script
-	 *
-	 * @return  boolean  True on success
-	 */
-	public function postflight($type, $parent) {
-
-//		JFactory::getDbo()->setQuery('SET GLOBAL innodb_strict_mode=ON;')->execute();
-//JFactory::getApplication()->enqueueMessage(JVersion::MAJOR_VERSION.' PostFlightInstaller');
-		$type; // update, install
-//		$parent->get('manifest')->version;
-//		$prefix = JFactory::getDbo()->getPrefix();
-
-		$query = "UPDATE `#__extensions` SET enabled = 1 WHERE element IN ('PlaceBilet','placebilet') AND folder = 'jshopping'; ";
-
-		if ($type == 'install')
-			JFactory::getDbo()->setQuery($query)->execute(); // loadResult();// loadObjectList('Field');
-//		JFactory::getApplication()->enqueueMessage("<pre>".print_r($type,true)."</pre>"); //->dump()
-		JFactory::getApplication()->enqueueMessage(JText::_('JSHOP_PLACE_BILET_DESC')); //->dump()
-		JFactory::getApplication()->enqueueMessage(JText::_('JSHOP_PLACE_BILET_INSTRUCTION')); //->dump()
-		
-		static::languageMinificationRaw();
-
-		return true;
-	}
-
-	function onLibraries() {
-		
-	}
-
-	/* 	-------------------------------------- Joomla 4 -------------------------------- */
-
-	/**
-	 * Called before any type of action
-	 *
-	 * @param   string  $route  Which action is happening (install|uninstall|discover_install|update)
-	 * @param   InstallerAdapter  $adapter  The object responsible for running this script
-	 *
-	 * @return  boolean  True on success
-	 */
-	public function preflight($route, $adapter) {   //JAdapterInstance - 3, InstallerAdapter  - 4
-//JFactory::getApplication()->enqueueMessage(JVersion::MAJOR_VERSION.' PreFlightInstaller');
-		return true;
-	}
-
-	/**
-	 * Вызов on uninstallation
-	 *
-	 * @param   InstallerAdapter  $adapter  The object responsible for running this script
-	 */
-	public function uninstall($adapter = null) { //JAdapterInstance - 3, InstallerAdapter  - 4
-		$prefix = JFactory::getDbo()->getPrefix();
-		$all_columns = [];
-
-		foreach ($this->queries_tbl_columns as $tbl => $query) {
-//JFactory::getApplication()->enqueueMessage(str_replace('#__', $prefix, $query));
-			$columns = JFactory::getDbo()->setQuery(str_replace('#__', $prefix, $query))->loadObjectList('Field');
-			$all_columns[$tbl] = array_column($columns, 'Field');
-		}
-
-
-
-
-		$queries = [];
-
-		foreach ($this->new_tbl_columns as $tbl => $columns) {
-
-			$cols = [];
-
-			foreach ($columns as $column => $query) {
-				if (isset($all_columns[$tbl]) && is_array($all_columns[$tbl]) && in_array($column, $all_columns[$tbl])) {
-					$queries[] = "ALTER TABLE #__jshopping_$tbl  DROP COLUMN $column ; ";
-					$cols[] = $column;
-				}
-			}
-
-			if ($cols && (JFactory::getConfig()->get('debug')))// || JFactory::getConfig()->get('error_reporting') == 'maximum'
-				JFactory::getApplication()->enqueueMessage('in table ' . str_replace('#__', $prefix, $tbl) . ' Delete columns: ' . implode(',', $cols));
-		}
-
-//file_put_contents(JPATH_ROOT. '/XXXzzz.txt', print_r($queries, true) . "\n\n", FILE_APPEND);
-
-		foreach ($queries as $query) {
-//JFactory::getApplication()->enqueueMessage(str_replace('#__', $prefix, $query));
-			JFactory::getDbo()->setQuery(str_replace('#__', $prefix, $query))->execute();
-		}
-
-		return TRUE;
-	}
 	
 	
-	public static function languageMinificationRaw(){
-		
-		
-//		$lang = JFactory::getApplication()->getLanguage();
-		
-		$default_path = __DIR__;
-		
-//		$dir = getcwd();
-		
-		$dir = __DIR__;
-		
-		while(!file_exists($dir . '/language')){
-			$dir = dirname($dir);
-		}
 
-		$dir .= '/language/*';
-		
-//		$files = Joomla\Filesystem\Folder::files($dir, "raw.ini", true, true);
-		
-//		$dirs = scandir($dir,  SCANDIR_SORT_NONE);
-//		$dirs = glob($dir . '/*');
-//		$dirs = array_filter(glob('*'), 'is_dir');
-		
-		$files = [];
-		
-		foreach (array_filter(glob($dir), 'is_dir') as &$dir){
-			foreach (glob($dir.'/*.raw.ini') as $file){
-				$text = file_get_contents($file);
-				$countLines = count(explode("\n", $text));
-				$text = str_replace("\n[", "[{<!>}][", $text);			//	\n[		-
-				$text = str_replace("]\n", "][{<!>}]", $text);			//	]\n		-
-				$text = str_replace("]\r", "][{<!>}]", $text);			//	]\r		-
-				$text = str_replace("\";\r\n", "\";[{<!>}]", $text);	//	";\r\n	-
-				$text = str_replace("\";\n", "\";[{<!>}]", $text);		//	";\n	-
-				$text = str_replace("\";\r", "\";[{<!>}]", $text);		//	";\r	-
-				
-				$text = str_replace("\"\r\n", "\"[{<!>}]", $text);		//	"\r\n	-
-				$text = str_replace("\"\n", "\"[{<!>}]", $text);		//	"\n		-
-				$text = str_replace("\"\r", "\"[{<!>}]", $text);		//	"\r		-
-				
-				$text = str_replace("\r\n", '', $text);
-				$text = str_replace("\n", '', $text);
-				$text = str_replace("\r", '', $text);
-				$text = str_replace('[{<!>}]', PHP_EOL, $text);
-				$file = str_replace('.raw.ini', '.ini', $file);
-				$f = file_put_contents($file, $text);
-				$file = str_replace(__DIR__ . '/../../../../../', '.ini', $file);
-				
-				$countLines2 = count(explode("\n", $text));
-				$files[] = str_replace($default_path, '', $file) ." -- count:$countLines , newCount:$countLines2";
-			}
-		}
-		return $files;
-	}
-
+	
 	//ALTER TABLE `#__jshopping_users` ADD `FIO` TINYTEXT NULL AFTER `txt`; 
 	private $new_tbl_columns = [
 		'users' => [
@@ -665,12 +554,12 @@ class plgjshoppingPlaceBiletInstallerScript {//PlgjshoppingPlaceBiletInstallerSc
 			'date_event'	=> 'ALTER TABLE #__jshopping_order_item ADD `date_event`	datetime NOT NULL DEFAULT CURRENT_TIMESTAMP; ',
 			'date_tickets'	=> 'ALTER TABLE #__jshopping_order_item ADD `date_tickets`	datetime NOT NULL DEFAULT 0 COMMENT "DataTime Start Tickets change status" ; ',
 			'count_places'	=> 'ALTER TABLE #__jshopping_order_item ADD `count_places`	int(4) NOT NULL DEFAULT 0; ',
-			'places'		=> 'ALTER TABLE #__jshopping_order_item ADD `places`		TEXT NULL DEFAULT "" COMMENT "[{prodValId:\"value_id,attrID\"},...]"; ',
-			'place_prices'	=> 'ALTER TABLE #__jshopping_order_item ADD `place_prices`	TEXT NULL DEFAULT "" COMMENT "[{prodValId:price},...]" ; ',
-			'place_counts'	=> 'ALTER TABLE #__jshopping_order_item ADD `place_counts`	TEXT NULL DEFAULT "" COMMENT "[{prodValId:count},...]" ; ',
-			'place_names'	=> 'ALTER TABLE #__jshopping_order_item ADD `place_names`	TEXT NULL DEFAULT "" COMMENT "[{prodValId:\"attrTitle.placeTitle\"},...] " ; ',
-			'place_go'		=> 'ALTER TABLE #__jshopping_order_item ADD `place_go`		TEXT NULL DEFAULT "" COMMENT "[\"sequence number select Place in order item. Порядковый номер выбранного места в этом заказе этго товара\"...] " ; ',
-			'place_pushka'	=> 'ALTER TABLE #__jshopping_order_item ADD `place_pushka`	TEXT NULL DEFAULT "" COMMENT "[\"QR ticlets and Puska key tickets.  QR билета и Пушка Ключ Билета\"...] " ; ',
+			'places'		=> 'ALTER TABLE #__jshopping_order_item ADD `places`		TEXT NULL COMMENT "[{prodValId:\"value_id,attrID\"},...]"; ',
+			'place_prices'	=> 'ALTER TABLE #__jshopping_order_item ADD `place_prices`	TEXT NULL COMMENT "[{prodValId:price},...]" ; ',
+			'place_counts'	=> 'ALTER TABLE #__jshopping_order_item ADD `place_counts`	TEXT NULL COMMENT "[{prodValId:count},...]" ; ',
+			'place_names'	=> 'ALTER TABLE #__jshopping_order_item ADD `place_names`	TEXT NULL COMMENT "[{prodValId:\"attrTitle.placeTitle\"},...] " ; ',
+			'place_go'		=> 'ALTER TABLE #__jshopping_order_item ADD `place_go`		TEXT NOT NULL DEFAULT "" COMMENT "[\"sequence number select Place in order item. Порядковый номер выбранного места в этом заказе этго товара\"...] " ; ',
+			'place_pushka'	=> 'ALTER TABLE #__jshopping_order_item ADD `place_pushka`	TEXT NULL COMMENT "[\"QR ticlets and Puska key tickets.  QR билета и Пушка Ключ Билета\"...] " ; ',
 			'event_id'		=> 'ALTER TABLE #__jshopping_order_item ADD event_id int(8) NOT NULL DEFAULT 0	COMMENT "Pushka Event ID" ; ',
 		],
 		'attr' => [
@@ -681,12 +570,12 @@ class plgjshoppingPlaceBiletInstallerScript {//PlgjshoppingPlaceBiletInstallerSc
 			'StageId'			=> 'ALTER TABLE #__jshopping_attr ADD StageId int(11) NOT NULL DEFAULT 0; ',
 		],
 		'products' => [
-			'date_event'	=> 'ALTER TABLE #__jshopping_products ADD date_event datetime NOT NULL DEFAULT CURRENT_TIMESTAMP	COMMENT "DataTime Start Event" ; ',
-			'date_tickets'	=> 'ALTER TABLE #__jshopping_products ADD date_tickets datetime NOT NULL DEFAULT 0 COMMENT "DataTime Start Tickets change status" ; ',
-			'params'		=> 'ALTER TABLE #__jshopping_products ADD params text   NULL  ; ',
-			'RepertoireId'	=> 'ALTER TABLE #__jshopping_products ADD RepertoireId int(11) NOT NULL DEFAULT 0; ',
-			'StageId'		=> 'ALTER TABLE #__jshopping_products ADD StageId int(11) NOT NULL DEFAULT 0; ',
-			'event_id'		=> 'ALTER TABLE #__jshopping_products ADD event_id int(8) NOT NULL DEFAULT 0	COMMENT "Pushka Event ID" ; ',
+			'date_event'	=> 'ALTER TABLE #__jshopping_products ADD date_event	datetime NOT NULL DEFAULT CURRENT_TIMESTAMP	COMMENT "DataTime Start Event" ; ',
+			'date_tickets'	=> 'ALTER TABLE #__jshopping_products ADD date_tickets	datetime NOT NULL DEFAULT 0 COMMENT "DataTime Start Tickets change status" ; ',
+			'params'		=> 'ALTER TABLE #__jshopping_products ADD params		TEXT   NULL  ; ',
+			'RepertoireId'	=> 'ALTER TABLE #__jshopping_products ADD RepertoireId	int(11) NOT NULL DEFAULT 0; ',
+			'StageId'		=> 'ALTER TABLE #__jshopping_products ADD StageId		int(11) NOT NULL DEFAULT 0; ',
+			'event_id'		=> 'ALTER TABLE #__jshopping_products ADD event_id		int(8) NOT NULL DEFAULT 0	COMMENT "Pushka Event ID" ; ',
 		],
 		'categories' => [
 			'PlaceId'		=> 'ALTER TABLE #__jshopping_categories ADD PlaceId int(11) NOT NULL DEFAULT 0; ',
@@ -775,8 +664,9 @@ class plgjshoppingPlaceBiletInstallerScript {//PlgjshoppingPlaceBiletInstallerSc
 //			'd_track_stop'	=> 'ALTER TABLE #__jshopping_orders MODIFY d_track_stop TINYTEXT NOT NULL ;  ',
 		],
 	];
-}
-
+});
+	}
+};
 return;
 ?>
 -- Добавить в контроллер Корзины при вызове метода удалить товар, чтобы редирект был без ошибки

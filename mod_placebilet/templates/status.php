@@ -92,30 +92,3 @@ if(isset($int[1]) && $int[1] == 0){
 + Адрес
 + Минцифры организация придумала 
 + ID Заказа
-
-
-
-
-
-
-
-
-
-"error":true,
-"code":0,
-"message":"Class \"Joomla\Module\Placebilet\Administrator\StatusObject\" not found",
-"trace":"
-#0 /home/e/exoffice/orelmusizo/public_html/administrator/modules/mod_placebilet/helper.php(154): modPlaceBiletHelper::getOrderDBbyQR('js13.1435031300')
-#1 /home/e/exoffice/orelmusizo/public_html/components/com_ajax/ajax.php(102): modPlaceBiletHelper::getAjax()
-#2 /home/e/exoffice/orelmusizo/public_html/administrator/components/com_ajax/ajax.php(13): require_once('/home/e/exoffic...')
-#3 /home/e/exoffice/orelmusizo/public_html/libraries/src/Dispatcher/LegacyComponentDispatcher.php(71): require_once('/home/e/exoffic...')
-#4 /home/e/exoffice/orelmusizo/public_html/libraries/src/Dispatcher/LegacyComponentDispatcher.php(73): Joomla\CMS\Dispatcher\LegacyComponentDispatcher::Joomla\CMS\Dispatcher\{closure}('/home/e/exoffic...')
-#5 /home/e/exoffice/orelmusizo/public_html/libraries/src/Component/ComponentHelper.php(355): Joomla\CMS\Dispatcher\LegacyComponentDispatcher->dispatch()
-#6 /home/e/exoffice/orelmusizo/public_html/libraries/src/Application/AdministratorApplication.php(143): Joomla\CMS\Component\ComponentHelper::renderComponent('com_ajax')
-#7 /home/e/exoffice/orelmusizo/public_html/libraries/src/Application/AdministratorApplication.php(186): Joomla\CMS\Application\AdministratorApplication->dispatch()
-#8 /home/e/exoffice/orelmusizo/public_html/libraries/src/Application/CMSApplication.php(294): Joomla\CMS\Application\AdministratorApplication->doExecute()
-#9 /home/e/exoffice/orelmusizo/public_html/administrator/includes/app.php(61): Joomla\CMS\Application\CMSApplication->execute()
-#10 /home/e/exoffice/orelmusizo/public_html/administrator/index.php(32): require_once('/home/e/exoffic...')\n#11 {main}"
-
-
-

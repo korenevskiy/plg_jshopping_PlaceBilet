@@ -83,10 +83,10 @@ class JFormFieldTranslate extends JFormField  {
 
 		$lang = JFactory::getApplication()->getLanguage();
 
-		$lang->load($this->file, $this->path);
-		$lang->load($this->file, $this->path.'/language');
-		$lang->load($this->file, JPATH_SITE);
-		$lang->load($this->file, JPATH_ADMINISTRATOR);
+//		$lang->load($this->file, $this->path);
+//		$lang->load($this->file, $this->path.'/language');
+//		$lang->load($this->file, JPATH_SITE);
+//		$lang->load($this->file, JPATH_ADMINISTRATOR);
 
 		$pathsOption = $lang->getPaths($this->file);
 		

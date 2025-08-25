@@ -1,15 +1,21 @@
 <?php defined('_JEXEC') or die;
 /**------------------------------------------------------------------------
- * field_cost - Fields for accounting and calculating the cost of goods
+ * field_translate - minification of INI language files, removal of hyphenation
  * ------------------------------------------------------------------------
- * author    Sergei Borisovich Korenevskiy
- * Copyright (C) 2010 www./explorer-office.ru. All Rights Reserved.
- * @package  mod_multi_form
- * @license  GPL   GNU General Public License version 2 or later;
- * Websites: //explorer-office.ru/download/joomla/category/view/1
- * Technical Support:  Forum - //fb.com/groups/multimodule
- * Technical Support:  Forum - //vk.com/multimodule
- */
+ * @author    Sergei Borisovich Korenevskiy
+ * @copyright (C) 2025 http://explorer-office.ru. All Rights Reserved. 
+ * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
+ * @license GNU General Public License version 2 or later; see LICENSE.txt
+ * @package plg_placebilet
+ * @subpackage  plg_placebilet
+ * Websites: https://explorer-office.ru/download/
+ * Technical Support:  Telegram - https://t.me/placebilet
+ * Technical Support:  Forum	- https://vk.com/placebilet
+ * Technical Support:  Github	- https://github.com/korenevskiy/plg_jshopping_PlaceBilet
+ * Technical Support:  Max		- https://max.ru/join/l2YuX1enTVg2iJ6gkLlaYUvZ3JKwDFek5UXtq5FipLA
+ * -------------------------------------------------------------------------
+ **/
+
 
 use Joomla\CMS\Plugin\PluginHelper as JPluginHelper;
 use Joomla\Registry\Registry as JRegistry;
@@ -32,7 +38,6 @@ class JFormFieldTranslate extends JFormField  {
 		parent::__construct($form);
 
 		$this->file = '';
-
 		$this->path = dirname(__DIR__.'/');
 
 		$option1 = basename(dirname(dirname(dirname(__DIR__))));
@@ -57,9 +62,8 @@ class JFormFieldTranslate extends JFormField  {
 //toPrint(JFactory::getApplication()->getConfig());
 		
 //		if(JFactory::getApplication()->getConfig()->get('debug'))
-			static::languageMinificationRaw();
+//			static::languageMinificationRaw();
 		
- 
 		$this->element = $element;
 
 		if($element['path']){
@@ -95,10 +99,12 @@ class JFormFieldTranslate extends JFormField  {
 
 		$lang->load($this->file, $this->path);
 		$lang->load($this->file, $this->path.'/language');
+		$lang->load($this->file, $this->path.'/src');
+		$lang->load($this->file, $this->path.'/src/Language');
 		$lang->load($this->file, JPATH_SITE);
 		$lang->load($this->file, JPATH_ADMINISTRATOR);
 
-		$pathsOption = $lang->getPaths($this->file);
+//		$pathsOption = $lang->getPaths($this->file);
 //		$lang->getTag();
 		
 		
@@ -128,7 +134,24 @@ class JFormFieldTranslate extends JFormField  {
 	public $fieldname = '';
 
 	public function getInput() {
+		$config = JFactory::getApplication()->getConfig();
+
+		if(empty($config->get('debug')) && $config->get('error_reporting') != 'maximum')
 		return '';
+		
+//		header('Content-Type: application/json; charset=utf-8');
+		$files = json_encode(static::languageMinificationRaw(realpath(__DIR__ . '/../../')), JSON_PRETTY_PRINT);
+		
+		$html = <<<EOT
+<pre class='preJSON'>
+$files
+</pre>
+EOT;
+		/** @var \Joomla\CMS\WebAsset\WebAssetManager $wa  Менеджер Ассетов	 */
+		$wa = JFactory::getApplication()->getDocument()->getWebAssetManager();
+		$wa->addInlineStyle('.control-group:has(.preJSON) .control-label{width: auto;}.preJSON{min-widht:200px;border: 1px solid #8888;opacity: 0.5;}');
+		
+		return $html;
 	}
 	public function getLabel() {
 		return '';
@@ -140,33 +163,68 @@ class JFormFieldTranslate extends JFormField  {
 		return '';
 	}
 	
-	public static function languageMinificationRaw(){
+	public static function languageMinificationRaw($pathLanugageDir = ''){
 		
+		$default_path = $pathLanugageDir ?: __DIR__;
 		
-		$lang = JFactory::getApplication()->getLanguage();
-		
-		$dir = getcwd();
-		
-		$dir = __DIR__;
+		$dir = $default_path;
 		
 		while(!file_exists($dir . '/language')){
 			$dir = dirname($dir);
 		}
 
-		$dir .= '/language';
+		$dir .= '/language/*';
 		
-		$files = Joomla\Filesystem\Folder::files($dir, "raw.ini", true, true);
+//		$files = Joomla\Filesystem\Folder::files($dir, "raw.ini", true, true);
 		
-		foreach ($files as $file){
+//		$dirs = scandir($dir,  SCANDIR_SORT_NONE);
+//		$dirs = glob($dir . '/*');
+//		$dirs = array_filter(glob('*'), 'is_dir');
+		
+		$outDir = strpos($pathLanugageDir, '/plugins/') || strpos($pathLanugageDir, '/administrator/') ? JPATH_ADMINISTRATOR . '/language/' : JPATH_SITE . '/language/';
+		$files = '';
+		$fileLength = 0;
+		
+		foreach (array_filter(glob($dir), 'is_dir') as &$dir){
+			
+			if(strlen(basename($dir)) == 5)
+			foreach (glob($dir.'/*.raw.ini') as $file){
+				
 			$text = file_get_contents($file);
-			$text = str_replace("\n[", "[{<!>}][", $text);
-			$text = str_replace("]\n", "][{<!>}]", $text);
-			$text = str_replace("\";\n", "\";[{<!>}]", $text);
-			$text = str_replace("\"\n", "\"[{<!>}]", $text);
-			$text = str_replace("\n", '', $text);
+				$countLines = count(explode("\n", $text));
+				$text = str_replace("\n[", "[{<!>}][", $text);			//	\n[		-
+				$text = str_replace("]\n", "][{<!>}]", $text);			//	]\n		-
+				$text = str_replace("]\r", "][{<!>}]", $text);			//	]\r		-
+				$text = str_replace(";;", "[{<!>}]", $text);			//	;;		-
+				$text = str_replace("\";\r\n", "\";[{<!>}]", $text);	//	";\r\n	-
+				$text = str_replace("\";\n", "\";[{<!>}]", $text);		//	";\n	-
+				$text = str_replace("\";\r", "\";[{<!>}]", $text);		//	";\r	-
+				
+				$text = str_replace("\"\r\n", "\"[{<!>}]", $text);		//	"\r\n	-
+				$text = str_replace("\"\n", "\"[{<!>}]", $text);		//	"\n		-
+				$text = str_replace("\"\r", "\"[{<!>}]", $text);		//	"\r		-
+				
+				$text = str_replace("\r\n", '', $text);					//	\r\n	-
+				$text = str_replace("\n", '', $text);					//	\n		-
+				$text = str_replace("\r", '', $text);					//	\r		-
 			$text = str_replace('[{<!>}]', PHP_EOL, $text);
-			$file = str_replace(".raw.ini", '.ini', $file);
-			$f = file_put_contents($file, $text);
+				$file = str_replace('.raw.ini', '.ini', $file);
+				
+				$f = file_put_contents($file, $text);
+				file_put_contents($outDir. basename($dir) . '/' . basename($file) , $text);
+				
+				$file = str_replace(__DIR__ . '/../../../../../', '.ini', $file);
+				
+				$countLines2 = count(explode("\n", $text));
+				$file = str_replace($default_path, '', $file);
+				
+				if($fileLength == 0)
+					$fileLength = strlen($file) + 7;
+				
+				$file = str_pad($file, $fileLength, ' ');
+				$files .= $file." -- lines:$countLines , items:$countLines2";
+			}
 		}
+		return $files;
 	}
 }

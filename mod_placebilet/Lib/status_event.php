@@ -1,4 +1,4 @@
-<?php
+<?php namespace Joomla\Module\Placebilet\Administrator;
  /** ----------------------------------------------------------------------
  * plg_PlaceBilet - Plugin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
@@ -14,7 +14,7 @@
  * -------------------------------------------------------------------------
  **/
 
-namespace Joomla\Module\Placebilet\Administrator;
+defined('_JEXEC') or die;
 
 use Joomla\CMS\Date\Date as JDate;
 use Joomla\CMS\Factory as JFactory;
@@ -49,7 +49,7 @@ class StatusEventObject{
 			$timezone = 'GMT';
 			$timezone = 'UTC';
 			$timezone = JFactory::getApplication()->getConfig()->get('offset','UTC');
-			$timezone = JFactory::getUser()->getParam('timezone',$timezone);
+			$timezone = JFactory::getApplication()->getIdentity()->getParam('timezone',$timezone);
 		
 		if($this->date)
 			return JDate::getInstance($this->date, $timezone);//JDate::setTimestamp($this->date);//->setTimezone($tz)
@@ -96,7 +96,7 @@ class StatusEventObject{
 			$timezone = 'GMT';
 			$timezone = 'UTC';
 			$timezone = JFactory::getApplication()->getConfig()->get('offset','UTC');
-			$timezone = JFactory::getUser()->getParam('timezone',$timezone);
+			$timezone = JFactory::getApplication()->getIdentity()->getParam('timezone',$timezone);
 		
 		if(is_string($date)){
 			$this->date = JDate::getInstance($date,$timezone)->toUnix();

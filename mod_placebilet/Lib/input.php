@@ -1,6 +1,6 @@
-<?php
+<?php namespace Joomla\Module\Placebilet\Administrator\Input;
  /** ----------------------------------------------------------------------
- * plg_PlaceBilet - Plugin Joomshopping Component for CMS Joomla
+ * mod_PlaceBilet - Module for plagin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
  * author    Sergei Borisovich Korenevskiy
  * @copyright (C) 2019 //explorer-office.ru. All Rights Reserved. 
@@ -13,8 +13,8 @@
  * Technical Support:  Forum - //vk.com/placebilet
  * -------------------------------------------------------------------------
  **/
- 
-namespace Joomla\Module\Placebilet\Administrator\Input;
+defined('_JEXEC') or die;
+
 
 //TicketData
 class InputObject{
@@ -26,4 +26,5 @@ class InputObject{
 	public string $format = '';
 	public string $token = '';
 	public string $action = '';
+	public string $language = '';
 }

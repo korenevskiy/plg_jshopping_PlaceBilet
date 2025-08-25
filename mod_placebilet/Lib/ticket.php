@@ -1,4 +1,4 @@
-<?php
+<?php namespace API\Kultura\Pushka;
  /** ----------------------------------------------------------------------
  * plg_PlaceBilet - Plugin Joomshopping Component for CMS Joomla
  * ------------------------------------------------------------------------
@@ -15,7 +15,7 @@
  **/
 
  
-namespace API\Kultura\Pushka;
+defined('_JEXEC') or die;
 
 require_once __DIR__ . '/data.php';
 

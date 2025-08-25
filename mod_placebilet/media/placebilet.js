@@ -9,17 +9,27 @@
 document.addEventListener("DOMContentLoaded", function(){Array.from(document.querySelectorAll('form.mod_placebiletFormQR'), form => (function(form, id){
 
 
+
 this.form = form;
 this.id = id;
 this.debug = Boolean(Number(form.dataset.debug));
 
+
+this.form.btnVisitStatuses = JSON.parse(form.dataset.btn_visit_statuses ?? '["O"]');
+this.form.btnRefundStatuses = JSON.parse(form.dataset.btn_refund_statuses ?? '["O"]');
+this.form.btnCancelStatuses = JSON.parse(form.dataset.btn_cancel_statuses ?? '["O"]');
+
 //if(this.debug){
-	console.clear();
-	console.log('РедиЛоад() 6');
+//	console.clear();
+//	console.log('РедиЛоад() 6');
+//	console.log('form',form);
+//	console.log('form.t',form.t);
+//	console.log('token',token);
 //}
 
 const token = form.t ?? '';
 
+const language = form.lang ?? '';
 
 
 
@@ -27,6 +37,7 @@ const select_EventID = document.getElementById('select_EventID_' + id);
 
 const select_CameraQR = document.getElementById('select_CamerasQR_' + id);
 select_CameraQR.addEventListener('change',selectChangeCameras);
+//select_CameraQR.addEventListener('click', selectChangeCameras);s
 select_CameraQR.addEventListener('click',function(){
 	if (select_CameraQR.options.length < 2)
 		cameraStart();
@@ -57,14 +68,14 @@ btn_cancel.addEventListener('click',clickBtnCancel);
 const input_CodeQR = document.getElementById('input_CodeQR_' + id);
 input_CodeQR.addEventListener('keydown',function(event){
 	if (event.key == 13 || event.which == 13)
-		cameraScan.call(this, input_CodeQR.value, false);
+		cameraScan.call(this, input_CodeQR.value.trim(), false);
 });
 
 const btn_Clear = document.getElementById('buttonClear_' + id);
 btn_Clear.addEventListener('click',() => input_CodeQR.value = '');
 
 const btn_GetStatus = document.getElementById('button_GetStatus_' + id);
-btn_GetStatus.addEventListener('click', () => cameraScan.call(this, input_CodeQR.value, true));
+btn_GetStatus.addEventListener('click', () => cameraScan.call(this, input_CodeQR.value.trim(), true));
 
 const videoView = document.getElementById('videoView_' + id);
 
@@ -96,7 +107,7 @@ btn_FullScreen.addEventListener('click', function(){
  
 
 function storage(cameraIndex = null){
-	if(localStorage.getItem("cameraIndex") === null)
+	if(cameraIndex === null && localStorage.getItem("cameraIndex") === null)
 		return -1;
 		
 	
@@ -201,7 +212,7 @@ function cameraStart() {
 
 	let cameraIndex = storage();
 
-	if(cameraIndex == -1 || select_CameraQR.selectedIndex == -1){
+	if(cameraIndex == -1 && select_CameraQR.selectedIndex == -1){
 		// || select_CameraQR.options.length == 0 || select_CameraQR.cameras.length == 0 || !select_CameraQR.options.includes(cameraIndex) || !select_CameraQR.options.includes(cameraIndex)
 		Instascan.Camera.getCameras().then(loadCamsInSelect).catch(function (e) {
 			let alert = Joomla.Text._('JSHOP_PUSHKA_ALERT_NOCAMERA');
@@ -216,7 +227,6 @@ function cameraStart() {
 	
 	let start = function (cameras) {
 console.log('XXX 1-2');
-				
 //console.log(select_CameraQR.selectedIndex,'select_CameraQR.selectedIndex');
 //				if(select_CameraQR.selectedIndex == -1)
 		
@@ -228,6 +238,7 @@ console.log('XXX 1-2');
 			return;
 		}
 		
+		selectChangeCameras();
 
 		let mirror = select_CameraQR.options[cameraIndex].mirror ?? false;
 		let camera = select_CameraQR.cameras[select_CameraQR.selectedIndex];
@@ -243,7 +254,11 @@ console.log('XXX 1-2');
 //		videoView.style.display = "block";
 		form.scanner.mirror = mirror;
 		form.scanner.start(camera).then(function(){
+			
+			selectChangeCameras();
 			videoView.style.display = "block";
+			videoView.style.display = "block";
+			
 			if(!this.debug){
 				btn_camera_stop.classList.remove("hidden"); // btn_camera_start //btn_camera_stop
 				btn_camera_start.classList.add("hidden");
@@ -370,16 +385,19 @@ function selectChangeCameras() {
 //document.addEventListener("DOMContentLoaded", loadCamsInSelect);
 
 function clickBtnVisit() {
+	input_CodeQR.value = input_CodeQR.value.trim();
 	if (input_CodeQR.value) {
 		ajaxGetStatus(input_CodeQR.value, 'Visit');
 	}
 }
 function clickBtnRefund() {
+	input_CodeQR.value = input_CodeQR.value.trim();
 	if (input_CodeQR.value) {
 		ajaxGetStatus(input_CodeQR.value, 'Refund');
 	}
 }
 function clickBtnCancel() {
+	input_CodeQR.value = input_CodeQR.value.trim();
 	if (input_CodeQR.value) {
 		ajaxGetStatus(input_CodeQR.value, 'Cancel');
 	}
@@ -387,9 +405,10 @@ function clickBtnCancel() {
 
 function cameraScan(QRcode, noBeep = null) {
 
-	if(QRcode == '')
+	if(QRcode == '' || messageTag.style.display != 'none')//messageTag.style == '' || 
 		return;
 	
+console.clear();
 
 //	let QRcode = input_CodeQR.value;
 	console.log('CameraScan: ', QRcode);
@@ -422,6 +441,19 @@ console.log('CameraScan: ', QRcode);
 
 function ajaxGetStatus(QRcode, action = '') {
 
+
+	console.log('ajaxGetStatus', QRcode, token);
+
+//	let t = form ? form.t : '';
+	if(!token){
+		messageTag.innerHTML = Joomla.JText._('JSHOP_PUSHKA_ALERT_ERROR_SESSION');
+//		message.innerHTML = response;
+//		messageTag.style = 'display:block';
+		messageTag.style = '';
+		return;
+	}
+	
+	
 //	let t = form ? form.t : '';
 
 	let data = {
@@ -431,12 +463,14 @@ function ajaxGetStatus(QRcode, action = '') {
 			format: 'json', // json|debug
 			token: token,
 			action: action,
+			lang: language,
 			[token]: 1,
 	};
 //	data[t] = 1;
 
 //console.clear();
 	console.log('data', data);
+	console.log('url', `?option=com_ajax&module=placebilet&method=&format=json&id=${id}&lang=${language}&token=${token}&${token}=1`);
 //	console.log('JSONdata', JSON.stringify(data));
 
 	Joomla.request({
@@ -445,7 +479,7 @@ function ajaxGetStatus(QRcode, action = '') {
 				'Your-custom-header': 'custom-header-value',
 				'Content-Type': 'application/json'
 		},
-		url: `?option=com_ajax&module=placebilet&method=&format=json&id=${id}&token=${token}&${token}=1`, //index.php?option=mod_placebilet&view=example
+		url: `?option=com_ajax&module=placebilet&method=&format=json&id=${id}&lang=${language}&token=${token}&${token}=1`, //index.php?option=mod_placebilet&view=example
 		method: 'POST',
 		data: JSON.stringify(data),
 		onBefore: function (xhr){
@@ -456,8 +490,8 @@ function ajaxGetStatus(QRcode, action = '') {
 			if (response == '')
 				return;
 
-			if(!this.debug)
-				input_CodeQR.readOnly = true;
+//			if(!this.debug)
+//				input_CodeQR.readOnly = true;
 
 console.log('CameraScan DISABLE... ');
  
@@ -469,19 +503,65 @@ console.log('CameraScan DISABLE... ');
 //console.log('response',response);
 //console.log('xhr',xhr);
 
+//console.log('response',response);
+		let jsonResponse = null;
+		let dataResponse = null;
+		
+		try {
+			jsonResponse = JSON.parse(response);
+			dataResponse = jsonResponse.data ?? {};
+		} catch (error) {
+			
 console.log('response',response);
-			let jsonResponse = JSON.parse(response);
-			let dataResponse = jsonResponse.data ?? {};
-console.log('jsonResponse',jsonResponse);
+			messageTag.innerHTML = Joomla.JText._('JSHOP_PUSHKA_ALERT_ERROR_SESSION');
+			messageTag.style = '';
+			return false;
+		}
+		
+		if(typeof dataResponse === 'string' || dataResponse instanceof String){
+			messageTag.innerHTML = dataResponse;
+			messageTag.style = '';
+			return false;
+		}
+		
+		if (!jsonResponse || !dataResponse) {
+			
+			messageTag.innerHTML = Joomla.JText._('JSHOP_PUSHKA_ALERT_ERROR_SESSION');
+			messageTag.style = '';
+			return false;
+		}
+
+		if (!jsonResponse.data && jsonResponse.message) {
+			messageTag.innerHTML = jsonResponse.message;
+			messageTag.style = '';
+			return false;
+		}
+		if (!dataResponse.data && dataResponse.message) {
+			messageTag.innerHTML = dataResponse.message;
+			messageTag.style = '';
+			return false;
+		}
+
+
+			
 console.log('jsonResponse.data',jsonResponse.data);
 console.log('---------------------');
 
 			messageTag.innerHTML = dataResponse.content ?? '';
 //			message.innerHTML = response;
-			messageTag.style = 'display:block';
+//			messageTag.style = 'display:block';
+			messageTag.style = '';
 	
 			dataResponse.status_code;
 
+//option=com_ajax&
+//module=placebilet&
+//				method=&
+//format=json&
+//id=357&
+//				lang=&
+//token=99882bc51a6294cc07cb4cb5db4292c8&
+//99882bc51a6294cc07cb4cb5db4292c8=1
 //		$statusBD->btnVisitWorkStatuses		= $param->btn_visit_work_statuses ?? ['O'];
 //		$statusBD->btnRefundWorkStatuses	= $param->btn_refund_work_statuses ?? ['O'];
 //		$statusBD->btnCancelWorkStatuses	= $param->btn_cancel_work_statuses ?? ['O'];
@@ -549,7 +629,7 @@ function ajaxTestLinkUpdate(QRcode) {
 
 function clickMessage() {
 	messageTag.style = 'display:none;';
-	input_CodeQR.readOnly = false;
+//	input_CodeQR.readOnly = false;
 	console.log('CameraScan ENABLE. ');
 
 //	form.scanner.backgroundScan = true;
