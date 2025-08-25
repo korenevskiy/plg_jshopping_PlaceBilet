@@ -14,7 +14,7 @@
  * -------------------------------------------------------------------------
  **/ 
 //defined('_JEXEC') or die;
-//return;
+return;
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -87,33 +87,42 @@ $i = 0;
  * Архивируем расширения и добавляем архив расширения в архив пакета
  */
 foreach ($pathExtentions as $nameExt => $pathExt){
-	$minimizationLanguageCount = &HelperMinification::languageMinificationRaw($pathExt.'/language/');
-//	$minimizationLanguageCount[] = ++$i;
+	$languagesCountMin = &HelperMinification::languageMinificationRaw($pathExt.'/language/');
+	$langsCount = count($languagesCountMin);
+//	$languagesCountMin[] = ++$i;
 	
 //echo "<br>";
 //echo $pathExt.'/language';
-//echo json_encode($minimizationLanguageCount, JSON_PRETTY_PRINT) . ' ' .  ++$i;
-//echo json_encode($minimizationLanguageCount, JSON_PRETTY_PRINT);
+//echo json_encode($languagesCountMin, JSON_PRETTY_PRINT) . ' ' .  ++$i;
+//echo json_encode($languagesCountMin, JSON_PRETTY_PRINT);
 	
+	$patNew = $pathPackage . '/' . $nameExt;
+	$ver	= $verExtentions[$nameExt] ?? '';
 	
 	/** @var ZipArchive $zipfile */
 	$zipfile = new zip();
-	$zipfile->open("$pathPackage/{$nameExt}_{$verExtentions[$nameExt]}.zip", ZipArchive::CREATE|ZipArchive::OVERWRITE);
+	$zipfile->open("$patNew.zip", ZipArchive::CREATE|ZipArchive::OVERWRITE);
 	$isIgnoreFiles = 
 		$zipfile->addDirectoryWithAllFiles($pathExt, $pathExt, $filesIgnore);
 	$zipfile->close();
 	
-	$files["{$nameExt}_{$verExtentions[$nameExt]}.zip"] = $isIgnoreFiles;
+	if(file_exists("$pathPackage/{$nameExt}_{$ver}.zip"))
+		unlink("$pathPackage/{$nameExt}_{$ver}.zip");
+	
+	copy("$patNew.zip", "{$patNew}_{$ver}.zip");
+	
+	
 	
 	if($isIgnoreFiles){
-		$zipfile->open("$pathPackage/{$nameExt}_{$verExtentions[$nameExt]}_full.zip", ZipArchive::CREATE|ZipArchive::OVERWRITE);
+		$zipfile->open("$pathPackage/{$nameExt}_{$ver}_full.zip", ZipArchive::CREATE|ZipArchive::OVERWRITE);
 		$zipfile->addDirectoryWithAllFiles($pathExt, $pathExt);
 		$zipfile->close();
-		$files[] = "{$nameExt}_{$verExtentions[$nameExt]}_full.zip --> languages:" . count($minimizationLanguageCount);
+		$files[] = "{$nameExt}_{$ver}_full.zip".str_pad('', strlen($ver))."--> languages:" . $langsCount;
 	}
 	
-	$zipPackage->addFile("$pathPackage/{$nameExt}_{$verExtentions[$nameExt]}.zip", "{$nameExt}_{$verExtentions[$nameExt]}.zip");
-	$files[] = "{$nameExt}_{$verExtentions[$nameExt]}.zip      --> languages:" . count($minimizationLanguageCount);
+	$zipPackage->addFile("$pathPackage/{$nameExt}_{$ver}.zip", "{$nameExt}_{$ver}.zip");
+	$files[] = "{$nameExt}_{$ver}.zip        --> languages:" . str_pad($langsCount, strlen($langsCount)) . ($isIgnoreFiles? "     excluded: ". implode(', ', $isIgnoreFiles) : '');
+	$files[] = "{$nameExt}.zip    ".str_pad(' ', strlen($ver))."     --> languages:" . str_pad($langsCount, strlen($langsCount), STR_PAD_LEFT) . ($isIgnoreFiles? "     excluded: ". implode(', ', $isIgnoreFiles) : '');
 }
 $zipPackage->close();
 
