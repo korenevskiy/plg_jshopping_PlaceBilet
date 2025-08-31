@@ -189,7 +189,7 @@ class StatusObject{
 	public string $QRcode = '';
 	
 	
-	public string $order_status_id = '';
+//	public string $order_status_id = '';
 	public string $order_date = '';
 	
 	

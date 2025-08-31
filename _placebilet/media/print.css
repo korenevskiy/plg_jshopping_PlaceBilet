@@ -1,0 +1,81 @@
+body{
+		font-size: 9pt;
+	}
+	.page_report input, 
+	.page_report select, 
+	.page_report .input-group, 
+	.page_report .choices__input, 
+	.page_report .form-control, 
+	.page_report .form-select,
+	.page_report .choices__inner, 
+	.page_report .choices,
+	.page_report .panel_top,
+	.page_report .btn{
+		font-size: 9pt;
+		min-height: 18px;
+		line-height: 1;
+		--btn-font-size: 9pt;
+		    margin: 0px;
+	}
+
+.orderTable .pcs,
+.orderTable .cur{
+    opacity: 1;
+    /*font-weight: bold;*/
+	font-size: inherit;
+	display: inline-block;
+	margin-inline-start: 3px;
+}
+.orderTable .attr > * {
+	font-size: 8pt;
+}
+.sidebar-wrapper,
+.header-items > *{
+	display: none;
+}
+
+	.input-group:has( select ):not( :has(option) ),
+	.input-group:has(  option:checked[value="0"]),
+	.input-group:has(  option:checked[value=""]){
+		display: none;
+	}
+	.sidebar-left{
+		display: none;
+	}
+	.container-main main{
+		grid-template-columns: 1fr  !important;
+		grid-template-areas:
+			"content"  !important;
+	}
+	.alert-wrapper,
+	joomla-alert,
+	#system-message-container{
+		display: none  !important;
+	}
+	#subhead-container{
+		display: none  !important;
+	}
+	.debug.pre,
+	.debug.pre,
+	.debug.pre pre,
+	.debug.pre *{
+		display: none !important;
+		visibility: collapse  !important;
+		opacity: 0;
+		transform: scale(0);
+	}
+	.header-items{
+		display:none !important;
+	}
+	.debug.pre{
+		display:none !important;
+	}
+	.debug.pre{
+		display:none !important;
+	}
+	.align-items-center {
+		/*display: none !important;*/
+	}
+	.navbar-toggler, .toggler-toolbar, .toggler-burger{
+		display:none !important;
+	}

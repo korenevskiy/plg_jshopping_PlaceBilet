@@ -392,6 +392,7 @@ static::$debugMessage .= " :action:FALSE \n\n";
 			'place_prodVal_id'	=> $statusBD->place_prodVal_id,
 			'place_attr_id'		=> $statusBD->place_attr_id,
 			'count_places'		=> $statusBD->count_places,
+//			'order_status_code'	=> $statusBD->order_status_id,
 			'content'			=> $html,
 			];
 
@@ -621,7 +622,6 @@ SELECT  oi.order_item_id, oi.order_id, oi.count_places, oi.place_counts, oi.date
 	p.product_id, 
 	s.status_id, s.status_code, h.status_date_added, CONCAT_WS(' /', $langs ) status_title,
 	p.event_id,
-	s.status_code order_status_id,
 	o.order_date
 FROM #__jshopping_order_item oi
 LEFT JOIN #__jshopping_orders o ON o.order_id = oi.order_id 
@@ -640,7 +640,6 @@ LIMIT 1;
 		$data = JFactory::getDbo()->setQuery($query)->loadAssoc();
 		
 		
-		
 		if(empty($data)){
 			return null;
 		}
@@ -649,7 +648,7 @@ LIMIT 1;
 // throw new Exception('Error Message СООБЩЕНИЕ!! ');
 //return null; 
 
-
+		/** @var \Joomla\Module\Placebilet\Administrator\BD\StatusObject Объект статуса */
 		$event = StatusObject::new($data, $QRcode);
 //echo str_replace('#__', JFactory::getApplication()->getConfig()->get('dbprefix'), $query) .'<br>';
 //return null;	
@@ -731,14 +730,21 @@ LIMIT 1;
 		$event->place_name = $place_names[$event->place_prodVal_id] ?? '';
 		$event->place_count = $place_counts[$event->place_prodVal_id] ?? 1;
 		
-		
+		/** @var \Joomla\Module\Placebilet\Administrator\StatusEventObject Объект Статус события */
 		$statusEventObject = static::getStatusbyCSV($event->place_go, $event->place_index);
 		
 //echo '<br>$event->place_index: <pre>'.print_r($event->place_index,true).'</pre>  ';
 //echo '<br>$event->place_go: <pre>'.print_r($event->place_go,true).'</pre><hr><br>';
 //static::$debugMessage .= print_r($statusEventObject,true);		
-		$event->place_status_code = $statusEventObject ? $statusEventObject->code : $event->order_status_id;
-		$event->place_status_date = $statusEventObject ? $statusEventObject->getDate() : static::getDate($event->order_date);
+		
+		if($statusEventObject && static::getDate($event->date_event, true) < static::getDate($statusEventObject->date)){
+			$event->place_status_code = $statusEventObject->code;
+			$event->place_status_date = static::getDate($statusEventObject->date);
+		} else {
+			$event->place_status_code = $event->status_code; //order_status_id
+			$event->place_status_date = static::getDate($event->order_date);
+		}
+		 
 //static::$debugMessage .= print_r($event->place_status_code,true);		
 		
 		
@@ -751,7 +757,7 @@ LIMIT 1;
 		$query="
 SELECT s.status_id, s.status_code, CONCAT_WS(' /', $langs , s.status_code) status_title
 FROM #__jshopping_order_status s
-WHERE s.status_code = '$event->place_status_code' OR s.status_id = '$event->place_status_code'
+WHERE s.status_code = '$event->place_status_code' /* OR s.status_id = '$event->place_status_code' */
 LIMIT 1;
 		";
 //echo str_replace('#__', JFactory::getApplication()->getConfig()->get('dbprefix'), $query);
@@ -790,11 +796,7 @@ LIMIT 1;
 	 */
 	public static function getStatusbyCSV(string $StringCSV, int $index = 0): ?StatusEventObject {
 		
-		$stats = array_reverse(str_getcsv($StringCSV));		
-		
-//echo '<br>$stats: <pre>'.print_r($stats,true).'</pre>  ';
-		
-		foreach ($stats as $stat){
+		foreach (array_reverse(str_getcsv($StringCSV)) as $stat){
 			if(empty($stat))
 				continue;
 			$st_t = explode(':', $stat);
@@ -805,7 +807,7 @@ LIMIT 1;
 //echo '<br>$index: <pre>'.print_r($t,true).'</pre>  ';
 //echo '<br>IF StatusEventObject: <pre>'.print_r(($i != null && $c && $i == $index),true).'#</pre>  ';
 			
-			if($i != null && $c && $i == $index){
+			if(is_numeric($i) && $c && $i == $index){
 				return StatusEventObject::new((int)$index, (string)$c, (int)$t);
 			}
 		}
@@ -1017,18 +1019,20 @@ public static function dirSize($path): int {
 //		JFactory::getDbo()->getQuery(true)->clear();
 //echo str_replace('#__', JFactory::getApplication()->getConfig()->get('dbprefix'), $query) .'<br><br>';
 //return '{"message":"'.JText::_('ERROR ACTION') .'"}';
-		
+//ALTER TABLE `omii_jshopping_order_item` CHANGE `place_go` `place_go` TEXT CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '' 
+//COMMENT '[\"sequence number select Place in order item. Порядковый номер выбранного места в этом заказе этго товара\"...] '; 
 			$timezone = 'GMT';
 			$timezone = 'UTC';
 			$timezone = JFactory::getApplication()->getConfig()->get('offset','UTC');
 			$timezone = JFactory::getApplication()->getIdentity()->getParam('timezone',$timezone);
 		
 		$unix_timestamp = JDate::getInstance('now',$timezone)->getTimestamp();
+		$now_date		= JDate::getInstance('now',$timezone)->toSql();
 		// UNIX_TIMESTAMP()
 		$query = "
 UPDATE #__jshopping_order_item oi 
 INNER JOIN #__jshopping_order_status s ON s.status_id = $status_ID 
-SET oi.place_go = CONCAT(IFNULL(oi.place_go,''), IF(oi.place_go,',',''), $place_index, ':', s.status_code, ':', $unix_timestamp) 
+SET oi.date_activity = '$now_date', oi.place_go = CONCAT(IFNULL(oi.place_go,''), IF(oi.place_go,',',''), $place_index, ':', s.status_code, ':', $unix_timestamp)
 WHERE  oi.order_item_id = $order_item_id ;
 		";
 		$status = JFactory::getDbo()->setQuery($query)->execute();

@@ -6,6 +6,7 @@ nbproject/private/private.properties
 nbproject/private/private.xml
 nbproject/project.properties
 nbproject/project.xml
+
 *_full.zip
 ru-RU.ini
 yandex.php
@@ -16,3 +17,4 @@ _*.php
 *_1.php
 *_2.php
 index.php
+placebilet/

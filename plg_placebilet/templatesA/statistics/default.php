@@ -218,8 +218,8 @@ ORDER BY date_event;"
 
 //toPrint($this->rowAttributes,'$this->rowAttributes: '.count($this->rowAttributes), 0, 'message', true);
 		$i = 1;
-		$summas = ['summ_tickets_active'=> 0,];
-		$countes = ['count_tickets_active'=> 0,];
+		$summas		= ['summ_tickets_active' => 0,];
+		$countes	= ['count_tickets_active'=> 0,];
 	?>
 	</div>
 		
@@ -236,15 +236,15 @@ ORDER BY date_event;"
 			}
 			?>
 			<label><?= JText::_('JSHOP_PLACE_BILET_SALESUM') ?>
-				<span class=_cur><?= isset($this->order_items) && $this->order_items ? 
-						' ('.reset( $this->order_items )->currency_code .')'
+				<span class=_cur><?= isset($this->orders_all) && $this->orders_all ? 
+						' ('.reset( $this->orders_all )->currency_code .')'
 						:  strtolower(JText::_('COST')) ?></span>
 			</label>
 		</div>
 		
 	<?php
 //toPrint(null,'$this->order_items '.count($this->order_items).':',0,'message',true);
-foreach($this->order_items as $_product_id => $order_item):
+foreach($this->orders_all as $_product_id => $order_item): // $this->order_items 
 	?>
 <div class="line">
 	<?php 
@@ -253,9 +253,9 @@ foreach($this->order_items as $_product_id => $order_item):
 	
 		echo "<div class='event'>";
 		echo "<div class='id'>$order_item->product_id</div>";
-		echo "<div class='name'>$order_item->product_name</div>";
+		echo "<div class='name' title='".JText::_('ORDER_TOTAL')." $order_item->count_orders'>$order_item->product_name</div>";
 //		$title = rtrim(rtrim($order_item->summ_tickets_buy, "0"),"\.")  . ' ' . $order_item->currency_code;
-		$title = rtrim(rtrim($order_item->summ_tickets_active, "0"),"\.")  . ' ' . $order_item->currency_code;
+		$title = strval($order_item->summ_tickets_active)  . ' ' . $order_item->currency_code;
 		echo "<div class='buyTickets' title='$title'><span class='text-nowrap'>$order_item->count_tickets_active</span></div>";
 		
 		if(! isset($countes['count_tickets_active']))
@@ -263,8 +263,8 @@ foreach($this->order_items as $_product_id => $order_item):
 		if(! isset($summas['summ_tickets_active']))
 			$summas['summ_tickets_active'] = 0;
 		
-		$countes['count_tickets_active'] += $order_item->count_tickets_active;	// Подсчёт Всего Количество
-		$summas['summ_tickets_active'] += $order_item->summ_tickets_active;		// Подсчёт Всего Сумма
+		$countes['count_tickets_active']	+= $order_item->count_tickets_active;		// Подсчёт Всего Количество
+		$summas['summ_tickets_active']		+= $order_item->summ_tickets_active;		// Подсчёт Всего Сумма
 			//$order_item->count_tickets_buy
 //				$order_item->summ_tickets_active;  // INT
 //				$order_item->count_tickets_active; // INT
@@ -278,9 +278,9 @@ foreach($this->order_items as $_product_id => $order_item):
 //toPrint($status_code,'$status_code',0,'message',true);
 //$view->order_items[$item->product_id]->tickets_cost[$go_status_code][$go_index][$item->order_item_id]
 //				$title = ($order_item->tickets_cost[$status_code] ? rtrim(array_sum($order_item->tickets_cost[$status_code]??[0]), "0\.")  : 0).' '. $order_item->currency_code;
-				$summa = array_sum(array_map(function($costs){ return array_sum($costs); }, ($order_item->tickets_cost[$status_code]??[]) ));
-				$count = array_sum(array_map(function($costs){ return count($costs); }, $order_item->tickets_cost[$status_code]??[]));
-				$title = $summa.' '. $order_item->currency_code;
+				$summa = array_sum(array_map(fn($costs) => array_sum($costs),	$order_item->tickets_cost[$status_code]??[] ));
+				$count = array_sum(array_map(fn($costs) => count($costs),		$order_item->tickets_cost[$status_code]??[] ));
+				$title = strval($summa).' '. $order_item->currency_code;
 //				$title = ($order_item->tickets_cost[$status_code] ?  array_sum($order_item->tickets_cost[$status_code]??[0])   : 0).' '. $order_item->currency_code;
 //				echo "<div class='val col$i ' title='$title'><span class='text-nowrap'>". 
 //						($order_item->tickets_cost[$status_code] ? count($order_item->tickets_cost[$status_code]??[]) : 0) ."</span></div>";
@@ -322,6 +322,7 @@ foreach($this->order_items as $_product_id => $order_item):
 //			$attr_tickets_active_summa = array_sum($order_item->attr_tickets_active[$attr_id] ?? [0]) . $order_item->currency_code;
 			echo "<div class='buy' title='$attr_tickets_active_summa $order_item->currency_code'><span class='text-nowrap'>$attr_tickets_active_count</span></div>";
 			$i = 1;
+			
 			foreach ($this->columnStatus as $status_code => $status){ // $status_code => object(status_id,status_code,title)
 ////toPrint($status_code,'$status_code',0,'message',true);
 //					$this->order_items[$item->product_id]->attributes[$attr_id][$go_status_code][$go_index][$item->order_item_id];
@@ -361,18 +362,18 @@ endforeach;
 			}
 				?> 
 			<label><?= JText::_('JSHOP_PLACE_BILET_SALESUM') ?>
-				<span class=_cur> (<?= ' ('.isset($this->order_items) && $this->order_items ? 
-						 reset( $this->order_items )->currency_code
+				<span class=_cur> (<?= ' ('.isset($this->orders_all) && $this->orders_all ? 
+						 reset( $this->orders_all )->currency_code
 						: strtolower(JText::_('COST')) ?>)</span></label>
 		</div>
 		
-		<?php $cur = isset($this->order_items) && $this->order_items ? ' ('.reset( $this->order_items )->currency_code .')' : strtolower(JText::_('COST'))?>
+		<?php $cur = isset($this->orders_all) && $this->orders_all ? ' ('.reset( $this->orders_all )->currency_code .')' : strtolower(JText::_('COST'))?>
 		<div class="summ line">
 			<label>#</label>
 			<label class="titleName"><?= JText::_('JSHOP_PLACE_BILET_SUMMAS') ?></label>
 			<label title="<?=$summas['summ_tickets_active'] .' ' . $cur ?>"><?=$countes['count_tickets_active']?></label>
 			<?php 
-			$i = 1; 
+			$i = 1;
 			foreach ($this->columnStatus as $status_code => $status){ // $status_code => object(status_id,status_code,title)
 				
 //				$summas[$status_code] = $summa;

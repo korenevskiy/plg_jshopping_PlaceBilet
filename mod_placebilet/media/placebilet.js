@@ -475,9 +475,9 @@ function ajaxGetStatus(QRcode, action = '') {
 
 	Joomla.request({
 		headers: {
-				'Cache-Control': 'no-cache',
-				'Your-custom-header': 'custom-header-value',
-				'Content-Type': 'application/json'
+			'Cache-Control':		'no-cache',
+			'Your-custom-header':	'custom-header-value',
+			'Content-Type':			'application/json'
 		},
 		url: `?option=com_ajax&module=placebilet&method=&format=json&id=${id}&lang=${language}&token=${token}&${token}=1`, //index.php?option=mod_placebilet&view=example
 		method: 'POST',
@@ -574,6 +574,10 @@ console.log('---------------------');
 	console.log('btnRefundStatuses', btnRefundStatuses);
 	console.log('btnCancelStatuses', btnCancelStatuses);
 	console.log('dataResponse.place_status_code', dataResponse.place_status_code);
+	
+	
+//dataResponse.order_status_code
+	
 
 			if (btnVisitStatuses && btnVisitStatuses.includes(dataResponse.place_status_code)) {
 				btn_visit.style.display = 'block';

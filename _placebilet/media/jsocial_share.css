@@ -1,0 +1,77 @@
+/* two core styles, use for all heights */
+.fb-share-button {
+  background: #29447e no-repeat !important;
+  display: inline-block;
+  padding: 0;
+  text-decoration: none !important;
+  outline: none;
+  background-image: url(https://s-static.ak.facebook.com/images/share/links/fb-button-icon18.png) !important;
+}
+
+.fb-share-button span {
+  background: #5f78ab;
+  border-top: solid 1px #879ac0;
+  border-bottom: solid 1px #1a356e;
+  color: white;
+  display: block;
+  font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+  font-weight: bold;
+  margin: 1px 1px 0 0;
+  text-shadow: none;
+  padding: 0 6px;
+  /* size specific section: */
+  line-height: 15px;
+  font-size: 11px;
+  margin-left: 18px;
+}
+
+/* add these two for a 22px high button */
+.fb-share-button-22 {
+  background-image: url(https://s-static.ak.facebook.com/images/share/links/fb-button-icon22.png) !important;
+}
+.fb-share-button-22 span {
+  line-height: 19px;
+  font-size: 12px;
+  margin-left: 22px;
+}
+
+/* add these two for a 25px high button */
+.fb-share-button-25 {
+  background-image: url(https://s-static.ak.facebook.com/images/share/links/fb-button-icon25.png) !important;
+}
+.fb-share-button-25 span {
+  line-height: 22px;
+  font-size: 16px;
+  margin-left: 25px;
+}
+
+/* add these two for a 39px high button */
+.fb-share-button-39 {
+  background-image: url(https://s-static.ak.facebook.com/images/share/links/fb-button-icon39.png) !important;
+}
+.fb-share-button-39 span {
+  line-height: 36px;
+  font-size: 18px;
+  margin-left: 39px;
+}
+.facebook-like-button, .facebook-share, .pinterest, .tweet-button, .google-plus-one-button, .vk-share-button{
+    float: left;
+    margin: 5px;
+    padding-right: 2px;
+}
+
+
+.vk-share-button table{
+    border-spacing: 0px;
+}
+.vk-share-button td{
+    padding: 0;
+    border: 0; 
+}
+.social_share{
+    display: flex;
+    justify-content: space-between;
+        justify-content: center;
+        margin-top: 25px;
+    
+}

@@ -1,0 +1,338 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 19 мая 2024 г., 09:34:50
+    Author     : koren
+*/
+
+
+    .table-striped{
+        /*display: none;*/
+        /*margin-bottom: 0;*/
+    }
+    .attrib_place{
+        position: relative;
+    }
+    .spoller_chk_tbl,
+    .spoller_chk_btn{
+        position: absolute;
+        top: 0;
+        opacity: 0;
+    }
+    .spoller_chk_tbl{
+        right: 0;
+    }
+    .spoller_chk_btn{
+        right: 0;
+    }
+    .table-striped{     /*,     .input-inline*/
+        transition: 0.4s;
+        -height: 0;
+        /*display: none;*/
+        /*overflow-y: hidden;*/
+    }
+    .spoller_chk_tbl:checked +.table-striped{
+        transition: 0.4s;
+        height: auto;
+        display: table;
+    }
+/*    .spoller_chk_btn:checked + .input-inline{
+        transition: 0.4s;
+        height: auto;        
+        -display: block;
+    }*/
+    
+    
+    
+    .buttons_0{
+        transition: 0.4s;
+    }
+    .buttons_1{
+        height: 0px;
+        transition: 0.4s;
+        overflow-y: hidden;
+        margin-top: 0;
+    }
+    .buttons_2{
+        height: 0px;
+        transition: 0.4s;
+        overflow-y: hidden;
+        margin-top: 0;
+    }
+    .spoller_chk_btn:checked + .table-striped{
+        margin-bottom: 18px;
+    }
+    .spoller_chk_btn:checked + .buttons_1{
+        height: 63px;
+        transition: 0.4s;
+        margin-top: 18px;
+    }
+    .spoller_chk_btn:checked + .buttons_2{
+        height: 108px;
+        transition: 0.4s;
+        margin-top: 18px;
+    }
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
+.orderTable {
+	margin-top: 20px;
+	display: grid;
+	gap: 2px;
+	grid-template-columns: 40px 8fr 3fr 3fr 3fr;
+	grid-template-columns: 40px 8fr repeat(calc(var(--columnsStatus) + 1), 3fr);
+}
+.orderTable .line{ 
+  border: 1px solid #8884;
+  border-radius: 5px;
+  display: grid;
+  grid-template-columns: 40px 8fr 3fr 3fr 3fr;
+	grid-template-columns: 40px 8fr repeat(calc(var(--columnsStatus) + 1), 3fr);
+  grid-column: 1 / -1;
+  grid-column: 1 / calc(var(--columnsStatus) + 4);
+  grid-template-columns: subgrid;
+}
+.orderTable .titles {
+  grid-column: 1 / -1;
+  grid-column: 1 / calc(var(--columnsStatus) + 4);
+  /*grid-row: 1 / 1;*/
+  display: grid;
+  grid-template-columns: subgrid;
+  _grid-template-rows: subgrid;
+  gap: 10px;
+}
+.orderTable .titles > * {
+  text-align: center;
+      margin: auto;
+  /*display: flex;*/
+  align-items: center;
+  justify-content: center;
+  text-wrap: balance;
+	/*min-height: 42px;*/
+}
+.orderTable .titles > .titleName{
+	flex-direction: column;
+}
+.orderTable .titles  span:not(.titleEvent){
+	font-size: 10pt;
+    opacity: 0.8;
+}
+.orderTable .titles > .name {
+/*  text-align: left;
+  justify-content: center;
+  justify-content: flex-start;*/
+}
+.orderTable .titles  .titleEvent,
+.orderTable .titles  .titleAttr{
+	display: block;
+}
+.orderTable .titles  .titleAttr{
+	font-size: 10pt;
+	opacity: 0.8;
+}
+.orderTable .event{
+  display: grid;
+  grid-column: 1 / -1;
+  grid-column: 1 / calc(var(--columnsStatus) + 4);
+  grid-template-columns: 40px 8fr 3fr 3fr 3fr;
+	grid-template-columns: 40px 8fr repeat(calc(var(--columnsStatus) + 1), 3fr);
+  
+  grid-template-columns: subgrid;
+  grid-template-rows: subgrid;
+  _grid-template-rows: 50px 70vh 50px;
+  gap: 2px;
+}
+.orderTable .attr {
+	border-top: 1px solid #8882;
+  display: grid;
+  grid-column: 1 / -1;
+  grid-column: 1 / calc(var(--columnsStatus) + 4);
+  grid-template-columns: 40px 8fr 3fr 3fr 3fr;
+	grid-template-columns: 40px 8fr repeat(calc(var(--columnsStatus) + 1), 3fr);
+  
+  grid-template-columns: subgrid;
+  /*grid-template-rows: subgrid;*/
+  _grid-template-rows: 50px 70vh 50px;
+  gap: 2px;
+}
+
+.orderTable label {
+	/*text-decoration: underline;*/
+	font-weight: bold;
+}
+.orderTable .event > *,
+.orderTable .attr > * {
+	text-align: center;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+.orderTable .attr > * {
+	font-size: 10pt;
+}
+.orderTable .id {
+}
+.orderTable .name {
+	text-align: start;
+}
+.orderTable .attr .name {
+	margin-inline-start: 20px;
+}
+.orderTable .summ{
+}
+.orderTable .summ label{
+	text-align: center;
+	min-height: 50px;
+	display: flex;
+    align-items: center;
+	justify-content: center;
+}
+.orderTable .summ label:not(.titleName){
+}
+.orderTable .summ label.titleName{
+	text-align: left;
+	justify-content: inherit;
+}
+.orderTable .buy {
+}
+.orderTable .cancel {
+}
+.orderTable .visit {
+}
+.orderTable .pcs, 
+.orderTable .cur {
+    opacity: 0.5;
+    /*font-weight: bold;*/
+	font-size: small;
+}
+
+
+
+
+.orderTable .field {
+	border-top: 1px solid #8882;
+	display: grid;
+	grid-column: 2 / -1;
+	grid-column: 2 / calc(var(--columnsStatus) + 4);
+	grid-template-columns: 40px 8fr 3fr 3fr 3fr;
+	grid-template-columns: 40px 8fr repeat(var(--columnsStatus), 3fr);
+
+	grid-template-columns: subgrid;
+	grid-template-rows: subgrid;
+	_grid-template-rows: 50px 70vh 50px;
+	gap: 2px;
+}
+
+
+
+/** ------------------------  Tab HOME ----------------------- */
+#_j-sidebar-container{
+	position: absolute;
+	left: 30px;
+	display: none;
+}
+.panelhome{
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+.panelhome > div{
+    flex: auto 1;
+}
+#cpanel{
+	flex: 4;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	justify-content: center;
+	justify-content: space-evenly;
+	align-content: flex-start;
+	gap: 20px; 
+	min-width: 344px;
+}
+#cpanel > div{
+    flex: auto 1;
+    /*max-width: 125px;*/
+}
+#cpanel.cpanel div.icon {
+	margin-right: 0;
+}
+#cpanel div.icon {
+	margin: 0;
+	float: unset;
+	float: unset;
+	display: block;
+	height: auto;
+	padding: 0;
+	margin-right: 0;
+}
+#cpanel div.icon a{
+	float: unset;
+	height: 110px;
+	padding: 0;
+}
+.infobilet{
+    margin: 20px;
+}
+#contacts{
+    font-weight:normal;
+	border-radius: 10px; vertical-align:top; flex: 5;list-style: none;
+	padding: 0;
+}
+#contacts li{
+	/*border: 1px solid #8882;*/
+	border-radius: 3px;
+    margin: 1px;
+	padding: 2px 5px 2px 10px;
+}
+#contacts hr{
+    border-top: 1px solid darkgray;
+}
+#cpanel div.icon a{
+    transition: 0.6s;
+    background-color: transparent;
+}
+#cpanel div.icon a:hover{
+    background-color: #88a1;
+}
+.text{
+	display: flex;
+	display: flex;flex-wrap: wrap;
+}
+.text > img{
+	-flex-basis: 150px;
+	align-self: flex-start;
+	justify-self: flex-start;
+}
+#cpanel div.icon a{
+	color: unset;
+	/*color: rgba(var(--link-color-rgb), var(--link-opacity, 1));*/
+}
+#cpanel div.icon a:hover{
+	color: rgba(var(--link-color-rgb), var(--link-opacity, 1));
+}
+#cpanel div.icon a.qr{
+	/*background-image: url("<?= Joomla\CMS\Uri\Uri::root()?>plugins/jshopping/placebilet/media/qr_icon.svg");*/
+	/*background: url("<?= Joomla\CMS\Uri\Uri::root()?>/plugins/jshopping/placebilet/media/qr_icon.svg" 50% 50% no-repeat;*/
+}
+#cpanel div.icon a.qr .fa-qrcode{
+	font-size: xxx-large;
+}
+#cpanel div.icon a.qr img{
+	width: 36px;
+	background-color: white;
+	padding: 4px;
+	margin: 10px;
+}

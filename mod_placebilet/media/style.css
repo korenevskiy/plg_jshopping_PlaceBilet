@@ -29,37 +29,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 	grid-template-areas:
         "controlsScan"
         "controlsAjax";
-	
-}
-.mod-placebilet.placebilet{
-	
-	/*grid-template-areas: "controlButton" "controlsScan" "controlField" "controlsAjax";*/
-}
-.mod-placebilet.placebilet ~ .links{
-	display: flex;
-	column-gap: 20px;
-	row-gap: 10px;
-	flex-wrap: wrap;
-	justify-content: center;
-	justify-content: space-around;
-	margin-bottom: 10px;
-}
-
-.mod-placebilet.placebilet.fullscreen{
-/*	height: 100svh !important;*/
 }
 .mod-placebilet.placebilet > form{
 	grid-area: controlsScan;
 }
 .mod-placebilet.placebilet > message{
 	grid-area: controlsScan;
-	/*background-color: #ddd9;*/
+	background-color: #ddd9;
 	background-color: #0009;
-	/*background-color: var(--card-bg);*/
-	background-color: var(--body-bg-rgb);
-	background-color: rgba(var(--body-bg-rgb), 0.9);
 	backdrop-filter: blur(60px);
-	color: var(--body-color-rgb);
 	
     position: relative;
     z-index: 4;
@@ -67,17 +45,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 	border-radius: 10px;
 	border: 1px solid graytext;
 	cursor: pointer;
-	font-weight: bold;
-	
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: larger;
-	flex-wrap: wrap;
-	justify-items: stretch;
-	justify-items: center;
-	text-align: center;
-	flex-direction: column;
 }
 html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message{
 	background-color: #0009;
@@ -89,11 +56,6 @@ html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message{
 	font-size: x-large;
 	/*color: var(--template-bg-dark-60);*/
 	text-shadow: 0px 1px 1px black, 0px -2px 2px white;
-	flex: 1 auto;
-	
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
 }
 
 html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message h3{
@@ -115,7 +77,7 @@ html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message h3{
 .mod-placebilet.placebilet > message .place_name_info{
 	font-size: large;
 	font-size: medium;
-  	text-shadow: 0px 1px 1px grey, 0px -1px 1px white;
+    text-shadow: 0px 1px 1px grey, 0px -1px 1px white;
 }
 
 html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message .place_name_info{
@@ -153,11 +115,6 @@ html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message .place_name_inf
     margin-right: 5px;
 	
 	box-shadow: 0px 2px 5px grey;
-	flex: 1 auto;
-	
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
 }
 .mod-placebilet.placebilet > message .statusBilet > .status_name{ 
     border-radius: 5px;
@@ -219,8 +176,6 @@ html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message .place_name_inf
 	grid-template-columns: 1fr 1fr 1fr;
 	display: flex;
 	flex-wrap: wrap;
-	grid-area: controlCamera;
-	margin: 0;
 }
 .mod-placebilet.placebilet .controls.action{
 	flex-wrap: wrap;
@@ -261,7 +216,6 @@ html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message .place_name_inf
 	text-shadow: none;
 }
 .mod-placebilet.placebilet .video{
-	min-height: calc(100px);
 	width: 100%;
 	max-height: 40vh;
 	max-height: calc(100vh - 250px);
@@ -269,6 +223,7 @@ html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message .place_name_inf
 	max-height: calc(100svh - 320px);
 	max-height: calc(100svh - 320px);
 	
+	min-height: calc(100px);
 }
 .mod-placebilet.placebilet .controls .btn.btnFullscreen {
 	flex: 0;
@@ -283,22 +238,9 @@ html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message .place_name_inf
 	color: white;
 }
 .mod-placebilet.placebilet .video{
-	grid-area: videoScan;
 	border: 1px solid gray;
 	border-radius: 4px;
-	height: 100%;
 	max-height: 65vh;
-	max-height: calc(100svh - 200px);
-	width: auto;
-	margin: auto;
-	object-fit: cover;
-	width: 100%;
-}
-.mod-placebilet.placebilet .selectEvent{
-	grid-area: selectEvent;
-}
-.mod-placebilet.placebilet .fieldQR{
-	grid-area: fieldQR;
 }
 .qrcode-text-btn {
     background: url(qr_icon.svg) 50% 50% no-repeat;
@@ -307,15 +249,9 @@ html[data-bs-scheme="dark"] .mod-placebilet.placebilet > message .place_name_inf
 }
  
 .mod-placebilet.placebilet form{
-	grid-template-areas: "controlCamera" "videoScan" "selectEvent" "fieldQR";
-	grid-template-rows: auto 1fr auto auto;
-	
 	display: grid;
 	gap: 10px;
 	align-content: start;
-	max-height: 90svh !important;
-	height: 100% !important;
-	gap: 10px;
 }
 
 /*

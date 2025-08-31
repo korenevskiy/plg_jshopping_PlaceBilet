@@ -551,16 +551,17 @@ new class ($container->get(AdministratorApplication::class)) implements Installe
 			'd_track_stop' => 'ALTER TABLE #__jshopping_orders ADD d_track_stop TINYTEXT NULL  ; ',
 		],
 		'order_item' => [
-			'date_event'	=> 'ALTER TABLE #__jshopping_order_item ADD `date_event`	datetime NOT NULL DEFAULT CURRENT_TIMESTAMP; ',
-			'date_tickets'	=> 'ALTER TABLE #__jshopping_order_item ADD `date_tickets`	datetime NOT NULL DEFAULT 0 COMMENT "DataTime Start Tickets change status" ; ',
-			'count_places'	=> 'ALTER TABLE #__jshopping_order_item ADD `count_places`	int(4) NOT NULL DEFAULT 0; ',
+			'date_event'	=> 'ALTER TABLE #__jshopping_order_item ADD `date_event`	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP; ',
+			'date_tickets'	=> 'ALTER TABLE #__jshopping_order_item ADD `date_tickets`	DATETIME NOT NULL DEFAULT 0 COMMENT "DataTime Start Tickets status change" ; ',
+			'date_activity'	=> 'ALTER TABLE #__jshopping_order_item ADD `date_activity`	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "DataTime of the last status change" ; ',
+			'count_places'	=> 'ALTER TABLE #__jshopping_order_item ADD `count_places`	INT(4) NOT NULL DEFAULT 0; ',
 			'places'		=> 'ALTER TABLE #__jshopping_order_item ADD `places`		TEXT NULL COMMENT "[{prodValId:\"value_id,attrID\"},...]"; ',
 			'place_prices'	=> 'ALTER TABLE #__jshopping_order_item ADD `place_prices`	TEXT NULL COMMENT "[{prodValId:price},...]" ; ',
 			'place_counts'	=> 'ALTER TABLE #__jshopping_order_item ADD `place_counts`	TEXT NULL COMMENT "[{prodValId:count},...]" ; ',
 			'place_names'	=> 'ALTER TABLE #__jshopping_order_item ADD `place_names`	TEXT NULL COMMENT "[{prodValId:\"attrTitle.placeTitle\"},...] " ; ',
 			'place_go'		=> 'ALTER TABLE #__jshopping_order_item ADD `place_go`		TEXT NOT NULL DEFAULT "" COMMENT "[\"sequence number select Place in order item. Порядковый номер выбранного места в этом заказе этго товара\"...] " ; ',
 			'place_pushka'	=> 'ALTER TABLE #__jshopping_order_item ADD `place_pushka`	TEXT NULL COMMENT "[\"QR ticlets and Puska key tickets.  QR билета и Пушка Ключ Билета\"...] " ; ',
-			'event_id'		=> 'ALTER TABLE #__jshopping_order_item ADD event_id int(8) NOT NULL DEFAULT 0	COMMENT "Pushka Event ID" ; ',
+			'event_id'		=> 'ALTER TABLE #__jshopping_order_item ADD `event_id`		INT(8) NOT NULL DEFAULT 0	COMMENT "Pushka Event ID" ; ',
 		],
 		'attr' => [
 			'attr_admin_type'	=> 'ALTER TABLE #__jshopping_attr ADD attr_admin_type int(3) NOT NULL  DEFAULT 0; ',
@@ -570,8 +571,8 @@ new class ($container->get(AdministratorApplication::class)) implements Installe
 			'StageId'			=> 'ALTER TABLE #__jshopping_attr ADD StageId int(11) NOT NULL DEFAULT 0; ',
 		],
 		'products' => [
-			'date_event'	=> 'ALTER TABLE #__jshopping_products ADD date_event	datetime NOT NULL DEFAULT CURRENT_TIMESTAMP	COMMENT "DataTime Start Event" ; ',
-			'date_tickets'	=> 'ALTER TABLE #__jshopping_products ADD date_tickets	datetime NOT NULL DEFAULT 0 COMMENT "DataTime Start Tickets change status" ; ',
+			'date_event'	=> 'ALTER TABLE #__jshopping_products ADD date_event	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP	COMMENT "DataTime Start Event" ; ',
+			'date_tickets'	=> 'ALTER TABLE #__jshopping_products ADD date_tickets	DATETIME NOT NULL DEFAULT 0 COMMENT "DataTime Start Tickets change status" ; ',
 			'params'		=> 'ALTER TABLE #__jshopping_products ADD params		TEXT   NULL  ; ',
 			'RepertoireId'	=> 'ALTER TABLE #__jshopping_products ADD RepertoireId	int(11) NOT NULL DEFAULT 0; ',
 			'StageId'		=> 'ALTER TABLE #__jshopping_products ADD StageId		int(11) NOT NULL DEFAULT 0; ',
@@ -603,6 +604,7 @@ new class ($container->get(AdministratorApplication::class)) implements Installe
 //			
 			'comment' => 'ALTER TABLE #__jshopping_users MODIFY `comment` TINYTEXT NULL  ; ',
 			'd_comment' => 'ALTER TABLE #__jshopping_users MODIFY d_comment TINYTEXT NULL  ; ',
+			'ALTER TABLE #__jshopping_order_item MODIFY date_activity datetime NOT NULL  DEFAULT CURRENT_TIMESTAMP; ',
 //
 //			'bonus'			=> 'ALTER TABLE #__jshopping_users MODIFY bonus TINYTEXT NOT NULL ;  ',
 //			'address'		=> 'ALTER TABLE #__jshopping_users MODIFY address TINYTEXT NOT NULL ;  ',

@@ -38,24 +38,25 @@ class StatusEventObject{
 	 * @var int
 	 */
 	public int $date = 0;		// ": "2023-12-31 14:00:00",
+	
 	/**
 	 * Время события статуса
 	 * @return JDate
 	 */
-	public function getDate() : JDate {
-		
-		//$secret = JFactory::getApplication()->getConfig()->get('secret');// as JRegisctry
-		
-			$timezone = 'GMT';
-			$timezone = 'UTC';
-			$timezone = JFactory::getApplication()->getConfig()->get('offset','UTC');
-			$timezone = JFactory::getApplication()->getIdentity()->getParam('timezone',$timezone);
-		
-		if($this->date)
-			return JDate::getInstance($this->date, $timezone);//JDate::setTimestamp($this->date);//->setTimezone($tz)
-		else 
-			return JDate::getInstance ('', $timezone);
-	}
+//	public function getDate() : JDate {
+//		
+//		//$secret = JFactory::getApplication()->getConfig()->get('secret');// as JRegisctry
+//		
+//			$timezone = 'GMT';
+//			$timezone = 'UTC';
+//			$timezone = JFactory::getApplication()->getConfig()->get('offset','UTC');
+//			$timezone = JFactory::getApplication()->getIdentity()->getParam('timezone',$timezone);
+//		
+//		if($this->date)
+//			return JDate::getInstance($this->date, $timezone);//JDate::setTimestamp($this->date);//->setTimezone($tz)
+//		else 
+//			return JDate::getInstance ('', $timezone);
+//	}
 	
 	
 	public function __toString() {
