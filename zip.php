@@ -15,18 +15,30 @@
  **/ 
 
 
+
 defined('_JEXEC') or die;	return;
 
+//error_reporting(E_ALL);
+//ini_set('display_errors', '1');
 
 header('Content-Type: application/json; charset=utf-8');
 
+$Comment = "\n";
+$Comment .= "\n Home page: https://explorer-office.ru/download/";
+$Comment .= "\n SUPPORTS: ";
+$Comment .= "\n GitHub: https://github.com/korenevskiy/plg_jshopping_PlaceBilet ";
+$Comment .= "\n ChatMax: https://max.ru/join/l2YuX1enTVg2iJ6gkLlaYUvZ3JKwDFek5UXtq5FipLA";
+$Comment .= "\n VK.com: https://vk.com/placebilet";
+$Comment .= "\n Telegram: https://t.me/placebilet";
 
 /**
  * Список расширений и их расположения для последующего архивирования
  */		/** @var array $pathExtentions */
 $pathExtentions = [];				//список Расширений для отдельного архивирования в пакет.
-$pathExtentions['mod_PlaceBilet_tickets'] = realpath(__DIR__ . '/../../administrator/modules/mod_placebilet/');
-$pathExtentions['plg_PlaceBilet_tickets'] = realpath(__DIR__ . '/placebilet/');
+$pathExtentions['mod_PlaceBilet_tickets']		= realpath(__DIR__ . '/../../administrator/modules/mod_placebilet/');
+$pathExtentions['plg_PlaceBilet_tickets']		= realpath(__DIR__ . '/placebilet/');
+$pathExtentions['ext_PlaceBilet_statistics']	= realpath(__DIR__ . '/ext_statistics/');
+
 
 /**
  * Список расширений предназначенных копирования(разархивирования) в место папку пакета, с указанием нового имени
@@ -38,6 +50,20 @@ $copyExtentions['plg_PlaceBilet_tickets'] = __DIR__ . '/plg_placebilet';
 $filesIgnore = [];
 $filesIgnore[] = 'ControllerA/StatisticsController.php';
 
+
+/**
+ * Список расширений архивы которых нужно упаковать в главный пакетный архив
+ * Ключ: имя расширения, Значение: имя пакета. Требует таких же XML файлов
+ */		/** @var array $pathPackages */
+$pathPackages=[];
+$pathPackages['mod_PlaceBilet_tickets'] = 'pkg_PlaceBilet';
+$pathPackages['plg_PlaceBilet_tickets'] = 'pkg_PlaceBilet';
+
+/** @var array $pathPackage */
+/** @var array $packageName */
+$pathPackage = __DIR__;				//Папка располждения пакета
+//$packageName = 'pkg_PlaceBilet';	
+
 //echo json_encode($pathExtentions, JSON_PRETTY_PRINT);
 //return;
 
@@ -46,10 +72,10 @@ $filesIgnore[] = 'ControllerA/StatisticsController.php';
 
 
 
-/** @var array $pathPackage */
-/** @var array $packageName */
-$pathPackage = __DIR__;				//Папка располждения пакета
-$packageName = 'pkg_PlaceBilet';	//Имя пакета. Требует такого же XML
+/**
+ * Список файлов для отображения результата в ответе
+ */
+$files = ['__________________'.date('Y-m-d H:i:s', time()).'__________________'];
 
 //echo "<pre>";
 
@@ -68,29 +94,36 @@ foreach ($pathExtentions as $ext => $pathExt){
 }
 
 
+//$packages = array_flip(($pathPackages));//array_unique
+foreach (array_flip($pathPackages) as $packageName => $zip){
+//	$packages[$packageName] = 
+	$zip = new zip();
+	$zip->open($pathPackage . "/$packageName.zip", ZipArchive::CREATE | ZipArchive::OVERWRITE);
+	
+	if(file_exists($pathPackage . "/$packageName.xml")){
+		$zip->addFile($pathPackage . "/$packageName.xml", "$packageName.xml");
+		
+	}
+	$files[] = "/$packageName.zip";
+	
+	foreach ($pathPackages as $ext => $pckName){
+		if($packageName == $pckName)
+			$pathPackages[$ext] = $zip;
+	}
+}
 
 
 /**
  * Архив пакета всех файлов всех расширений
  */		/** @var ZipArchive $zipPackage */
-$zipPackage = new zip();
-$zipPackage->open($pathPackage . "/$packageName.zip", ZipArchive::CREATE | ZipArchive::OVERWRITE);
-$zipPackage->addFile($pathPackage . "/$packageName.xml", "$packageName.xml");
-
-/**
- * Список файлов для отображения результата в ответе
- */
-$files = ['__________________'.date('Y-m-d H:i:s', time()).'__________________'];
-$files[] = "/$packageName.zip";
-$files[] = "/$packageName.xml";
-
+ 
 $i = 0;
 
 /**
  * Архивируем расширения и добавляем архив расширения в архив пакета
  */
 foreach ($pathExtentions as $nameExt => $pathExt){
-	$languagesCountMin = &HelperMinification::languageMinificationRaw($pathExt.'/language/');
+	$languagesCountMin = HelperMinification::languageMinificationRaw($pathExt.'/language/');
 	$langsCount = count($languagesCountMin);
 //	$languagesCountMin[] = ++$i;
 	
@@ -107,6 +140,8 @@ foreach ($pathExtentions as $nameExt => $pathExt){
 	$zipfile->open("$patNew.zip", ZipArchive::CREATE|ZipArchive::OVERWRITE);
 	$isIgnoreFiles = 
 		$zipfile->addDirectoryWithAllFiles($pathExt, $pathExt, $filesIgnore);
+	$zipfile->setArchiveComment("version:$ver \n $nameExt \n$nameExt.zip");
+//	$zipfile->comment;
 	$zipfile->close();
 	
 	if(file_exists("$pathPackage/{$nameExt}_{$ver}.zip"))
@@ -114,6 +149,9 @@ foreach ($pathExtentions as $nameExt => $pathExt){
 	
 	copy("$patNew.zip", "{$patNew}_{$ver}.zip");
 	
+	
+	$files[] = "{$nameExt}.zip    ".str_pad(' ', strlen($ver))."     --> languages:" . str_pad($langsCount, strlen($langsCount), STR_PAD_LEFT) . ($isIgnoreFiles? "     excluded: ". implode(', ', $isIgnoreFiles) : '');
+	$files[] = "{$nameExt}_{$ver}.zip        --> languages:" . str_pad($langsCount, strlen($langsCount)) . ($isIgnoreFiles? "     excluded: ". implode(', ', $isIgnoreFiles) : '');
 	
 	
 	if($isIgnoreFiles){
@@ -123,11 +161,23 @@ foreach ($pathExtentions as $nameExt => $pathExt){
 		$files[] = "{$nameExt}_{$ver}_full.zip".str_pad('', strlen($ver))."--> languages:" . $langsCount;
 	}
 	
-	$zipPackage->addFile("$pathPackage/{$nameExt}_{$ver}.zip", "{$nameExt}_{$ver}.zip");
-	$files[] = "{$nameExt}_{$ver}.zip        --> languages:" . str_pad($langsCount, strlen($langsCount)) . ($isIgnoreFiles? "     excluded: ". implode(', ', $isIgnoreFiles) : '');
-	$files[] = "{$nameExt}.zip    ".str_pad(' ', strlen($ver))."     --> languages:" . str_pad($langsCount, strlen($langsCount), STR_PAD_LEFT) . ($isIgnoreFiles? "     excluded: ". implode(', ', $isIgnoreFiles) : '');
+	
+	/** добавление архива расширения в архив пакета */
+	if($pathPackages[$nameExt] ?? false){
+		$pathPackages[$nameExt]->addFile("$patNew.zip", "$nameExt.zip");
+	
+		$pathPackages[$nameExt]->setArchiveComment($pathPackages[$nameExt]->comment . " version:$ver \n $nameExt.zip \n\n");
+//		$pathPackages[$nameExt]->comment;
+	
+	}
+	
 }
-$zipPackage->close();
+
+foreach (array_unique($pathPackages, SORT_REGULAR) as $zipPackage){
+	$zipPackage->setArchiveComment($zipPackage->comment . $Comment);
+	$zipPackage->close();
+}
+
 
 //scandir($dir,  SCANDIR_SORT_NONE);
 //$files = [];

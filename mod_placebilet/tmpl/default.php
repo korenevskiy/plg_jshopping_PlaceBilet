@@ -16,21 +16,76 @@ defined('_JEXEC') or die;
 
 use \Joomla\CMS\Factory as JFactory;
 use \Joomla\CMS\HTML\HTMLHelper as JHtml;
-use modPlaceBiletHelper as Helper;
+//use modPlaceBiletHelper;// as Helper;
+use Joomla\Module\Placebilet\Administrator\Helper\PlacebiletHelper as Helper;
 use \Joomla\CMS\Language\Text as JText;
+use Joomla\Component\Jshopping\Administrator\Helper\HelperAdmin as JSHelperAdmin;
+
+@ require_once JPATH_BASE . '/modules/mod_placebilet/src/Helper/PlacebiletHelper.php';
 
 //use \Joomla\Module\Placebilet\Administrator\Helper\PlaceBiletHelper as Helper; // Этот тип класса не поддерживается Ajax
-
+//echo "<pre>default.php</pre>";
 $id = (int) $module->id;
 $doc = $app->getDocument();
 
+
+//		$helper	= $app->bootModule('mod_placebilet', 'administrator')->getHelper('PlacebiletHelper');
+//		$helper	= $app->bootModule('mod_placebilet', 'administrator')->getHelper('PlaceBiletHelper');
+//echo "<pre>/". print_r(get_class($helper), true).'/</pre>';
+//return;
+new Helper(['module'=>$module]);
+
+//Helper::setModule($module);//$param	= $data['params']->toObject();
+//$param = new \Reg($params);
+$param = Helper::getParam($id); //$params->toObject(); // $this->params = new Reg($this->params); // $this->params->toObject();
+
+//$app->enqueueMessage("<pre>! ".print_r($id,true)."</pre>");
+//$app->enqueueMessage("<pre>! ".print_r($param,true)."</pre>");
+
+/** 
+ * Массив порядка показа сообщений в ответе модуля
+ * @var array $moduleZ 
+ */
+
+/** @var \Reg									$param */
+/** @var \stdClass								$module */
+/** @var \Joomla\CMS\Application\CMSApplication $app */
+/** @var \Joomla\Input\Input					$input */
+/** @var \Joomla\Registry\Registry				$params */
+/** @var \string|\stdClass						$template */
+//$module;
+//$app;
+//$input;
+//$params;
+//$template;
+//\Joomla\Module\Placebilet\Administrator\Helper\PlacebiletHelper::setModule($module);
+	
+
+//$classes = get_declared_classes();
+//echo "<pre>/". print_r($classes, true).'/</pre>';
+//$class = end($classes);
+
+//echo "<pre>57 $helper</pre>";
+//return;
+//
+//echo "<br>";
+//echo "<pre>";
+//$a = new \ReflectionClass($helper);
+//var_dump($a->getFileName());
+//echo "</pre>";
+//return;
+		
+//		$data['param'] = Helper::$param;
+//		$data['helper'] = Helper;
+
 JHtml::_('form.csrf');
 
-$param = Helper::$param; //$params->toObject(); // $this->params = new Reg($this->params); // $this->params->toObject();
 // toPrint( Helper::getEventTitleList(), 'eventList',true,'message',true);
 // toPrint($param, '$param',true,'message',true);
 //JHtml::script($img);// register($img, $function);
 //$wa = new \Joomla\CMS\WebAsset\WebAssetManager;
+
+/** @var \Joomla\CMS\WebAsset\WebAssetManager $wa  Менеджер Ассетов	 */
 $wa = JFactory::getApplication()->getDocument()->getWebAssetManager();
 $wa->useScript('jquery');
 $wa->registerAndUseScript('juqery.fullscreen', 'administrator/modules/mod_placebilet/media/jquery.fullscreen.js');
@@ -46,7 +101,7 @@ $wa->registerAndUseStyle('mod_placebilet.admin', 'administrator/modules/mod_plac
 //JFactory::getApplication()->getDocument()->getWebAssetManager()->useStyle('jquery.ui')->useScript('jquery.ui');
 
 $wa->addInlineScript('
-	document.addEventListener("DOMContentLoaded", function(){form_QR_' . $id . '.t = "' . JFactory::getApplication()->getFormToken() . '"}); 
+	document.addEventListener("DOMContentLoaded", function(){form_QR_' . $id . '.t = "' . JFactory::getApplication()->getFormToken() . '"});
 ');
 //        array_unshift($languages, HTMLHelper::_('select.option', '', Text::_('JDEFAULTLANGUAGE')));
 //        $select = JHtml::_('select.genericlist', Helper::getEventTitleList(), 'select_EventID_'.$id, 'class="form-select"', 'id', 'title', null);
@@ -58,15 +113,17 @@ $wa->addInlineScript('
 JText::script('JSHOP_PUSHKA_CAMERA_NONE');
 JText::script('JSHOP_PUSHKA_ALERT_NOCAMERA');
 JText::script('JSHOP_PUSHKA_ALERT_ERROR');
-//JText::script('JSHOP_PUSHKA_ALERT_NOSSL');
 
 
+
+
+//JFactory::getApplication()->enqueueMessage("<pre>". print_r($param, true)."</pre>");
 //JText::script('');
 ?>
 
-<div class="mod-placebilet placebilet mod<?= $id ?>">
-	<a id='aTagAjaxLinkTest<?= $id ?>' target='_blank' href='?&QRcode=js1.1111111111&option=com_ajax&module=placebilet&method=getStatus&id=<?= $id ?>&format=json&<?= $app->getFormToken() ?>=1'><?= $app->getFormToken() ?></a>
-	<form id="form_QR_<?= $id ?>" data-id="<?= $id ?>" data-beep="<?= $param->pushka_camera_beep ?? 'yes' ?>" 
+<div class="mod-placebilet placebilet mod<?= $id ?>" id="mod_placebilet">
+	<a id='aTagAjaxLinkTest<?= $id ?>' target='_blank' href='?&QRcode=js1.1111111111&option=com_ajax&module=placebilet&method=getStatus&id=<?= $id ?>&lang=<?=JFactory::getApplication()->getLanguage()->getTag()?>&format=json&<?= $app->getFormToken() ?>=1'><?= $app->getFormToken() ?></a>
+	<form id="form_QR_<?= $id ?>" data-id="<?= $id ?>" data-beep="<?= $param->pushka_camera_beep ?? 'yes' ?>"  data-lang="<?=JFactory::getApplication()->getLanguage()->getTag()?>"
 		  class='mod_placebiletFormQR'
 		  data-btn_Visit_Statuses='<?= json_encode($param->btn_visit_statuses ?? ['O']) ?>'
 		  data-btn_Refund_Statuses='<?= json_encode($param->btn_refund_statuses ?? ['O']) ?>'
@@ -80,7 +137,7 @@ JText::script('JSHOP_PUSHKA_ALERT_ERROR');
 		</div>
 
 		<?php if ($param->pushka_camera ?? true): ?>
-			<div class="controls camera">
+			<div class="controlCamera controls camera">
 				<button id="btn_camera_start_<?= $id ?>" class="btn  _btn-outline-primary btn-primary  _btn-sm" type="button"><?= JText::_('JSHOP_PUSHKA_START_CAMERAS') ?></button>
 				<button id="btn_fullscreen_<?= $id ?>" class="btn btn-secondary  _btn-sm btnFullscreen" type="button"><i class="  fa  fa-solid fa-maximize "></i></button>
 				<select id="select_CamerasQR_<?= $id ?>"  class="form-select _form-select-sm cameras"  
@@ -96,7 +153,7 @@ JText::script('JSHOP_PUSHKA_ALERT_ERROR');
 		if (($param->pushka_platform ?? 'auto') == 'auto') {
 			echo JHtml::_('select.genericlist', Helper::getEventTitleList(), 'eventID', ['id' => 'select_EventID_' . $id, 'option.key' => 'id', 'option.text' => 'title',
 				'list.attr' => [
-					'class' => 'form-select nextFocus',
+					'class' => 'selectEvent form-select nextFocus',
 					'data-nextFocus' => 'input_CodeQR_' . $id
 				]
 			]);
@@ -112,7 +169,7 @@ JText::script('JSHOP_PUSHKA_ALERT_ERROR');
 				
 			</div>
 		<?php endif; ?>
-		<div class="input-group flex-nowrap">
+		<div class="fieldQR input-group flex-nowrap">
 			 <!--<span class="input-group-text" id="addon-wrapping">@</span>-->
 			<!--<label class="qrcode-text-btn input-group-text  btn-outline-secondary" id="qr_label_<?= $id ?>" for="input_CodeQR_<?= $id ?>">-->
 				<!--<i class="fa fa-tag" aria-hidden="true"></i> -->
@@ -129,7 +186,8 @@ JText::script('JSHOP_PUSHKA_ALERT_ERROR');
 						   _onkeyup="if(event.key==13 || event.which == 13){ event.preventDefault();cameraScan.call({id:<?= $id ?>},this.value,true);return false; }  return true;" 
 						   _onkeypress=" if(event.key==13 || event.which == 13){ event.preventDefault();cameraScan.call({id:<?= $id ?>},this.value,false);return false; }  return true;" 
 						   > 
-			<button id="button_GetStatus_<?= $id ?>"  class="qrcode-text-btn  btn btn-outline-secondary" type="button" label="<?= JText::_('JSHOP_PUSHKA_QR_CLEAR') ?>"><i class="fa fa-qrcode fade" aria-hidden="true"></i></button>
+			<button id="button_GetStatus_<?= $id ?>"  class="qrcode-text-btn  btn btn-outline-secondary" type="button" label="<?= JText::_('JSHOP_PUSHKA_QR_CLEAR') ?>">
+				<i class="fa fa-qrcode fade" aria-hidden="true"></i></button>
 		</div>
 	</form>
 
@@ -167,10 +225,10 @@ JText::script('JSHOP_PUSHKA_ALERT_ERROR');
 
 
 <script type="text/javascript" data-module='<?= $id ?>'>
-// <!-- Без ID -->
+	document.getElementById("form_QR_<?= $id ?>").t="<?= JFactory::getApplication()->getFormToken() ?>";
+</script>
 
 
-</script> 
 <script type="text/javascript"  data-module='<?= $id ?>'>
 
 </script>
@@ -184,6 +242,28 @@ JText::script('JSHOP_PUSHKA_ALERT_ERROR');
 
 </script>
 
-<?php return ?>
-<?php ?>
+<?php 
+if(empty($param->links_show ?? true))
+	return;
+?>
+
+<div class="links">
+<?php // return ?>
+<?php 
+JFactory::getApplication()->getLanguage()->load('com_jshopping', JPATH_ADMINISTRATOR .'/components/com_jshopping');
+//$langs = JFactory::getApplication()->getLanguage()->getPaths('com_jshopping');
+//JFactory::getApplication()->enqueueMessage(  "<pre>Controller: ".print_r($langs,TRUE)."</pre>");
+
+JSHelperAdmin::displayMainPanelIco();
+?>
+		<div style="float:left;">
+        <div class="icon">
+            <a href="<?= Joomla\CMS\Uri\Uri::root()?>administrator/index.php?option=com_jshopping&controller=statistics" class="qr" title="Statistics Reports">
+				<!--<i class="fa fa-qrcode fade" aria-hidden="true"></i>-->
+                <img src="<?= Joomla\CMS\Uri\Uri::root()?>administrator/components/com_jshopping/images/jshop_stats_b.png" alt="">
+                <span><?= JText::_('JSHOP_PLACE_BILET_STATISTICS')?></span>
+            </a>
+        </div>
+		</div>
+</div>
 
