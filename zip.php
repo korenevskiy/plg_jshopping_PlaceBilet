@@ -16,10 +16,10 @@
 
 
 
-defined('_JEXEC') or die;	return;
+//defined('_JEXEC') or die;	return;
 
-//error_reporting(E_ALL);
-//ini_set('display_errors', '1');
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -155,10 +155,17 @@ foreach ($pathExtentions as $nameExt => $pathExt){
 	
 	
 	if($isIgnoreFiles){
-		$zipfile->open("$pathPackage/{$nameExt}_{$ver}_full.zip", ZipArchive::CREATE|ZipArchive::OVERWRITE);
+		$zipfile->open("$pathPackage/{$nameExt}_full.zip", ZipArchive::CREATE|ZipArchive::OVERWRITE);
 		$zipfile->addDirectoryWithAllFiles($pathExt, $pathExt);
 		$zipfile->close();
-		$files[] = "{$nameExt}_{$ver}_full.zip".str_pad('', strlen($ver))."--> languages:" . $langsCount;
+		$files[] = "{$nameExt}_full.zip    ".str_pad(' ', strlen($ver))."     --> languages:" . $langsCount;
+		
+		
+		if(file_exists("$pathPackage/{$nameExt}_{$ver}_full.zip"))
+			unlink("$pathPackage/{$nameExt}_{$ver}_full.zip");
+		
+		copy("$pathPackage/{$nameExt}_full.zip", "$pathPackage/{$nameExt}_{$ver}_full.zip");
+		$files[] = "{$nameExt}_{$ver}_full.zip        --> languages:" . $langsCount;
 	}
 	
 	
