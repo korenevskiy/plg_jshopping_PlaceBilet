@@ -3,19 +3,21 @@
 
 Link for online installation Plugin and Module:
 
-Plugin* Require: [//korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_5.1.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_5.1.zip)
+Plugin* Require: [//korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_5.3.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/plg_PlaceBilet_tickets_5.3.zip)
 
-Module* Require: [//korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_5.1.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_5.1.zip)
+Module* Require: [//korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_5.3.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/mod_PlaceBilet_tickets_5.3.zip)
 
 Link for online installation Component * Require:
 
-[//korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping-5.5.0.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping-5.5.0.zip)
+[//korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping.zip](https://korenevskiy.github.io/plg_jshopping_PlaceBilet/com_JoomShopping.zip)
 
 
 Developer Support:
 
-[//t.me/placebilet](http://t.me/placebilet)
-
+* Telegram: - [//t.me/placebilet](http://t.me/placebilet)
+* Forum VK:	- [//vk.com/placebilet](https://vk.com/placebilet)
+* ChatMax:		- [//max.ru/join/l2YuX1enTVg2iJ6gkLlaYUvZ3JKwDFek5UXtq5FipLA](https://max.ru/join/l2YuX1enTVg2iJ6gkLlaYUvZ3JKwDFek5UXtq5FipLA)
+* Website:  - [//explorer-office.ru/download/](https://explorer-office.ru/download/)
 
 Link for payment plugin SberBank.
 
@@ -61,4 +63,8 @@ Mail in Dark mode
 
 ![2022-11-13 04 59 46 delete da0be06b5206](https://user-images.githubusercontent.com/6898474/201502080-8222b7fd-324a-4a6b-8cc3-b0d0a52cb085.png)
 ![2022-11-13 05 04 43 delete 8c58b742828a](https://user-images.githubusercontent.com/6898474/201502081-5505c56f-ab55-4eaa-988b-7e4a2fe524b8.png)
+
+
+
+
 
