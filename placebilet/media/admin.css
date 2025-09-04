@@ -167,6 +167,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
   /*grid-template-rows: subgrid;*/
   _grid-template-rows: 50px 70vh 50px;
   gap: 2px;
+  background-color: #80808012;
+  opacity: 0.7;
 }
 
 .orderTable label {
